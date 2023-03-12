@@ -61,7 +61,7 @@ int main()
     }
 
     FETCH();
-    
+
     ofstream fout("Memory_file.txt");
     for (auto it : memory)
     {
@@ -110,7 +110,6 @@ int bin_2_dec(bitset<32> b, int f, int l)
         int x = b[i];
         dec = dec + x * mul;
         mul = mul << 1;
-        //cout<<"dec="<<dec<<endl;    
     }
     return dec;
 }
@@ -143,17 +142,16 @@ void FETCH()
     int i = 1;
     while (y < x)
     {
-
+        // cout << "pc=" << pc << "  np=" << next_pc << endl;
         if (pc != next_pc)
             next_pc = pc;
         y = next_pc / 4;
         bitset<32> b = words[(y)];
-        //pc += 4;
+        pc += 4;
         next_pc += 4;
         i++;
-        
+
         DECODE(b);
-        cout<<"pc="<<pc<<"  np="<<next_pc<<endl;
     }
 }
 
@@ -283,11 +281,10 @@ void DECODE(bitset<32> b)
         else if (b[6] == 0 && b[5] == 0 && b[4] == 1 && b[3] == 0 && b[2] == 0)
         {
             // I type
-           // cout<<"I type";
+            // cout<<"I type";
             rs1 = bin_2_dec(b, 15, 19);
             rd = bin_2_dec(b, 7, 11);
             imm = bin_2_dec(b, 20, 31);
-            cout<<"I====="<<rs1<<' '<<rd<<' '<<imm<<endl;
             if (b[31] == 1)
                 imm = -1 * (1 << 12) + imm;
             //-------Checking func3------
@@ -367,6 +364,7 @@ void DECODE(bitset<32> b)
             imm = bin_2_dec(b, 20, 31);
             if (b[31] == 1)
                 imm = -1 * (1 << 12) + imm;
+            
             //-------Checking func3------
             if (b[14] == 0 && b[13] == 0 && b[12] == 0)
             {
@@ -431,7 +429,7 @@ void DECODE(bitset<32> b)
             else if (b[14] == 0 && b[13] == 1 && b[12] == 0)
             {
                 // sw
-                EXECUTE(b, 14);
+                EXECUTE(b, 27);
             }
             else
                 cout << "The given instruction is invalid !!\n";
@@ -441,10 +439,11 @@ void DECODE(bitset<32> b)
         {
             // B type
 
-            int rs1 = bin_2_dec(b, 15, 19);
-            int rs2 = bin_2_dec(b, 20, 24);
+            rs1 = bin_2_dec(b, 15, 19);
+            rs2 = bin_2_dec(b, 20, 24);
             int mul = 1;
-            int imm = 0;
+            imm = 0;
+            // cout << "rs1= " << rs1 << " rs2= " << rs2 << endl;
             for (int i = 8; i <= 11; i++)
             {
                 mul = mul << 1;
@@ -508,24 +507,25 @@ void DECODE(bitset<32> b)
         {
             // J type (jal)
             int mul = 1;
-            int imm = 0;
+            int im = 0;
             for (int i = 21; i < 31; i++)
             {
                 mul = mul << 1;
-                imm += b[i] * mul;
+                im += b[i] * mul;
             }
             mul = mul << 1;
-            imm += b[20] * mul;
+            im += b[20] * mul;
             for (int i = 12; i < 19; i++)
             {
                 mul = mul << 1;
-                imm += b[i] * mul;
+                im += b[i] * mul;
             }
             mul = mul << 1;
-            imm += b[31] * mul;
+            im += b[31] * mul;
             if (b[31])
-                imm = -1 * (1 << 21) + imm;
-            int rd = bin_2_dec(b, 7, 11);
+                im = -1 * (1 << 20) + im;
+            imm = im;
+            rd = bin_2_dec(b, 7, 11);
             EXECUTE(b, 34);
         }
 
@@ -600,7 +600,7 @@ void DECODE(bitset<32> b)
 
 void EXECUTE(bitset<32> b, int n)
 {
-    pc += 4;
+
     int x;
     switch (n)
     {
@@ -723,33 +723,35 @@ void EXECUTE(bitset<32> b, int n)
 
     case 28: // beq
         if (r[rs1] == r[rs2])
-            pc += imm;
+            pc += imm - 4;
         break;
 
     case 29: // bne
         if (r[rs1] != r[rs2])
-            pc += imm;
+            pc += imm - 4;
         break;
 
     case 30: // blt or bltu
         if (r[rs1] < r[rs2])
-            pc += imm;
+            pc += imm - 4;
         break;
 
     case 31: // bge or bgeu
         if (r[rs1] >= r[rs2])
-            pc += imm;
+            pc += imm - 4;
+        // cout << "pc_bge=" << r[rs2] << endl;
         break;
 
     case 34: // jal
-        x = pc + 4;
-        pc += imm;
-
+        x = pc;
+        // cout<<"imm===="<<imm<<' '<<pc+imm-4<<endl;
+        pc += imm - 4;
+        cout << pc << endl;
+        n = 34;
         break;
-
     case 35: // jalr
-        r[rd] = pc + 4;
-        pc = r[rs1] + imm;
+        r[rd] = pc;
+        pc = r[rs1] + imm - 4;
         break;
 
     case 36: // lui
@@ -757,14 +759,15 @@ void EXECUTE(bitset<32> b, int n)
         break;
 
     case 37: // auipc
-        r[rd] = pc + (imm << 12);
+        r[rd] = pc + (imm << 12) - 4;
         break;
 
     case 38: // ecall
         x = r[rs1] || r[rs2];
         break;
 
-    default: // ebreak
+    default:
+
         break;
     };
     MEMORY_ACCESS(n, x);
@@ -774,7 +777,7 @@ void MEMORY_ACCESS(int n, int x)
 {
     if ((n >= 1 && n < 20) || (n > 27))
     {
-        cout << "“MEMORY:No memory  operation”\n";
+        // cout << "“MEMORY:No memory  operation”\n";
     }
     else
     {
@@ -782,12 +785,12 @@ void MEMORY_ACCESS(int n, int x)
         {
             bitset<32> B = r[rs2];
             if (n == 27)
-                memory[rs1 + imm] = r[rs2];
+                memory[r[rs1] + imm] = r[rs2];
             else if (n == 26)
             {
 
                 int y = bin_2_dec(B, 0, 7);
-                memory[rs1 + imm] = y;
+                memory[r[rs1] + imm] = y;
             }
             else
             {
@@ -797,10 +800,10 @@ void MEMORY_ACCESS(int n, int x)
         }
         else // load
         {
-            auto it = memory.find(rs1 + imm);
+            auto it = memory.find(r[rs1] + imm);
             if (it == memory.end())
             {
-                cout << "The memory doesn't exist, can't perform load operation!\n";
+                // cout << "The memory doesn't exist, can't perform load operation!\n";
                 WRITE_BACK(x, 25);
             }
             else
@@ -822,10 +825,11 @@ void MEMORY_ACCESS(int n, int x)
 
 void WRITE_BACK(int result, int n)
 {
-    cout << "“WRITE_BACK: ";
+    // cout << "“WRITE_BACK: ";
     r[0] = 0;
     if (n > 24 && n < 34)
-        cout << "No writeback  operation”\n";
+    { // cout << "No writeback  operation”\n";
+    }
     else
     {
 
