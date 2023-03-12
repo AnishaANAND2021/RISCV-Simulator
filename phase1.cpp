@@ -22,7 +22,7 @@ int bin_2_dec(bitset<32> b, int f, int l);
 int main()
 {
     r[2] = 0X7FFFFFF0;
-    r[3] = 0X10000000;
+    r[3] = 0X0000000a;
     pc = 0; // it will store the next consecutive pc
     ifstream file("input.txt");
     if (!file.is_open())
@@ -34,6 +34,7 @@ int main()
     string line;
     while (getline(file, line))
     {
+        
         stringstream ss(line);
         string word;
         string s;
@@ -55,11 +56,7 @@ int main()
     }
 
     file.close();
-    for (auto it : words)
-    {
-        cout << it << endl;
-    }
-
+    
     FETCH();
 
     ofstream fout("Memory_file.txt");
@@ -98,6 +95,7 @@ int main()
         FOUT << it << endl;
     }
     FOUT.close();
+    cout<<"pc= "<<pc<<" next= "<<next_pc<<endl;
     return 0;
 }
 
