@@ -686,15 +686,16 @@ void DECODE(bitset<32> b)
         else if (b[6] == 0 && b[5] == 0 && b[4] == 1 && b[3] == 0 && b[2] == 1)
         {
             // U type (auipc)
-
+            
             rd = bin_2_dec(b, 7, 11);
-            long long im = (1 << 12) * bin_2_dec(b, 12, 31);
+            long long im =  bin_2_dec(b, 12, 31);
 
             if (b[31])
             {
                 im = -1 * (1LL << 32) + im;
-                imm = im;
+                
             }
+            imm=im;
             cout << "DECODE:    Operation is LUI, destination register R1, immediate imm\n           Read registers R1 = "
                  << dec<<rd << ", imm = " <<dec<< imm << endl;
             EXECUTE(b, 37);
@@ -917,7 +918,8 @@ void EXECUTE(bitset<32> b, int n)
         break;
 
     case 37: // auipc
-        r[rd] = pc + (imm << 12) - 4;
+        x = pc + (imm << 12) - 4;
+        
         cout << "EXECUTE:   ADD UPPER IMMEDIATE TO PC  (PC + ( " << imm << " << 12))" << endl;
         break;
 
@@ -989,6 +991,7 @@ void MEMORY_ACCESS(int n, int x)
 
 void WRITE_BACK(int result, int n)
 {
+    
     // cout << "“WRITE_BACK: ";
     r[0] = 0;
     if (n > 24 && n < 34)
