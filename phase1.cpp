@@ -1,33 +1,56 @@
+/*
+
+The project is developed as part of Computer Architecture class
+Project Name: Functional Simulator for subset of RISCV Processor
+
+Developers' Name: ANISHA PRAKASH & NIROOPMA VERMA
+Developers' Email id: 2021CSB1067 & 2021CSB1115
+Date: 13/03/2023
+
+*/
+
+/* myRISCVSim.cpp
+   Purpose of this file: implementation file for myRISCVSim
+*/
+
 #include <bits/stdc++.h>
 using namespace std;
 
 const int N = 32;
-int r[N];
+int r[N]; // array of registers
 
-vector<bitset<32>> words;
-map<int, int> memory;
+vector<bitset<32>> words; // vector of instructions
+map<int, int> memory;     // map of memory
 
-int rs1, rs2, rd, imm, pc = 0,cycles=0,cycle;
-int next_pc = 0; // it will store the next pc (in case of any jump);
+int rs1, rs2, rd, imm;
+int pc = 0, next_pc = 0;   // it will store the next pc (in case of any jump);
+int cycles = 0, cycle = 0; // stores the no of cycles
 
+// INSTRUCTIONS:
 void FETCH();
 void DECODE(bitset<32> b);
 void EXECUTE(bitset<32> b, int n);
 void MEMORY_ACCESS(int n, int x);
 void WRITE_BACK(int result, int n);
 
-string bin_hex(bitset<32> b);
-int bin_2_dec(bitset<32> b, int f, int l);
+string bin_hex(bitset<32> b);              // converts binary to hex
+int bin_2_dec(bitset<32> b, int f, int l); // converts binary to decimal
+
+//----- DRIVER CODE -----
 
 int main()
 {
+
+    // UPDATING INITIAL VALUES OF x2 AND x3
     r[2] = 0X7FFFFFF0;
-    r[3] = 0X0000000a;
+    r[3] = 0X10000000;
     pc = 0; // it will store the next consecutive pc
+
+    // READING FROM THE FILE
     ifstream file("input.txt");
     if (!file.is_open())
     {
-        cerr << "Error opening file" << endl;
+        cerr << "Error in opening the input file" << endl;
         return 1;
     }
 
@@ -41,8 +64,15 @@ int main()
         int j = 0;
         while (ss >> word)
         {
+
             if (j % 2)
             {
+                if (sizeof(word) < 10)
+                {
+                    printf("Incorrect number of arguments. Please invoke the simulator !! \n");
+                    break;
+                }
+
                 s = word;
                 stringstream S;
                 S << hex << s;
@@ -51,13 +81,16 @@ int main()
                 bitset<32> bit(n);
                 words.push_back(bit);
             }
+
             j++;
         }
     }
 
     file.close();
 
-    FETCH();
+    FETCH(); // CALLING THE FETCH INSTRUCTION
+
+    // WRITING IN THE MEMORY FILE
 
     ofstream fout("Memory_file.txt");
     for (auto it : memory)
@@ -70,6 +103,9 @@ int main()
         fout << s[8] << s[9] << "\t" << s[6] << s[7] << "\t" << s[4] << s[5] << "\t" << s[2] << s[3] << endl;
     }
     fout.close();
+
+    // WRITING IN THE REGISTER FILE IN HEXADECIMAL
+
     ofstream fot("register_file_hex.txt");
     int i = 0;
     for (auto it : r)
@@ -83,6 +119,9 @@ int main()
         fot << s[2] << s[3] << s[4] << s[5] << s[6] << s[7] << s[8] << s[9] << endl;
     }
     fot.close();
+
+    // WRITING IN THE REGISTER FILE IN DECIMAL
+
     ofstream FOUT("register_file_dec.txt");
     i = 0;
     for (auto it : r)
@@ -95,9 +134,12 @@ int main()
         FOUT << it << endl;
     }
     FOUT.close();
-    cout<<"\n---TOTAL NO OF CYCLES = "<<cycles<<endl;
+
+    cout << "\n-----TOTAL NO OF CYCLES = " << cycles << "-----" << endl;
     return 0;
 }
+
+//-----CONVERTING BINARY TO DECIMAL-----
 
 int bin_2_dec(bitset<32> b, int f, int l)
 {
@@ -111,6 +153,8 @@ int bin_2_dec(bitset<32> b, int f, int l)
     }
     return dec;
 }
+
+//-----CONVERTING BINARY TO HEXADECIMAL-----
 
 string bin_hex(bitset<32> b)
 {
@@ -133,12 +177,14 @@ string bin_hex(bitset<32> b)
     return s;
 }
 
+//-----FETCH INSTRUCTION-----
+
 void FETCH()
 {
     int x = words.size();
     int y = 0;
     int i = 1;
-    
+
     while (y < x)
     {
         // cout << "pc=" << pc << "  np=" << next_pc << endl;
@@ -151,15 +197,18 @@ void FETCH()
         pc += 4;
         next_pc += 4;
         i++;
-        cycle=1;
+        cycle = 1;
         DECODE(b);
     }
 }
 
+//-----DECODE INSTRUCTION-----
+
 void DECODE(bitset<32> b)
 {
     if (b[0] && b[1]) // might be a valid code
-    {cycle++;
+    {
+        cycle++;
 
         //-------Checking the opcode--------
 
@@ -190,7 +239,7 @@ void DECODE(bitset<32> b)
                     EXECUTE(b, 2);
                 }
                 else
-                    cout << "The given instruction is invalid !!\n";
+                    cout << "Given instruction is invalid !!\n";
             }
 
             else if (b[14] == 0 && b[13] == 0 && b[12] == 1)
@@ -204,7 +253,7 @@ void DECODE(bitset<32> b)
                     EXECUTE(b, 6);
                 }
                 else
-                    cout << "The given instruction is invalid !!\n";
+                    cout << "Given instruction is invalid !!\n";
             }
 
             else if (b[14] == 0 && b[13] == 1 && b[12] == 0)
@@ -218,7 +267,7 @@ void DECODE(bitset<32> b)
                     EXECUTE(b, 9);
                 }
                 else
-                    cout << "The given instruction is invalid !!\n";
+                    cout << "Given instruction is invalid !!\n";
             }
 
             else if (b[14] == 0 && b[13] == 1 && b[12] == 1)
@@ -232,7 +281,7 @@ void DECODE(bitset<32> b)
                     EXECUTE(b, 10);
                 }
                 else
-                    cout << "The given instruction is invalid !!\n";
+                    cout << "Given instruction is invalid !!\n";
             }
 
             else if (b[14] == 1 && b[13] == 0 && b[12] == 0)
@@ -246,7 +295,7 @@ void DECODE(bitset<32> b)
                     EXECUTE(b, 3);
                 }
                 else
-                    cout << "The given instruction is invalid !!\n";
+                    cout << "Given instruction is invalid !!\n";
             }
 
             else if (b[14] == 1 && b[13] == 0 && b[12] == 1)
@@ -267,7 +316,7 @@ void DECODE(bitset<32> b)
                     EXECUTE(b, 8);
                 }
                 else
-                    cout << "The given instruction is invalid !!\n";
+                    cout << "Given instruction is invalid !!\n";
             }
 
             else if (b[14] == 1 && b[13] == 1 && b[12] == 0)
@@ -281,7 +330,7 @@ void DECODE(bitset<32> b)
                     EXECUTE(b, 4);
                 }
                 else
-                    cout << "The given instruction is invalid !!\n";
+                    cout << "Given instruction is invalid !!\n";
             }
 
             else if (b[14] == 1 && b[13] == 1 && b[12] == 1)
@@ -295,7 +344,7 @@ void DECODE(bitset<32> b)
                     EXECUTE(b, 5);
                 }
                 else
-                    cout << "The given instruction is invalid !!\n";
+                    cout << "Given instruction is invalid !!\n";
             }
         }
 
@@ -328,7 +377,7 @@ void DECODE(bitset<32> b)
                     EXECUTE(b, 15);
                 }
                 else
-                    cout << "The given instruction is invalid !!\n";
+                    cout << "Given instruction is invalid !!\n";
             }
 
             else if (b[14] == 0 && b[13] == 1 && b[12] == 0)
@@ -374,7 +423,7 @@ void DECODE(bitset<32> b)
                     EXECUTE(b, 17);
                 }
                 else
-                    cout << "The given instruction is invalid !!\n";
+                    cout << "Given instruction is invalid !!\n";
             }
 
             else if (b[14] == 1 && b[13] == 1 && b[12] == 0)
@@ -447,7 +496,7 @@ void DECODE(bitset<32> b)
                 EXECUTE(b, 24);
             }
             else
-                cout << "The given instruction is invalid !!\n";
+                cout << "Given instruction is invalid !!\n";
         }
 
         else if (b[6] == 0 && b[5] == 1 && b[4] == 0 && b[3] == 0 && b[2] == 0)
@@ -487,7 +536,7 @@ void DECODE(bitset<32> b)
                 EXECUTE(b, 27);
             }
             else
-                cout << "The given instruction is invalid !!\n";
+                cout << "Given instruction is invalid !!\n";
         }
 
         else if (b[6] == 1 && b[5] == 1 && b[4] == 0 && b[3] == 0 && b[2] == 0)
@@ -567,7 +616,7 @@ void DECODE(bitset<32> b)
             }
 
             else
-                cout << "The given instruction is invalid !!\n";
+                cout << "Given instruction is invalid !!\n";
         }
 
         else if (b[6] == 1 && b[5] == 1 && b[4] == 0 && b[3] == 1 && b[2] == 1)
@@ -663,21 +712,25 @@ void DECODE(bitset<32> b)
                 EXECUTE(b, 39);
             }
             else
-                cout << "The given instruction is invalid !!\n";
+                cout << "Given instruction is invalid !!\n";
         }
 
         else
-            cout << "The given instruction is invalid !!\n";
+            cout << "Given instruction is invalid !!\n";
     }
 
     else
-        cout << "The given instruction is invalid !!\n";
+        cout << "Given instruction is invalid !!\n";
 }
+
+
+//-----EXECUTE INSTRUCTION-----
 
 void EXECUTE(bitset<32> b, int n)
 {
-cycle++;
+    cycle++;
     int x;
+
     switch (n)
     {
 
@@ -873,11 +926,14 @@ cycle++;
     MEMORY_ACCESS(n, x);
 }
 
+
+//-----MEMORY INSTRUCTION-----
+
 void MEMORY_ACCESS(int n, int x)
 {
     if ((n >= 1 && n < 20) || (n > 27))
     {
-         cout << "MEMORY:No memory  operation\n";
+        cout << "MEMORY:No memory  operation\n";
     }
     else
     {
@@ -924,6 +980,9 @@ void MEMORY_ACCESS(int n, int x)
     WRITE_BACK(x, n);
 }
 
+
+//-----WRITE BACK INSTRUCTION-----
+
 void WRITE_BACK(int result, int n)
 {
     // cout << "“WRITE_BACK: ";
@@ -935,10 +994,10 @@ void WRITE_BACK(int result, int n)
     else
     {
         cycle++;
-        cout << "WRITEBACK: write "<<result<<" to "<<rd << endl;
+        cout << "WRITEBACK: write " << result << " to " << rd << endl;
 
         r[rd] = result;
     }
-    cout<<"-----No of cyles = "<<cycle<<"-----"<<endl;
-    cycles+=cycle;
+    cout << "-----No of cyles = " << cycle << "-----" << endl;
+    cycles += cycle;
 }
