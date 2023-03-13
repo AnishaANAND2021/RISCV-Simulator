@@ -191,8 +191,12 @@ void FETCH()
         if (pc != next_pc)
             next_pc = pc;
         y = next_pc / 4;
+        int no = next_pc;
+        string s;
+        int x = no / 16;
+        
         cout << endl
-             << "FETCH: Fetch instruction " << bin_hex(words[(y)]) << " from address 0x" << next_pc << "" << endl;
+             << "FETCH: Fetch instruction " << bin_hex(words[(y)]) << " from address 0x" << hex<<next_pc << "" << endl;
         bitset<32> b = words[(y)];
         pc += 4;
         next_pc += 4;
@@ -723,7 +727,6 @@ void DECODE(bitset<32> b)
         cout << "Given instruction is invalid !!\n";
 }
 
-
 //-----EXECUTE INSTRUCTION-----
 
 void EXECUTE(bitset<32> b, int n)
@@ -782,8 +785,9 @@ void EXECUTE(bitset<32> b, int n)
             x = 0;
         break;
 
-    case 10: // sltu-----confusion------
+    case 10: // sltu
         cout << "EXECUTE: SHIFT LESS THAN UNSIGNED " << r[rs1] << " and " << r[rs2] << endl;
+
         if (abs(r[rs1]) < abs(r[rs2]))
             x = 1;
         else
@@ -926,7 +930,6 @@ void EXECUTE(bitset<32> b, int n)
     MEMORY_ACCESS(n, x);
 }
 
-
 //-----MEMORY INSTRUCTION-----
 
 void MEMORY_ACCESS(int n, int x)
@@ -979,7 +982,6 @@ void MEMORY_ACCESS(int n, int x)
     }
     WRITE_BACK(x, n);
 }
-
 
 //-----WRITE BACK INSTRUCTION-----
 
