@@ -658,6 +658,7 @@ void DECODE(bitset<32> b)
             rs1 = bin_2_dec(b, 15, 19);
             rd = bin_2_dec(b, 7, 11);
             imm = bin_2_dec(b, 20, 31);
+            cout<<"imm= "<<imm<<endl;
             if (b[31])
                 imm = -1 * (1 << 12) + imm;
             cout << "DECODE:    Operation is JALR, destination register R1, first operand R2, immediate imm\n           Read registers R1 = "
@@ -907,8 +908,10 @@ void EXECUTE(bitset<32> b, int n)
         cout << "EXECUTE:   JUMP AND LINK pc + " << imm << endl;
         break;
     case 35: // jalr
-        r[rd] = pc;
-        pc = r[rs1] + imm - 4;
+        x = pc;
+        pc = r[rs1] + imm ;
+        pc/=4;
+        pc*=4;
         cout << "EXECUTE:   JUMP AND LINK pc + " << r[rs1] << " + " << imm << endl;
         break;
 
@@ -1007,4 +1010,5 @@ void WRITE_BACK(int result, int n)
     }
     cout << "-----No of cyles = " << cycle << "-----" << endl;
     cycles += cycle;
+   
 }
