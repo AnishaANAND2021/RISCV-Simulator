@@ -191,6 +191,8 @@ void FETCH()
         if (pc != next_pc)
             next_pc = pc;
         y = next_pc / 4;
+        if (y == words.size())
+            break;
         int no = next_pc;
         string s;
         int x = no / 16;
