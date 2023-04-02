@@ -26,15 +26,19 @@ int rs1, rs2, rd, imm;
 int pc = 0, next_pc = 0;   // it will store the next pc (in case of any jump);
 int cycles = 0, cycle = 0; // stores the no of cycles
 
+bitset<32> b;
+int inst_no, result;
 // INSTRUCTIONS:
 void FETCH();
-void DECODE(bitset<32> b);
-void EXECUTE(bitset<32> b, int n);
-void MEMORY_ACCESS(int n, int x);
-void WRITE_BACK(int result, int n);
+void DECODE();
+void EXECUTE();
+void MEMORY_ACCESS();
+void WRITE_BACK();
 
 string bin_hex(bitset<32> b);              // converts binary to hex
 int bin_2_dec(bitset<32> b, int f, int l); // converts binary to decimal
+
+int pr_f = 0, pr_d = 0, pr_e = 0, pr_m = 0; // pipelined registers
 
 //----- DRIVER CODE -----
 
@@ -88,10 +92,11 @@ int main()
 
     file.close();
 
-    FETCH(); // CALLING THE FETCH INSTRUCTION
+    // FETCH(); // CALLING THE FETCH INSTRUCTION
 
-    // WRITING IN THE MEMORY FILE
-
+    // for pipelining we go from backside
+    //  WRITING IN THE MEMORY FILE
+    FETCH();
     ofstream fout("Memory_file.txt");
     for (auto it : memory)
     {
@@ -199,18 +204,18 @@ void FETCH()
 
         cout << endl
              << "FETCH:     Fetch instruction " << bin_hex(words[(y)]) << " from address 0x" << hex << next_pc << "" << endl;
-        bitset<32> b = words[(y)];
+        b = words[(y)];
         pc += 4;
         next_pc += 4;
         i++;
         cycle = 1;
-        DECODE(b);
+        DECODE();
     }
 }
 
 //-----DECODE INSTRUCTION-----
 
-void DECODE(bitset<32> b)
+void DECODE()
 {
     if (b[0] && b[1]) // might be a valid code
     {
@@ -235,14 +240,16 @@ void DECODE(bitset<32> b)
                     // add
                     cout << "DECODE:    Operation is ADD, first operand R2, Second operand R3, destination register R1\n           Read registers R1 = "
                          << dec << rd << ", R2 = " << dec << rs1 << ", R3 = " << dec << rs2 << endl;
-                    EXECUTE(b, 1);
+                    inst_no = 1;
+                    EXECUTE();
                 }
                 else if (b[31] == 0 && b[30] == 1 && b[29] == 0 && b[28] == 0 && b[27] == 0 && b[26] == 0 && b[25] == 0)
                 {
                     // sub
                     cout << "DECODE:    Operation is SUB, first operand R2, Second operand R3, destination register R1\n           Read registers R1 = "
                          << dec << rd << ", R2 = " << dec << rs1 << ", R3 = " << dec << rs2 << endl;
-                    EXECUTE(b, 2);
+                    inst_no = 2;
+                    EXECUTE();
                 }
                 else
                     cout << "Given instruction is invalid !!\n";
@@ -256,7 +263,8 @@ void DECODE(bitset<32> b)
                     // sll
                     cout << "DECODE:    Operation is SLL, first operand R2, Second operand R3, destination register R1\n           Read registers R1 = "
                          << dec << rd << ", R2 = " << dec << rs1 << ", R3 = " << dec << rs2 << endl;
-                    EXECUTE(b, 6);
+                    inst_no = 6;
+                    EXECUTE();
                 }
                 else
                     cout << "Given instruction is invalid !!\n";
@@ -270,7 +278,8 @@ void DECODE(bitset<32> b)
                     // slt
                     cout << "DECODE:    Operation is SLT, first operand R2, Second operand R3, destination register R1\n           Read registers R1 = "
                          << dec << rd << ", R2 = " << dec << rs1 << ", R3 = " << dec << rs2 << endl;
-                    EXECUTE(b, 9);
+                    inst_no = 9;
+                    EXECUTE();
                 }
                 else
                     cout << "Given instruction is invalid !!\n";
@@ -284,7 +293,8 @@ void DECODE(bitset<32> b)
                     // sltu
                     cout << "DECODE:    Operation is SLTU, first operand R2, Second operand R3, destination register R1\n              Read registers R1 = "
                          << dec << rd << ", R2 = " << dec << rs1 << ", R3 = " << dec << rs2 << endl;
-                    EXECUTE(b, 10);
+                    inst_no = 10;
+                    EXECUTE();
                 }
                 else
                     cout << "Given instruction is invalid !!\n";
@@ -298,7 +308,8 @@ void DECODE(bitset<32> b)
                     // xor
                     cout << "DECODE:    Operation is XOR, first operand R2, Second operand R3, destination register R1\n              Read registers R1 = "
                          << dec << rd << ", R2 = " << dec << rs1 << ", R3 = " << dec << rs2 << endl;
-                    EXECUTE(b, 3);
+                    inst_no = 3;
+                    EXECUTE();
                 }
                 else
                     cout << "Given instruction is invalid !!\n";
@@ -312,14 +323,16 @@ void DECODE(bitset<32> b)
                     // srl
                     cout << "DECODE:    Operation is SRL, first operand R2, Second operand R3, destination register R1\n           Read registers R1 = "
                          << dec << rd << ", R2 = " << dec << rs1 << ", R3 = " << dec << rs2 << endl;
-                    EXECUTE(b, 7);
+                    inst_no = 7;
+                    EXECUTE();
                 }
                 else if (b[31] == 0 && b[30] == 1 && b[29] == 0 && b[28] == 0 && b[27] == 0 && b[26] == 0 && b[25] == 0)
                 {
                     // sra
                     cout << "DECODE:    Operation is SRA, first operand R2, Second operand R3, destination register R1\n           Read registers R1 = "
                          << dec << rd << ", R2 = " << dec << rs1 << ", R3 = " << dec << rs2 << endl;
-                    EXECUTE(b, 8);
+                    inst_no = 8;
+                    EXECUTE();
                 }
                 else
                     cout << "Given instruction is invalid !!\n";
@@ -333,7 +346,8 @@ void DECODE(bitset<32> b)
                     // or
                     cout << "DECODE:    Operation is OR, first operand R2, Second operand R3, destination register R1\n           Read registers R1 = "
                          << dec << rd << ", R2 = " << dec << rs1 << ", R3 = " << dec << rs2 << endl;
-                    EXECUTE(b, 4);
+                    inst_no = 4;
+                    EXECUTE();
                 }
                 else
                     cout << "Given instruction is invalid !!\n";
@@ -347,7 +361,8 @@ void DECODE(bitset<32> b)
                     // and
                     cout << "DECODE:    Operation is AND, first operand R2, Second operand R3, destination register R1\n           Read registers R1 = "
                          << dec << rd << ", R2 = " << dec << rs1 << ", R3 = " << dec << rs2 << endl;
-                    EXECUTE(b, 5);
+                    inst_no = 5;
+                    EXECUTE();
                 }
                 else
                     cout << "Given instruction is invalid !!\n";
@@ -369,7 +384,8 @@ void DECODE(bitset<32> b)
                 // addi
                 cout << "DECODE:    Operation is ADDI, first operand R2, immediate imm, destination register R1\n           Read registers R1 = "
                      << dec << rd << ", R2 = " << dec << rs1 << ", imm = " << dec << imm << endl;
-                EXECUTE(b, 11);
+                inst_no = 11;
+                EXECUTE();
             }
 
             else if (b[14] == 0 && b[13] == 0 && b[12] == 1)
@@ -380,7 +396,8 @@ void DECODE(bitset<32> b)
                     // slli
                     cout << "DECODE:    Operation is ADDI, first operand R2, immediate imm, destination register R1\n           Read registers R1 = "
                          << dec << rd << ", R2 = " << dec << rs1 << ", imm = " << dec << imm << endl;
-                    EXECUTE(b, 15);
+                    inst_no = 15;
+                    EXECUTE();
                 }
                 else
                     cout << "Given instruction is invalid !!\n";
@@ -391,7 +408,8 @@ void DECODE(bitset<32> b)
                 // might be slti
                 cout << "DECODE:    Operation is SLTI, first operand R2, immediate imm, destination register R1\n           Read registers R1 = "
                      << dec << rd << ", R2 = " << dec << rs1 << ", imm = " << dec << imm << endl;
-                EXECUTE(b, 18);
+                inst_no = 18;
+                EXECUTE();
             }
 
             else if (b[14] == 0 && b[13] == 1 && b[12] == 1)
@@ -400,7 +418,8 @@ void DECODE(bitset<32> b)
                 imm = bin_2_dec(b, 20, 31);
                 cout << "DECODE:    Operation is SLTIU, first operand R2, immediate imm, destination register R1\n           Read registers R1 = "
                      << dec << rd << ", R2 = " << dec << rs1 << ", imm = " << dec << imm << endl;
-                EXECUTE(b, 18);
+                inst_no = 19;
+                EXECUTE();
             }
 
             else if (b[14] == 1 && b[13] == 0 && b[12] == 0)
@@ -408,7 +427,8 @@ void DECODE(bitset<32> b)
                 // xori
                 cout << "DECODE:    Operation is XORI, first operand R2, immediate imm, destination register R1\n           Read registers R1 = "
                      << dec << rd << ", R2 = " << dec << rs1 << ", imm = " << dec << imm << endl;
-                EXECUTE(b, 12);
+                inst_no = 12;
+                EXECUTE();
             }
 
             else if (b[14] == 1 && b[13] == 0 && b[12] == 1)
@@ -419,14 +439,16 @@ void DECODE(bitset<32> b)
                     // srli
                     cout << "DECODE:    Operation is SRLI, first operand R2, immediate imm, destination register R1\n           Read registers R1 = "
                          << dec << rd << ", R2 = " << dec << rs1 << ", imm = " << dec << imm << endl;
-                    EXECUTE(b, 16);
+                    inst_no = 16;
+                    EXECUTE();
                 }
                 else if (b[31] == 0 && b[30] == 1 && b[29] == 0 && b[28] == 0 && b[27] == 0 && b[26] == 0 && b[25] == 0)
                 {
                     // srai
                     cout << "DECODE:    Operation is SRAI, first operand R2, immediate imm, destination register R1\n           Read registers R1 = "
                          << dec << rd << ", R2 = " << dec << rs1 << ", imm = " << dec << imm << endl;
-                    EXECUTE(b, 17);
+                    inst_no = 17;
+                    EXECUTE();
                 }
                 else
                     cout << "Given instruction is invalid !!\n";
@@ -437,7 +459,8 @@ void DECODE(bitset<32> b)
                 // ori
                 cout << "DECODE:    Operation is ORI, first operand R2, immediate imm, destination register R1\n           Read registers R1 = "
                      << dec << rd << ", R2 = " << dec << rs1 << ", imm = " << dec << imm << endl;
-                EXECUTE(b, 13);
+                inst_no = 13;
+                EXECUTE();
             }
 
             else if (b[14] == 1 && b[13] == 1 && b[12] == 1)
@@ -445,7 +468,8 @@ void DECODE(bitset<32> b)
                 // andi
                 cout << "DECODE:    Operation is ANDI, first operand R2, immediate imm, destination register R1\n           Read registers R1 = "
                      << dec << rd << ", R2 = " << dec << rs1 << ", imm = " << dec << imm << endl;
-                EXECUTE(b, 14);
+                inst_no = 14;
+                EXECUTE();
             }
         }
 
@@ -465,7 +489,8 @@ void DECODE(bitset<32> b)
                 // lb
                 cout << "DECODE:    Operation is LB, first operand R2, immediate imm, destination register R1\n           Read registers R1 = "
                      << dec << rd << ", R2 = " << dec << rs1 << ", imm = " << dec << imm << endl;
-                EXECUTE(b, 20);
+                inst_no = 20;
+                EXECUTE();
             }
 
             else if (b[14] == 0 && b[13] == 0 && b[12] == 1)
@@ -473,7 +498,8 @@ void DECODE(bitset<32> b)
                 // lh
                 cout << "DECODE:    Operation is LH, first operand R2, immediate imm, destination register R1\n           Read registers R1 = "
                      << dec << rd << ", R2 = " << dec << rs1 << ", imm = " << dec << imm << endl;
-                EXECUTE(b, 21);
+                inst_no = 21;
+                EXECUTE();
             }
 
             else if (b[14] == 0 && b[13] == 1 && b[12] == 0)
@@ -481,7 +507,8 @@ void DECODE(bitset<32> b)
                 // lw
                 cout << "DECODE:    Operation is LW, first operand R2, immediate imm, destination register R1\n           Read registers R1 = "
                      << dec << rd << ", R2 = " << dec << rs1 << ", imm = " << dec << imm << endl;
-                EXECUTE(b, 22);
+                inst_no = 22;
+                EXECUTE();
             }
 
             else if (b[14] == 1 && b[13] == 0 && b[12] == 0)
@@ -490,7 +517,8 @@ void DECODE(bitset<32> b)
                 imm = bin_2_dec(b, 20, 31);
                 cout << "DECODE:    Operation is LBU, first operand R2, immediate imm, destination register R1\n           Read registers R1 = "
                      << dec << rd << ", R2 = " << dec << rs1 << ", imm = " << dec << imm << endl;
-                EXECUTE(b, 23);
+                inst_no = 23;
+                EXECUTE();
             }
 
             else if (b[14] == 1 && b[13] == 0 && b[12] == 1)
@@ -499,7 +527,8 @@ void DECODE(bitset<32> b)
                 imm = bin_2_dec(b, 20, 31);
                 cout << "DECODE:    Operation is LHU, first operand R2, immediate imm, destination register R1\n           Read registers R1 = "
                      << dec << rd << ", R2 = " << dec << rs1 << ", imm = " << dec << imm << endl;
-                EXECUTE(b, 24);
+                inst_no = 24;
+                EXECUTE();
             }
             else
                 cout << "Given instruction is invalid !!\n";
@@ -523,7 +552,8 @@ void DECODE(bitset<32> b)
                 // sb
                 cout << "DECODE:    Operation is SB, first operand R2, second operand R3, immediate imm\n           Read registers R2 = "
                      << dec << rs1 << ", R3 = " << dec << rs2 << ", imm = " << dec << imm << endl;
-                EXECUTE(b, 25);
+                inst_no = 25;
+                EXECUTE();
             }
 
             else if (b[14] == 0 && b[13] == 0 && b[12] == 1)
@@ -531,7 +561,8 @@ void DECODE(bitset<32> b)
                 // sh
                 cout << "DECODE:    Operation is SH, first operand R2, second operand R3, immediate imm\n           Read registers R2 = "
                      << rs1 << ", R3 = " << rs2 << ", imm = " << imm << endl;
-                EXECUTE(b, 26);
+                inst_no = 26;
+                EXECUTE();
             }
 
             else if (b[14] == 0 && b[13] == 1 && b[12] == 0)
@@ -539,7 +570,8 @@ void DECODE(bitset<32> b)
                 // sw
                 cout << "DECODE:    Operation is SW, first operand R2, second operand R3, immediate imm\n           Read registers R2 = "
                      << dec << rs1 << ", R3 = " << dec << rs2 << ", imm = " << dec << imm << endl;
-                EXECUTE(b, 27);
+                inst_no = 27;
+                EXECUTE();
             }
             else
                 cout << "Given instruction is invalid !!\n";
@@ -576,7 +608,8 @@ void DECODE(bitset<32> b)
                 // beq
                 cout << "DECODE:    Operation is BEQ, first operand R2, second operand R3, immediate imm\n           Read registers R2 = "
                      << dec << rs1 << ", R3 = " << dec << rs2 << ", imm = " << dec << imm << endl;
-                EXECUTE(b, 28);
+                inst_no = 28;
+                EXECUTE();
             }
 
             else if (b[14] == 0 && b[13] == 0 && b[12] == 1)
@@ -584,7 +617,8 @@ void DECODE(bitset<32> b)
                 // bne
                 cout << "DECODE:    Operation is BNE, first operand R2, second operand R3, immediate imm\n           Read registers R2 = "
                      << dec << rs1 << ", R3 = " << dec << rs2 << ", imm = " << dec << imm << endl;
-                EXECUTE(b, 29);
+                inst_no = 29;
+                EXECUTE();
             }
 
             else if (b[14] == 1 && b[13] == 0 && b[12] == 0)
@@ -592,7 +626,8 @@ void DECODE(bitset<32> b)
                 // blt
                 cout << "DECODE:    Operation is BLT, first operand R2, second operand R3, immediate imm\n           Read registers R2 = "
                      << dec << rs1 << ", R3 = " << dec << rs2 << ", imm = " << dec << imm << endl;
-                EXECUTE(b, 30);
+                inst_no = 30;
+                EXECUTE();
             }
 
             else if (b[14] == 1 && b[13] == 0 && b[12] == 1)
@@ -600,7 +635,8 @@ void DECODE(bitset<32> b)
                 // bge
                 cout << "DECODE:    Operation is BGE, first operand R2, second operand R3, immediate imm\n           Read registers R2 = "
                      << dec << rs1 << ", R3 = " << dec << rs2 << ", imm = " << dec << imm << endl;
-                EXECUTE(b, 31);
+                inst_no = 31;
+                EXECUTE();
             }
 
             else if (b[14] == 1 && b[13] == 1 && b[12] == 0)
@@ -609,7 +645,8 @@ void DECODE(bitset<32> b)
                 imm = (1 << 13) - imm;
                 cout << "DECODE:    Operation is BLTU, first operand R2, second operand R3, immediate imm\n           Read registers R2 = "
                      << dec << rs1 << ", R3 = " << dec << rs2 << ", imm = " << dec << imm << endl;
-                EXECUTE(b, 30);
+                inst_no = 32;
+                EXECUTE();
             }
 
             else if (b[14] == 1 && b[13] == 1 && b[12] == 1)
@@ -618,7 +655,8 @@ void DECODE(bitset<32> b)
                 imm = (1 << 13) - imm;
                 cout << "DECODE:    Operation is BGEU, first operand R2, second operand R3, immediate imm\n           Read registers R2 = "
                      << dec << rs1 << ", R3 = " << dec << rs2 << ", imm = " << dec << imm << endl;
-                EXECUTE(b, 31);
+                inst_no = 33;
+                EXECUTE();
             }
 
             else
@@ -650,7 +688,8 @@ void DECODE(bitset<32> b)
             rd = bin_2_dec(b, 7, 11);
             cout << "DECODE:    Operation is JAL, destination register R1, immediate imm\n           Read registers R1 = "
                  << dec << rd << ", imm = " << dec << imm << endl;
-            EXECUTE(b, 34);
+            inst_no = 34;
+            EXECUTE();
         }
 
         else if (b[6] == 1 && b[5] == 1 && b[4] == 0 && b[3] == 0 && b[2] == 1)
@@ -665,7 +704,8 @@ void DECODE(bitset<32> b)
                 imm = -1 * (1 << 12) + imm;
             cout << "DECODE:    Operation is JALR, destination register R1, first operand R2, immediate imm\n           Read registers R1 = "
                  << dec << rd << ", R2 = " << dec << rs1 << ", imm = " << dec << imm << endl;
-            EXECUTE(b, 35);
+            inst_no = 35;
+            EXECUTE();
         }
 
         else if (b[6] == 0 && b[5] == 1 && b[4] == 1 && b[3] == 0 && b[2] == 1)
@@ -682,7 +722,8 @@ void DECODE(bitset<32> b)
             imm = im;
             cout << "DECODE:    Operation is LUI, destination register R1, immediate imm\n           Read registers R1 = "
                  << dec << rd << ", imm = " << dec << imm << endl;
-            EXECUTE(b, 36);
+            inst_no = 36;
+            EXECUTE();
         }
 
         else if (b[6] == 0 && b[5] == 0 && b[4] == 1 && b[3] == 0 && b[2] == 1)
@@ -699,7 +740,8 @@ void DECODE(bitset<32> b)
             imm = im;
             cout << "DECODE:    Operation is LUI, destination register R1, immediate imm\n           Read registers R1 = "
                  << dec << rd << ", imm = " << dec << imm << endl;
-            EXECUTE(b, 37);
+            inst_no = 37;
+            EXECUTE();
         }
 
         else if (b[6] == 1 && b[5] == 1 && b[4] == 1 && b[3] == 0 && b[2] == 0)
@@ -712,12 +754,14 @@ void DECODE(bitset<32> b)
             if (imm == 0)
             {
                 // ecall
-                EXECUTE(b, 38);
+                inst_no = 38;
+                EXECUTE();
             }
             else if (imm == 1)
             {
                 // ebreak
-                EXECUTE(b, 39);
+                inst_no = 39;
+                EXECUTE();
             }
             else
                 cout << "Given instruction is invalid !!\n";
@@ -733,11 +777,11 @@ void DECODE(bitset<32> b)
 
 //-----EXECUTE INSTRUCTION-----
 
-void EXECUTE(bitset<32> b, int n)
+void EXECUTE()
 {
     cycle++;
     int x;
-
+    int n = inst_no;
     switch (n)
     {
 
@@ -934,13 +978,16 @@ void EXECUTE(bitset<32> b, int n)
 
         break;
     };
-    MEMORY_ACCESS(n, x);
+    result = x;
+    MEMORY_ACCESS();
 }
 
 //-----MEMORY INSTRUCTION-----
 
-void MEMORY_ACCESS(int n, int x)
+void MEMORY_ACCESS()
 {
+    int n = inst_no;
+    int x = result;
     if ((n >= 1 && n < 20) || (n > 27))
     {
         cout << "MEMORY:    No memory  operation\n";
@@ -971,7 +1018,7 @@ void MEMORY_ACCESS(int n, int x)
             if (it == memory.end())
             {
                 // cout << "The memory doesn't exist, can't perform load operation!\n";
-                WRITE_BACK(x, 25);
+                WRITE_BACK();
             }
             else
             {
@@ -987,15 +1034,17 @@ void MEMORY_ACCESS(int n, int x)
             }
         }
     }
-    WRITE_BACK(x, n);
+    result = x;
+    WRITE_BACK();
 }
 
 //-----WRITE BACK INSTRUCTION-----
 
-void WRITE_BACK(int result, int n)
+void WRITE_BACK()
 {
 
     // cout << "“WRITE_BACK: ";
+    int n = inst_no;
     r[0] = 0;
     if (n > 24 && n < 34)
     {
