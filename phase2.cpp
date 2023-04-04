@@ -200,14 +200,21 @@ void FETCH()
     cycle++;
     int x = words.size();
     int y = next_pc / 4;
+    cout << endl
+         << next_pc << ' ' << next_pc << " wb_finb y=" << next_pc << x << endl;
+
     int i = 1;
-    if (y < x)
+    if (y <= x)
     {
 
         int no = next_pc;
         string s;
         int x = no / 16;
+        // if (stall == 2)
+        cout << pc << ' ' << next_pc << endl;
+        cout << pc << ' ' << next_pc << "nextpc fin" << endl;
         b_f_w.push_back(make_pair(bin_hex(words[y]), (next_pc)));
+        cout << "fetct" << bin_hex(words[y]) << " from " << hex << (next_pc) << endl;
         bitset<32> b = words[(y)];
 
         i++;
@@ -1518,9 +1525,10 @@ void DECODE()
                 // stall
                 if (*itt == r_d[1] || *it == r_d[1])
                 {
-                    if(!cwds) stall_d = 2;
+                    if (!cwds)
+                        stall_d = 2;
                 }
-                else if(!cwds)
+                else if (!cwds)
                 {
                     if (r_d[1] == rd)
                         stall_d = 2;
@@ -1542,12 +1550,12 @@ void DECODE()
 void EXECUTE()
 {
 
-    if (n_f)
+    if (n_f && stall == 0)
     {
         pc += 4;
         next_pc += 4;
     }
-    if (b_e.size())
+    if (b_e.size()) // && stall == 0)
     {
 
         bitset<32> b = b_e[0].first;
@@ -1770,11 +1778,12 @@ void EXECUTE()
 
         n_d++;
     }
-    if (pc != next_pc)
+    // cout<<pc<<' '<<next_pc<<"n\n";
+    /*if (pc != next_pc)
     {
-        next_pc = pc;
+        //pc=next_pc;
         stall = 2;
-    }
+    }*/
     //
     DECODE();
 }
@@ -1856,27 +1865,27 @@ void MEMORY_ACCESS()
             n_m++;
         }
         cout << "stall_d=" << stall_d << endl;
-        if (stall_d == 2)// && b_w.size())
+        if (stall_d == 2) // && b_w.size())
         {
             cwds = 1;
             //
-            cout<<b_w.size()<<"=size";
-            //n_w -= 1;
+            cout << b_w.size() << "=size";
+            // n_w -= 1;
             stall_d--;
-             FETCH();
-            //WRITE_BACK();
-            // stall_d--;
+            FETCH();
+            // WRITE_BACK();
+            //  stall_d--;
         }
 
         else if (stall_d == 1 && b_w.size())
         {
             // FETCH();
             cwds = 1;
-            //n_w -= 1;
+            // n_w -= 1;
             stall_d--;
             FETCH();
-            
-            //WRITE_BACK();
+
+            // WRITE_BACK();
         }
         else
             EXECUTE();
@@ -1887,12 +1896,12 @@ void MEMORY_ACCESS()
 
 void WRITE_BACK()
 {
-    cwds=0;
+    cwds = 0;
     if (n_w < words.size())
     {
         if (b_w.size())
         {
-            
+
             int result = b_w[0][1];
             int n = b_w[0][0];
             int rd = b_w[0][4];
@@ -1917,13 +1926,32 @@ void WRITE_BACK()
             // if (stall_d == 0)
             n_w++;
         }
-        if (stall == 2)
+        cout << stall << "=stall\n";
+
+        if (pc != next_pc)
         {
+            cout << pc << ' ' << next_pc << "wb" << endl;
+            next_pc = pc - 4;
+            pc=next_pc;
+            cout << pc << ' ' << next_pc << "wb" << endl;
+
             b_e.pop_back();
             b_d.pop_back();
-            stall--;
+            // EXECUTE();
+            //  stall = 0;
+            cout << b_e.size() << "besize";
+
+            stall = 2;
+            FETCH();
+           // n_w--;
+            stall=0;
+            // MEMORY_ACCESS();
         }
-        MEMORY_ACCESS();
+        else if (1)
+        {
+            // stall = 0;
+            MEMORY_ACCESS();
+        }
     }
     fOut.close();
 }
