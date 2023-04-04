@@ -196,25 +196,18 @@ string bin_hex(bitset<32> b)
 
 void FETCH()
 {
-
     cycle++;
     int x = words.size();
     int y = next_pc / 4;
-    cout << endl
-         << next_pc << ' ' << next_pc << " wb_finb y=" << next_pc << x << endl;
 
     int i = 1;
-    if (y <= x)
+    if (y < x)
     {
 
         int no = next_pc;
         string s;
         int x = no / 16;
-        // if (stall == 2)
-        cout << pc << ' ' << next_pc << endl;
-        cout << pc << ' ' << next_pc << "nextpc fin" << endl;
         b_f_w.push_back(make_pair(bin_hex(words[y]), (next_pc)));
-        cout << "fetct" << bin_hex(words[y]) << " from " << hex << (next_pc) << endl;
         bitset<32> b = words[(y)];
 
         i++;
@@ -231,486 +224,498 @@ void FETCH()
     }
     if (b_d_w.size())
     {
-
-        switch (b_d_w[0][0])
+        if (stall == 2)
+            fOut << "DECODE:    STALL\n";
+        else
         {
-        case 1:
-            fOut << "DECODE:    Operation is ADD, first operand R2, Second operand R3, destination register R1\n           Read registers R1 = "
-                 << dec << b_d_w[0][3] << ", R2 = " << dec << b_d_w[0][1] << ", R3 = " << dec << b_d_w[0][2] << endl;
+            switch (b_d_w[0][0])
+            {
+            case 1:
+                fOut << "DECODE:    Operation is ADD, first operand R2, Second operand R3, destination register R1\n           Read registers R1 = "
+                     << dec << b_d_w[0][3] << ", R2 = " << dec << b_d_w[0][1] << ", R3 = " << dec << b_d_w[0][2] << endl;
 
-            break;
+                break;
 
-        case 2:
-            fOut << "DECODE:    Operation is SUB, first operand R2, Second operand R3, destination register R1\n           Read registers R1 = "
-                 << dec << b_d_w[0][3] << ", R2 = " << dec << b_d_w[0][1] << ", R3 = " << dec << b_d_w[0][2] << endl;
+            case 2:
+                fOut << "DECODE:    Operation is SUB, first operand R2, Second operand R3, destination register R1\n           Read registers R1 = "
+                     << dec << b_d_w[0][3] << ", R2 = " << dec << b_d_w[0][1] << ", R3 = " << dec << b_d_w[0][2] << endl;
 
-            break;
+                break;
 
-        case 3:
-            fOut << "DECODE:    Operation is XOR, first operand R2, Second operand R3, destination register R1\n              Read registers R1 = "
-                 << dec << b_d_w[0][3] << ", R2 = " << dec << b_d_w[0][1] << ", R3 = " << dec << b_d_w[0][2] << endl;
+            case 3:
+                fOut << "DECODE:    Operation is XOR, first operand R2, Second operand R3, destination register R1\n              Read registers R1 = "
+                     << dec << b_d_w[0][3] << ", R2 = " << dec << b_d_w[0][1] << ", R3 = " << dec << b_d_w[0][2] << endl;
 
-            break;
+                break;
 
-        case 4:
-            fOut << "DECODE:    Operation is OR, first operand R2, Second operand R3, destination register R1\n           Read registers R1 = "
-                 << dec << b_d_w[0][3] << ", R2 = " << dec << b_d_w[0][1] << ", R3 = " << dec << b_d_w[0][2] << endl;
+            case 4:
+                fOut << "DECODE:    Operation is OR, first operand R2, Second operand R3, destination register R1\n           Read registers R1 = "
+                     << dec << b_d_w[0][3] << ", R2 = " << dec << b_d_w[0][1] << ", R3 = " << dec << b_d_w[0][2] << endl;
 
-            break;
+                break;
 
-        case 5:
-            fOut << "DECODE:    Operation is AND, first operand R2, Second operand R3, destination register R1\n           Read registers R1 = "
-                 << dec << b_d_w[0][3] << ", R2 = " << dec << b_d_w[0][1] << ", R3 = " << dec << b_d_w[0][2] << endl;
+            case 5:
+                fOut << "DECODE:    Operation is AND, first operand R2, Second operand R3, destination register R1\n           Read registers R1 = "
+                     << dec << b_d_w[0][3] << ", R2 = " << dec << b_d_w[0][1] << ", R3 = " << dec << b_d_w[0][2] << endl;
 
-            break;
+                break;
 
-        case 6:
-            fOut << "DECODE:    Operation is SLL, first operand R2, Second operand R3, destination register R1\n           Read registers R1 = "
-                 << dec << b_d_w[0][3] << ", R2 = " << dec << b_d_w[0][1] << ", R3 = " << dec << b_d_w[0][2] << endl;
+            case 6:
+                fOut << "DECODE:    Operation is SLL, first operand R2, Second operand R3, destination register R1\n           Read registers R1 = "
+                     << dec << b_d_w[0][3] << ", R2 = " << dec << b_d_w[0][1] << ", R3 = " << dec << b_d_w[0][2] << endl;
 
-            break;
+                break;
 
-        case 7:
-            fOut << "DECODE:    Operation is SRL, first operand R2, Second operand R3, destination register R1\n           Read registers R1 = "
-                 << dec << b_d_w[0][3] << ", R2 = " << dec << b_d_w[0][1] << ", R3 = " << dec << b_d_w[0][2] << endl;
+            case 7:
+                fOut << "DECODE:    Operation is SRL, first operand R2, Second operand R3, destination register R1\n           Read registers R1 = "
+                     << dec << b_d_w[0][3] << ", R2 = " << dec << b_d_w[0][1] << ", R3 = " << dec << b_d_w[0][2] << endl;
 
-            break;
+                break;
 
-        case 8:
-            fOut << "DECODE:    Operation is SRA, first operand R2, Second operand R3, destination register R1\n           Read registers R1 = "
-                 << dec << b_d_w[0][3] << ", R2 = " << dec << b_d_w[0][1] << ", R3 = " << dec << b_d_w[0][2] << endl;
+            case 8:
+                fOut << "DECODE:    Operation is SRA, first operand R2, Second operand R3, destination register R1\n           Read registers R1 = "
+                     << dec << b_d_w[0][3] << ", R2 = " << dec << b_d_w[0][1] << ", R3 = " << dec << b_d_w[0][2] << endl;
 
-            break;
+                break;
 
-        case 9:
-            fOut << "DECODE:    Operation is SLT, first operand R2, Second operand R3, destination register R1\n           Read registers R1 = "
-                 << dec << b_d_w[0][3] << ", R2 = " << dec << b_d_w[0][1] << ", R3 = " << dec << b_d_w[0][2] << endl;
+            case 9:
+                fOut << "DECODE:    Operation is SLT, first operand R2, Second operand R3, destination register R1\n           Read registers R1 = "
+                     << dec << b_d_w[0][3] << ", R2 = " << dec << b_d_w[0][1] << ", R3 = " << dec << b_d_w[0][2] << endl;
 
-            break;
+                break;
 
-        case 10:
-            fOut << "DECODE:    Operation is SLTU, first operand R2, Second operand R3, destination register R1\n              Read registers R1 = "
-                 << dec << b_d_w[0][3] << ", R2 = " << dec << b_d_w[0][1] << ", R3 = " << dec << b_d_w[0][2] << endl;
+            case 10:
+                fOut << "DECODE:    Operation is SLTU, first operand R2, Second operand R3, destination register R1\n              Read registers R1 = "
+                     << dec << b_d_w[0][3] << ", R2 = " << dec << b_d_w[0][1] << ", R3 = " << dec << b_d_w[0][2] << endl;
 
-            break;
+                break;
 
-        case 18:
-            fOut << "DECODE:    Operation is SLTI, first operand R2, immediate imm, destination register R1\n           Read registers R1 = "
-                 << dec << b_d_w[0][3] << ", R2 = " << dec << b_d_w[0][1] << ", imm = " << dec << b_d_w[0][4] << endl;
+            case 18:
+                fOut << "DECODE:    Operation is SLTI, first operand R2, immediate imm, destination register R1\n           Read registers R1 = "
+                     << dec << b_d_w[0][3] << ", R2 = " << dec << b_d_w[0][1] << ", imm = " << dec << b_d_w[0][4] << endl;
 
-            break;
+                break;
 
-        case 19:
-            fOut << "DECODE:    Operation is SLTIU, first operand R2, immediate imm, destination register R1\n           Read registers R1 = "
-                 << dec << b_d_w[0][3] << ", R2 = " << dec << b_d_w[0][1] << ", imm = " << dec << b_d_w[0][4] << endl;
+            case 19:
+                fOut << "DECODE:    Operation is SLTIU, first operand R2, immediate imm, destination register R1\n           Read registers R1 = "
+                     << dec << b_d_w[0][3] << ", R2 = " << dec << b_d_w[0][1] << ", imm = " << dec << b_d_w[0][4] << endl;
 
-            break;
+                break;
 
-        case 11:
-            fOut << "DECODE:    Operation is ADDI, first operand R2, immediate imm, destination register R1\n           Read registers R1 = "
-                 << dec << b_d_w[0][3] << ", R2 = " << dec << b_d_w[0][1] << ", imm = " << dec << b_d_w[0][4] << endl;
+            case 11:
+                fOut << "DECODE:    Operation is ADDI, first operand R2, immediate imm, destination register R1\n           Read registers R1 = "
+                     << dec << b_d_w[0][3] << ", R2 = " << dec << b_d_w[0][1] << ", imm = " << dec << b_d_w[0][4] << endl;
 
-            break;
+                break;
 
-        case 12:
-            fOut << "DECODE:    Operation is XORI, first operand R2, immediate imm, destination register R1\n           Read registers R1 = "
-                 << dec << b_d_w[0][3] << ", R2 = " << dec << b_d_w[0][1] << ", imm = " << dec << b_d_w[0][4] << endl;
+            case 12:
+                fOut << "DECODE:    Operation is XORI, first operand R2, immediate imm, destination register R1\n           Read registers R1 = "
+                     << dec << b_d_w[0][3] << ", R2 = " << dec << b_d_w[0][1] << ", imm = " << dec << b_d_w[0][4] << endl;
 
-            break;
+                break;
 
-        case 13:
-            fOut << "DECODE:    Operation is ORI, first operand R2, immediate imm, destination register R1\n           Read registers R1 = "
-                 << dec << b_d_w[0][3] << ", R2 = " << dec << b_d_w[0][1] << ", imm = " << dec << b_d_w[0][4] << endl;
+            case 13:
+                fOut << "DECODE:    Operation is ORI, first operand R2, immediate imm, destination register R1\n           Read registers R1 = "
+                     << dec << b_d_w[0][3] << ", R2 = " << dec << b_d_w[0][1] << ", imm = " << dec << b_d_w[0][4] << endl;
 
-            break;
+                break;
 
-        case 14:
-            fOut << "DECODE:    Operation is ANDI, first operand R2, immediate imm, destination register R1\n           Read registers R1 = "
-                 << dec << b_d_w[0][3] << ", R2 = " << dec << b_d_w[0][1] << ", imm = " << dec << b_d_w[0][4] << endl;
+            case 14:
+                fOut << "DECODE:    Operation is ANDI, first operand R2, immediate imm, destination register R1\n           Read registers R1 = "
+                     << dec << b_d_w[0][3] << ", R2 = " << dec << b_d_w[0][1] << ", imm = " << dec << b_d_w[0][4] << endl;
 
-            break;
+                break;
 
-        case 15:
-            fOut << "DECODE:    Operation is SLLI, first operand R2, immediate imm, destination register R1\n           Read registers R1 = "
-                 << dec << b_d_w[0][3] << ", R2 = " << dec << b_d_w[0][1] << ", imm = " << dec << b_d_w[0][4] << endl;
+            case 15:
+                fOut << "DECODE:    Operation is SLLI, first operand R2, immediate imm, destination register R1\n           Read registers R1 = "
+                     << dec << b_d_w[0][3] << ", R2 = " << dec << b_d_w[0][1] << ", imm = " << dec << b_d_w[0][4] << endl;
 
-            break;
+                break;
 
-        case 16:
-            fOut << "DECODE:    Operation is SRLI, first operand R2, immediate imm, destination register R1\n           Read registers R1 = "
-                 << dec << b_d_w[0][3] << ", R2 = " << dec << b_d_w[0][1] << ", imm = " << dec << b_d_w[0][4] << endl;
+            case 16:
+                fOut << "DECODE:    Operation is SRLI, first operand R2, immediate imm, destination register R1\n           Read registers R1 = "
+                     << dec << b_d_w[0][3] << ", R2 = " << dec << b_d_w[0][1] << ", imm = " << dec << b_d_w[0][4] << endl;
 
-            break;
+                break;
 
-        case 17:
-            fOut << "DECODE:    Operation is SRAI, first operand R2, immediate imm, destination register R1\n           Read registers R1 = "
-                 << dec << b_d_w[0][3] << ", R2 = " << dec << b_d_w[0][1] << ", imm = " << dec << b_d_w[0][4] << endl;
+            case 17:
+                fOut << "DECODE:    Operation is SRAI, first operand R2, immediate imm, destination register R1\n           Read registers R1 = "
+                     << dec << b_d_w[0][3] << ", R2 = " << dec << b_d_w[0][1] << ", imm = " << dec << b_d_w[0][4] << endl;
 
-            break;
+                break;
 
-        case 20:
-            fOut << "DECODE:    Operation is LB, first operand R2, immediate imm, destination register R1\n           Read registers R1 = "
-                 << dec << b_d_w[0][3] << ", R2 = " << dec << b_d_w[0][1] << ", imm = " << dec << b_d_w[0][4] << endl;
+            case 20:
+                fOut << "DECODE:    Operation is LB, first operand R2, immediate imm, destination register R1\n           Read registers R1 = "
+                     << dec << b_d_w[0][3] << ", R2 = " << dec << b_d_w[0][1] << ", imm = " << dec << b_d_w[0][4] << endl;
 
-            break;
+                break;
 
-        case 21:
-            fOut << "DECODE:    Operation is LH, first operand R2, immediate imm, destination register R1\n           Read registers R1 = "
-                 << dec << b_d_w[0][3] << ", R2 = " << dec << b_d_w[0][1] << ", imm = " << dec << b_d_w[0][4] << endl;
+            case 21:
+                fOut << "DECODE:    Operation is LH, first operand R2, immediate imm, destination register R1\n           Read registers R1 = "
+                     << dec << b_d_w[0][3] << ", R2 = " << dec << b_d_w[0][1] << ", imm = " << dec << b_d_w[0][4] << endl;
 
-            break;
+                break;
 
-        case 22:
-            fOut << "DECODE:    Operation is LW, first operand R2, immediate imm, destination register R1\n           Read registers R1 = "
-                 << dec << b_d_w[0][3] << ", R2 = " << dec << b_d_w[0][1] << ", imm = " << dec << b_d_w[0][4] << endl;
+            case 22:
+                fOut << "DECODE:    Operation is LW, first operand R2, immediate imm, destination register R1\n           Read registers R1 = "
+                     << dec << b_d_w[0][3] << ", R2 = " << dec << b_d_w[0][1] << ", imm = " << dec << b_d_w[0][4] << endl;
 
-            break;
+                break;
 
-        case 23:
-            fOut << "DECODE:    Operation is LBU, first operand R2, immediate imm, destination register R1\n           Read registers R1 = "
-                 << dec << b_d_w[0][3] << ", R2 = " << dec << b_d_w[0][1] << ", imm = " << dec << b_d_w[0][4] << endl;
+            case 23:
+                fOut << "DECODE:    Operation is LBU, first operand R2, immediate imm, destination register R1\n           Read registers R1 = "
+                     << dec << b_d_w[0][3] << ", R2 = " << dec << b_d_w[0][1] << ", imm = " << dec << b_d_w[0][4] << endl;
 
-            break;
+                break;
 
-        case 24:
-            fOut << "DECODE:    Operation is LHU, first operand R2, immediate imm, destination register R1\n           Read registers R1 = "
-                 << dec << b_d_w[0][3] << ", R2 = " << dec << b_d_w[0][1] << ", imm = " << dec << b_d_w[0][4] << endl;
+            case 24:
+                fOut << "DECODE:    Operation is LHU, first operand R2, immediate imm, destination register R1\n           Read registers R1 = "
+                     << dec << b_d_w[0][3] << ", R2 = " << dec << b_d_w[0][1] << ", imm = " << dec << b_d_w[0][4] << endl;
 
-            break;
+                break;
 
-        case 25:
-            fOut << "DECODE:    Operation is SB, first operand R2, second operand R3, immediate imm\n           Read registers R2 = "
-                 << dec << b_d_w[0][1] << ", R3 = " << dec << b_d_w[0][2] << ", imm = " << dec << b_d_w[0][4] << endl;
+            case 25:
+                fOut << "DECODE:    Operation is SB, first operand R2, second operand R3, immediate imm\n           Read registers R2 = "
+                     << dec << b_d_w[0][1] << ", R3 = " << dec << b_d_w[0][2] << ", imm = " << dec << b_d_w[0][4] << endl;
 
-            break;
+                break;
 
-        case 26:
-            fOut << "DECODE:    Operation is SH, first operand R2, second operand R3, immediate imm\n           Read registers R2 = "
-                 << b_d_w[0][1] << ", R3 = " << b_d_w[0][2] << ", imm = " << b_d_w[0][4] << endl;
+            case 26:
+                fOut << "DECODE:    Operation is SH, first operand R2, second operand R3, immediate imm\n           Read registers R2 = "
+                     << b_d_w[0][1] << ", R3 = " << b_d_w[0][2] << ", imm = " << b_d_w[0][4] << endl;
 
-            break;
+                break;
 
-        case 27:
-            fOut << "DECODE:    Operation is SW, first operand R2, second operand R3, immediate imm\n           Read registers R2 = "
-                 << dec << b_d_w[0][1] << ", R3 = " << dec << b_d_w[0][2] << ", imm = " << dec << b_d_w[0][4] << endl;
+            case 27:
+                fOut << "DECODE:    Operation is SW, first operand R2, second operand R3, immediate imm\n           Read registers R2 = "
+                     << dec << b_d_w[0][1] << ", R3 = " << dec << b_d_w[0][2] << ", imm = " << dec << b_d_w[0][4] << endl;
 
-            break;
+                break;
 
-        case 28:
-            fOut << "DECODE:    Operation is BEQ, first operand R2, second operand R3, immediate imm\n           Read registers R2 = "
-                 << dec << b_d_w[0][1] << ", R3 = " << dec << b_d_w[0][2] << ", imm = " << dec << b_d_w[0][4] << endl;
+            case 28:
+                fOut << "DECODE:    Operation is BEQ, first operand R2, second operand R3, immediate imm\n           Read registers R2 = "
+                     << dec << b_d_w[0][1] << ", R3 = " << dec << b_d_w[0][2] << ", imm = " << dec << b_d_w[0][4] << endl;
 
-            break;
+                break;
 
-        case 29:
-            fOut << "DECODE:    Operation is BNE, first operand R2, second operand R3, immediate imm\n           Read registers R2 = "
-                 << dec << b_d_w[0][1] << ", R3 = " << dec << b_d_w[0][2] << ", imm = " << dec << b_d_w[0][4] << endl;
+            case 29:
+                fOut << "DECODE:    Operation is BNE, first operand R2, second operand R3, immediate imm\n           Read registers R2 = "
+                     << dec << b_d_w[0][1] << ", R3 = " << dec << b_d_w[0][2] << ", imm = " << dec << b_d_w[0][4] << endl;
 
-            break;
+                break;
 
-        case 30:
-            fOut << "DECODE:    Operation is BLT, first operand R2, second operand R3, immediate imm\n           Read registers R2 = "
-                 << dec << b_d_w[0][1] << ", R3 = " << dec << b_d_w[0][2] << ", imm = " << dec << b_d_w[0][4] << endl;
+            case 30:
+                fOut << "DECODE:    Operation is BLT, first operand R2, second operand R3, immediate imm\n           Read registers R2 = "
+                     << dec << b_d_w[0][1] << ", R3 = " << dec << b_d_w[0][2] << ", imm = " << dec << b_d_w[0][4] << endl;
 
-            break;
+                break;
 
-        case 31:
-            fOut << "DECODE:    Operation is BGE, first operand R2, second operand R3, immediate imm\n           Read registers R2 = "
-                 << dec << b_d_w[0][1] << ", R3 = " << dec << b_d_w[0][2] << ", imm = " << dec << b_d_w[0][4] << endl;
+            case 31:
+                fOut << "DECODE:    Operation is BGE, first operand R2, second operand R3, immediate imm\n           Read registers R2 = "
+                     << dec << b_d_w[0][1] << ", R3 = " << dec << b_d_w[0][2] << ", imm = " << dec << b_d_w[0][4] << endl;
 
-            break;
+                break;
 
-        case 32:
-            fOut << "DECODE:    Operation is BLTU, first operand R2, second operand R3, immediate imm\n           Read registers R2 = "
-                 << dec << b_d_w[0][1] << ", R3 = " << dec << b_d_w[0][2] << ", imm = " << dec << b_d_w[0][4] << endl;
+            case 32:
+                fOut << "DECODE:    Operation is BLTU, first operand R2, second operand R3, immediate imm\n           Read registers R2 = "
+                     << dec << b_d_w[0][1] << ", R3 = " << dec << b_d_w[0][2] << ", imm = " << dec << b_d_w[0][4] << endl;
 
-            break;
+                break;
 
-        case 33:
-            fOut << "DECODE:    Operation is BGEU, first operand R2, second operand R3, immediate imm\n           Read registers R2 = "
-                 << dec << b_d_w[0][1] << ", R3 = " << dec << b_d_w[0][2] << ", imm = " << dec << b_d_w[0][4] << endl;
+            case 33:
+                fOut << "DECODE:    Operation is BGEU, first operand R2, second operand R3, immediate imm\n           Read registers R2 = "
+                     << dec << b_d_w[0][1] << ", R3 = " << dec << b_d_w[0][2] << ", imm = " << dec << b_d_w[0][4] << endl;
 
-            break;
+                break;
 
-        case 34:
-            fOut << "DECODE:    Operation is JAL, destination register R1, immediate imm\n           Read registers R1 = "
-                 << dec << b_d_w[0][3] << ", imm = " << dec << b_d_w[0][4] << endl;
+            case 34:
+                fOut << "DECODE:    Operation is JAL, destination register R1, immediate imm\n           Read registers R1 = "
+                     << dec << b_d_w[0][3] << ", imm = " << dec << b_d_w[0][4] << endl;
 
-            break;
+                break;
 
-        case 35:
-            fOut << "DECODE:    Operation is JALR, destination register R1, first operand R2, immediate imm\n           Read registers R1 = "
-                 << dec << b_d_w[0][3] << ", R2 = " << dec << b_d_w[0][1] << ", imm = " << dec << b_d_w[0][4] << endl;
+            case 35:
+                fOut << "DECODE:    Operation is JALR, destination register R1, first operand R2, immediate imm\n           Read registers R1 = "
+                     << dec << b_d_w[0][3] << ", R2 = " << dec << b_d_w[0][1] << ", imm = " << dec << b_d_w[0][4] << endl;
 
-            break;
+                break;
 
-        case 36:
-            fOut << "DECODE:    Operation is LUI, destination register R1, immediate imm\n           Read registers R1 = "
-                 << dec << b_d_w[0][3] << ", imm = " << dec << b_d_w[0][4] << endl;
+            case 36:
+                fOut << "DECODE:    Operation is LUI, destination register R1, immediate imm\n           Read registers R1 = "
+                     << dec << b_d_w[0][3] << ", imm = " << dec << b_d_w[0][4] << endl;
 
-            break;
+                break;
 
-        case 37:
-            fOut << "DECODE:    Operation is AUIPC, destination register R1, immediate imm\n           Read registers R1 = "
-                 << dec << b_d_w[0][3] << ", imm = " << dec << b_d_w[0][4] << endl;
+            case 37:
+                fOut << "DECODE:    Operation is AUIPC, destination register R1, immediate imm\n           Read registers R1 = "
+                     << dec << b_d_w[0][3] << ", imm = " << dec << b_d_w[0][4] << endl;
 
-            break;
+                break;
 
-        case 38:
-            fOut << "DECODE: Operation is ECALL " << endl;
+            case 38:
+                fOut << "DECODE: Operation is ECALL " << endl;
 
-            break;
+                break;
 
-        case 39:
-            fOut << "DECODE: Operation is EBREAK " << endl;
+            case 39:
+                fOut << "DECODE: Operation is EBREAK " << endl;
 
-            break;
-        default:
-            break;
+                break;
+            default:
+                break;
+            }
         }
         b_d_w.pop_back();
+
         // fOut << endl;
     }
     if (b_e_w.size())
     {
-        switch (b_e_w[0][0])
+        if (stall == 2)
         {
-        case 1:
-            fOut << "EXECUTE:    Operation is ADD, first operand R2, Second operand R3, destination register R1\n           Read registers R1 = "
-                 << dec << b_d_w[0][3] << ", R2 = " << dec << b_d_w[0][1] << ", R3 = " << dec << b_d_w[0][2] << endl;
-
-            break;
-
-        case 2:
-            fOut << "EXECUTE:    Operation is SUB, first operand R2, Second operand R3, destination register R1\n           Read registers R1 = "
-                 << dec << b_d_w[0][3] << ", R2 = " << dec << b_d_w[0][1] << ", R3 = " << dec << b_d_w[0][2] << endl;
-
-            break;
-
-        case 3:
-            fOut << "EXECUTE:    Operation is XOR, first operand R2, Second operand R3, destination register R1\n              Read registers R1 = "
-                 << dec << b_d_w[0][3] << ", R2 = " << dec << b_d_w[0][1] << ", R3 = " << dec << b_d_w[0][2] << endl;
-
-            break;
-
-        case 4:
-            fOut << "EXECUTE:    Operation is OR, first operand R2, Second operand R3, destination register R1\n           Read registers R1 = "
-                 << dec << b_d_w[0][3] << ", R2 = " << dec << b_d_w[0][1] << ", R3 = " << dec << b_d_w[0][2] << endl;
-
-            break;
-
-        case 5:
-            fOut << "EXECUTE:    Operation is AND, first operand R2, Second operand R3, destination register R1\n           Read registers R1 = "
-                 << dec << b_d_w[0][3] << ", R2 = " << dec << b_d_w[0][1] << ", R3 = " << dec << b_d_w[0][2] << endl;
-
-            break;
-
-        case 6:
-            fOut << "EXECUTE:    Operation is SLL, first operand R2, Second operand R3, destination register R1\n           Read registers R1 = "
-                 << dec << b_d_w[0][3] << ", R2 = " << dec << b_d_w[0][1] << ", R3 = " << dec << b_d_w[0][2] << endl;
-
-            break;
-
-        case 7:
-            fOut << "EXECUTE:    Operation is SRL, first operand R2, Second operand R3, destination register R1\n           Read registers R1 = "
-                 << dec << b_d_w[0][3] << ", R2 = " << dec << b_d_w[0][1] << ", R3 = " << dec << b_d_w[0][2] << endl;
-
-            break;
-
-        case 8:
-            fOut << "EXECUTE:    Operation is SRA, first operand R2, Second operand R3, destination register R1\n           Read registers R1 = "
-                 << dec << b_d_w[0][3] << ", R2 = " << dec << b_d_w[0][1] << ", R3 = " << dec << b_d_w[0][2] << endl;
-
-            break;
-
-        case 9:
-            fOut << "EXECUTE:    Operation is SLT, first operand R2, Second operand R3, destination register R1\n           Read registers R1 = "
-                 << dec << b_d_w[0][3] << ", R2 = " << dec << b_d_w[0][1] << ", R3 = " << dec << b_d_w[0][2] << endl;
-
-            break;
-
-        case 10:
-            fOut << "EXECUTE:    Operation is SLTU, first operand R2, Second operand R3, destination register R1\n              Read registers R1 = "
-                 << dec << b_d_w[0][3] << ", R2 = " << dec << b_d_w[0][1] << ", R3 = " << dec << b_d_w[0][2] << endl;
-
-            break;
-
-        case 18:
-            fOut << "EXECUTE:    Operation is SLTI, first operand R2, immediate imm, destination register R1\n           Read registers R1 = "
-                 << dec << b_d_w[0][3] << ", R2 = " << dec << b_d_w[0][1] << ", imm = " << dec << b_d_w[0][4] << endl;
-
-            break;
-
-        case 19:
-            fOut << "EXECUTE:    Operation is SLTIU, first operand R2, immediate imm, destination register R1\n           Read registers R1 = "
-                 << dec << b_d_w[0][3] << ", R2 = " << dec << b_d_w[0][1] << ", imm = " << dec << b_d_w[0][4] << endl;
-
-            break;
-
-        case 11:
-            fOut << "EXECUTE:    Operation is ADDI, first operand R2, immediate imm, destination register R1\n           Read registers R1 = "
-                 << dec << b_d_w[0][3] << ", R2 = " << dec << b_d_w[0][1] << ", imm = " << dec << b_d_w[0][4] << endl;
-
-            break;
-
-        case 12:
-            fOut << "EXECUTE:    Operation is XORI, first operand R2, immediate imm, destination register R1\n           Read registers R1 = "
-                 << dec << b_d_w[0][3] << ", R2 = " << dec << b_d_w[0][1] << ", imm = " << dec << b_d_w[0][4] << endl;
-
-            break;
-
-        case 13:
-            fOut << "EXECUTE:    Operation is ORI, first operand R2, immediate imm, destination register R1\n           Read registers R1 = "
-                 << dec << b_d_w[0][3] << ", R2 = " << dec << b_d_w[0][1] << ", imm = " << dec << b_d_w[0][4] << endl;
-
-            break;
-
-        case 14:
-            fOut << "EXECUTE:    Operation is ANDI, first operand R2, immediate imm, destination register R1\n           Read registers R1 = "
-                 << dec << b_d_w[0][3] << ", R2 = " << dec << b_d_w[0][1] << ", imm = " << dec << b_d_w[0][4] << endl;
-
-            break;
-
-        case 15:
-            fOut << "EXECUTE:    Operation is SLLI, first operand R2, immediate imm, destination register R1\n           Read registers R1 = "
-                 << dec << b_d_w[0][3] << ", R2 = " << dec << b_d_w[0][1] << ", imm = " << dec << b_d_w[0][4] << endl;
-
-            break;
-
-        case 16:
-            fOut << "EXECUTE:    Operation is SRLI, first operand R2, immediate imm, destination register R1\n           Read registers R1 = "
-                 << dec << b_d_w[0][3] << ", R2 = " << dec << b_d_w[0][1] << ", imm = " << dec << b_d_w[0][4] << endl;
-
-            break;
-
-        case 17:
-            fOut << "EXECUTE:    Operation is SRAI, first operand R2, immediate imm, destination register R1\n           Read registers R1 = "
-                 << dec << b_d_w[0][3] << ", R2 = " << dec << b_d_w[0][1] << ", imm = " << dec << b_d_w[0][4] << endl;
-
-            break;
-
-        case 20:
-            fOut << "EXECUTE:    Operation is LB, first operand R2, immediate imm, destination register R1\n           Read registers R1 = "
-                 << dec << b_d_w[0][3] << ", R2 = " << dec << b_d_w[0][1] << ", imm = " << dec << b_d_w[0][4] << endl;
-
-            break;
-
-        case 21:
-            fOut << "EXECUTE:    Operation is LH, first operand R2, immediate imm, destination register R1\n           Read registers R1 = "
-                 << dec << b_d_w[0][3] << ", R2 = " << dec << b_d_w[0][1] << ", imm = " << dec << b_d_w[0][4] << endl;
-
-            break;
-
-        case 22:
-            fOut << "EXECUTE:    Operation is LW, first operand R2, immediate imm, destination register R1\n           Read registers R1 = "
-                 << dec << b_d_w[0][3] << ", R2 = " << dec << b_d_w[0][1] << ", imm = " << dec << b_d_w[0][4] << endl;
-
-            break;
-
-        case 23:
-            fOut << "EXECUTE:    Operation is LBU, first operand R2, immediate imm, destination register R1\n           Read registers R1 = "
-                 << dec << b_d_w[0][3] << ", R2 = " << dec << b_d_w[0][1] << ", imm = " << dec << b_d_w[0][4] << endl;
-
-            break;
-
-        case 24:
-            fOut << "EXECUTE:    Operation is LHU, first operand R2, immediate imm, destination register R1\n           Read registers R1 = "
-                 << dec << b_d_w[0][3] << ", R2 = " << dec << b_d_w[0][1] << ", imm = " << dec << b_d_w[0][4] << endl;
-
-            break;
-
-        case 25:
-            fOut << "EXECUTE:    Operation is SB, first operand R2, second operand R3, immediate imm\n           Read registers R2 = "
-                 << dec << b_d_w[0][1] << ", R3 = " << dec << b_d_w[0][2] << ", imm = " << dec << b_d_w[0][4] << endl;
-
-            break;
-
-        case 26:
-            fOut << "EXECUTE:    Operation is SH, first operand R2, second operand R3, immediate imm\n           Read registers R2 = "
-                 << b_d_w[0][1] << ", R3 = " << b_d_w[0][2] << ", imm = " << b_d_w[0][4] << endl;
-
-            break;
-
-        case 27:
-            fOut << "EXECUTE:    Operation is SW, first operand R2, second operand R3, immediate imm\n           Read registers R2 = "
-                 << dec << b_d_w[0][1] << ", R3 = " << dec << b_d_w[0][2] << ", imm = " << dec << b_d_w[0][4] << endl;
-
-            break;
-
-        case 28:
-            fOut << "EXECUTE:    Operation is BEQ, first operand R2, second operand R3, immediate imm\n           Read registers R2 = "
-                 << dec << b_d_w[0][1] << ", R3 = " << dec << b_d_w[0][2] << ", imm = " << dec << b_d_w[0][4] << endl;
-
-            break;
-
-        case 29:
-            fOut << "EXECUTE:    Operation is BNE, first operand R2, second operand R3, immediate imm\n           Read registers R2 = "
-                 << dec << b_d_w[0][1] << ", R3 = " << dec << b_d_w[0][2] << ", imm = " << dec << b_d_w[0][4] << endl;
-
-            break;
-
-        case 30:
-            fOut << "EXECUTE:    Operation is BLT, first operand R2, second operand R3, immediate imm\n           Read registers R2 = "
-                 << dec << b_d_w[0][1] << ", R3 = " << dec << b_d_w[0][2] << ", imm = " << dec << b_d_w[0][4] << endl;
-
-            break;
-
-        case 31:
-            fOut << "EXECUTE:    Operation is BGE, first operand R2, second operand R3, immediate imm\n           Read registers R2 = "
-                 << dec << b_d_w[0][1] << ", R3 = " << dec << b_d_w[0][2] << ", imm = " << dec << b_d_w[0][4] << endl;
-
-            break;
-
-        case 32:
-            fOut << "EXECUTE:    Operation is BLTU, first operand R2, second operand R3, immediate imm\n           Read registers R2 = "
-                 << dec << b_d_w[0][1] << ", R3 = " << dec << b_d_w[0][2] << ", imm = " << dec << b_d_w[0][4] << endl;
-
-            break;
-
-        case 33:
-            fOut << "EXECUTE:    Operation is BGEU, first operand R2, second operand R3, immediate imm\n           Read registers R2 = "
-                 << dec << b_d_w[0][1] << ", R3 = " << dec << b_d_w[0][2] << ", imm = " << dec << b_d_w[0][4] << endl;
-
-            break;
-
-        case 34:
-            fOut << "EXECUTE:    Operation is JAL, destination register R1, immediate imm\n           Read registers R1 = "
-                 << dec << b_d_w[0][3] << ", imm = " << dec << b_d_w[0][4] << endl;
-
-            break;
-
-        case 35:
-            fOut << "EXECUTE:    Operation is JALR, destination register R1, first operand R2, immediate imm\n           Read registers R1 = "
-                 << dec << b_d_w[0][3] << ", R2 = " << dec << b_d_w[0][1] << ", imm = " << dec << b_d_w[0][4] << endl;
-
-            break;
-
-        case 36:
-            fOut << "EXECUTE:    Operation is LUI, destination register R1, immediate imm\n           Read registers R1 = "
-                 << dec << b_d_w[0][3] << ", imm = " << dec << b_d_w[0][4] << endl;
-
-            break;
-
-        case 37:
-            fOut << "EXECUTE:    Operation is AUIPC, destination register R1, immediate imm\n           Read registers R1 = "
-                 << dec << b_d_w[0][3] << ", imm = " << dec << b_d_w[0][4] << endl;
-
-            break;
-
-        case 38:
-            fOut << "EXECUTE: Operation is ECALL " << endl;
-
-            break;
-
-        case 39:
-            fOut << "EXECUTE: Operation is EBREAK " << endl;
-
-            break;
-        default:
-            break;
+            fOut << "EXECUTE:    STALL\n ";
         }
-        b_e_w.pop_back();
-        // fOut << endl;
+        else
+        {
+            switch (b_e_w[0][0])
+            {
+            case 1:
+                fOut << "EXECUTE:    Operation is ADD, first operand R2, Second operand R3, destination register R1\n           Read registers R1 = "
+                     << dec << b_e_w[0][3] << ", R2 = " << dec << b_e_w[0][1] << ", R3 = " << dec << b_e_w[0][2] << endl;
+
+                break;
+
+            case 2:
+                fOut << "EXECUTE:    Operation is SUB, first operand R2, Second operand R3, destination register R1\n           Read registers R1 = "
+                     << dec << b_e_w[0][3] << ", R2 = " << dec << b_e_w[0][1] << ", R3 = " << dec << b_e_w[0][2] << endl;
+
+                break;
+
+            case 3:
+                fOut << "EXECUTE:    Operation is XOR, first operand R2, Second operand R3, destination register R1\n              Read registers R1 = "
+                     << dec << b_e_w[0][3] << ", R2 = " << dec << b_e_w[0][1] << ", R3 = " << dec << b_e_w[0][2] << endl;
+
+                break;
+
+            case 4:
+                fOut << "EXECUTE:    Operation is OR, first operand R2, Second operand R3, destination register R1\n           Read registers R1 = "
+                     << dec << b_e_w[0][3] << ", R2 = " << dec << b_e_w[0][1] << ", R3 = " << dec << b_e_w[0][2] << endl;
+
+                break;
+
+            case 5:
+                fOut << "EXECUTE:    Operation is AND, first operand R2, Second operand R3, destination register R1\n           Read registers R1 = "
+                     << dec << b_e_w[0][3] << ", R2 = " << dec << b_e_w[0][1] << ", R3 = " << dec << b_e_w[0][2] << endl;
+
+                break;
+
+            case 6:
+                fOut << "EXECUTE:    Operation is SLL, first operand R2, Second operand R3, destination register R1\n           Read registers R1 = "
+                     << dec << b_e_w[0][3] << ", R2 = " << dec << b_e_w[0][1] << ", R3 = " << dec << b_e_w[0][2] << endl;
+
+                break;
+
+            case 7:
+                fOut << "EXECUTE:    Operation is SRL, first operand R2, Second operand R3, destination register R1\n           Read registers R1 = "
+                     << dec << b_e_w[0][3] << ", R2 = " << dec << b_e_w[0][1] << ", R3 = " << dec << b_e_w[0][2] << endl;
+
+                break;
+
+            case 8:
+                fOut << "EXECUTE:    Operation is SRA, first operand R2, Second operand R3, destination register R1\n           Read registers R1 = "
+                     << dec << b_e_w[0][3] << ", R2 = " << dec << b_e_w[0][1] << ", R3 = " << dec << b_e_w[0][2] << endl;
+
+                break;
+
+            case 9:
+                fOut << "EXECUTE:    Operation is SLT, first operand R2, Second operand R3, destination register R1\n           Read registers R1 = "
+                     << dec << b_e_w[0][3] << ", R2 = " << dec << b_e_w[0][1] << ", R3 = " << dec << b_e_w[0][2] << endl;
+
+                break;
+
+            case 10:
+                fOut << "EXECUTE:    Operation is SLTU, first operand R2, Second operand R3, destination register R1\n              Read registers R1 = "
+                     << dec << b_e_w[0][3] << ", R2 = " << dec << b_e_w[0][1] << ", R3 = " << dec << b_e_w[0][2] << endl;
+
+                break;
+
+            case 18:
+                fOut << "EXECUTE:    Operation is SLTI, first operand R2, immediate imm, destination register R1\n           Read registers R1 = "
+                     << dec << b_e_w[0][3] << ", R2 = " << dec << b_e_w[0][1] << ", imm = " << dec << b_e_w[0][4] << endl;
+
+                break;
+
+            case 19:
+                fOut << "EXECUTE:    Operation is SLTIU, first operand R2, immediate imm, destination register R1\n           Read registers R1 = "
+                     << dec << b_e_w[0][3] << ", R2 = " << dec << b_e_w[0][1] << ", imm = " << dec << b_e_w[0][4] << endl;
+
+                break;
+
+            case 11:
+                fOut << "EXECUTE:    Operation is ADDI, first operand R2, immediate imm, destination register R1\n           Read registers R1 = "
+                     << dec << b_e_w[0][3] << ", R2 = " << dec << b_e_w[0][1] << ", imm = " << dec << b_e_w[0][4] << endl;
+
+                break;
+
+            case 12:
+                fOut << "EXECUTE:    Operation is XORI, first operand R2, immediate imm, destination register R1\n           Read registers R1 = "
+                     << dec << b_e_w[0][3] << ", R2 = " << dec << b_e_w[0][1] << ", imm = " << dec << b_e_w[0][4] << endl;
+
+                break;
+
+            case 13:
+                fOut << "EXECUTE:    Operation is ORI, first operand R2, immediate imm, destination register R1\n           Read registers R1 = "
+                     << dec << b_e_w[0][3] << ", R2 = " << dec << b_e_w[0][1] << ", imm = " << dec << b_e_w[0][4] << endl;
+
+                break;
+
+            case 14:
+                fOut << "EXECUTE:    Operation is ANDI, first operand R2, immediate imm, destination register R1\n           Read registers R1 = "
+                     << dec << b_e_w[0][3] << ", R2 = " << dec << b_e_w[0][1] << ", imm = " << dec << b_e_w[0][4] << endl;
+
+                break;
+
+            case 15:
+                fOut << "EXECUTE:    Operation is SLLI, first operand R2, immediate imm, destination register R1\n           Read registers R1 = "
+                     << dec << b_e_w[0][3] << ", R2 = " << dec << b_e_w[0][1] << ", imm = " << dec << b_e_w[0][4] << endl;
+
+                break;
+
+            case 16:
+                fOut << "EXECUTE:    Operation is SRLI, first operand R2, immediate imm, destination register R1\n           Read registers R1 = "
+                     << dec << b_e_w[0][3] << ", R2 = " << dec << b_e_w[0][1] << ", imm = " << dec << b_e_w[0][4] << endl;
+
+                break;
+
+            case 17:
+                fOut << "EXECUTE:    Operation is SRAI, first operand R2, immediate imm, destination register R1\n           Read registers R1 = "
+                     << dec << b_e_w[0][3] << ", R2 = " << dec << b_e_w[0][1] << ", imm = " << dec << b_e_w[0][4] << endl;
+
+                break;
+
+            case 20:
+                fOut << "EXECUTE:    Operation is LB, first operand R2, immediate imm, destination register R1\n           Read registers R1 = "
+                     << dec << b_e_w[0][3] << ", R2 = " << dec << b_e_w[0][1] << ", imm = " << dec << b_e_w[0][4] << endl;
+
+                break;
+
+            case 21:
+                fOut << "EXECUTE:    Operation is LH, first operand R2, immediate imm, destination register R1\n           Read registers R1 = "
+                     << dec << b_e_w[0][3] << ", R2 = " << dec << b_e_w[0][1] << ", imm = " << dec << b_e_w[0][4] << endl;
+
+                break;
+
+            case 22:
+                fOut << "EXECUTE:    Operation is LW, first operand R2, immediate imm, destination register R1\n           Read registers R1 = "
+                     << dec << b_e_w[0][3] << ", R2 = " << dec << b_e_w[0][1] << ", imm = " << dec << b_e_w[0][4] << endl;
+
+                break;
+
+            case 23:
+                fOut << "EXECUTE:    Operation is LBU, first operand R2, immediate imm, destination register R1\n           Read registers R1 = "
+                     << dec << b_e_w[0][3] << ", R2 = " << dec << b_e_w[0][1] << ", imm = " << dec << b_e_w[0][4] << endl;
+
+                break;
+
+            case 24:
+                fOut << "EXECUTE:    Operation is LHU, first operand R2, immediate imm, destination register R1\n           Read registers R1 = "
+                     << dec << b_e_w[0][3] << ", R2 = " << dec << b_d_w[0][1] << ", imm = " << dec << b_d_w[0][4] << endl;
+
+                break;
+
+            case 25:
+                fOut << "EXECUTE:    Operation is SB, first operand R2, second operand R3, immediate imm\n           Read registers R2 = "
+                     << dec << b_e_w[0][1] << ", R3 = " << dec << b_e_w[0][2] << ", imm = " << dec << b_e_w[0][4] << endl;
+
+                break;
+
+            case 26:
+                fOut << "EXECUTE:    Operation is SH, first operand R2, second operand R3, immediate imm\n           Read registers R2 = "
+                     << b_e_w[0][1] << ", R3 = " << b_e_w[0][2] << ", imm = " << b_e_w[0][4] << endl;
+
+                break;
+
+            case 27:
+                fOut << "EXECUTE:    Operation is SW, first operand R2, second operand R3, immediate imm\n           Read registers R2 = "
+                     << dec << b_e_w[0][1] << ", R3 = " << dec << b_e_w[0][2] << ", imm = " << dec << b_e_w[0][4] << endl;
+
+                break;
+
+            case 28:
+                fOut << "EXECUTE:    Operation is BEQ, first operand R2, second operand R3, immediate imm\n           Read registers R2 = "
+                     << dec << b_e_w[0][2] << ", R3 = " << dec << b_d_w[0][3] << ", imm = " << dec << b_d_w[0][5] << endl;
+
+                break;
+
+            case 29:
+                fOut << "EXECUTE:    Operation is BNE, first operand R2, second operand R3, immediate imm\n           Read registers R2 = "
+                     << dec << b_d_w[0][1] << ", R3 = " << dec << b_d_w[0][2] << ", imm = " << dec << b_d_w[0][4] << endl;
+
+                break;
+
+            case 30:
+                fOut << "EXECUTE:    Operation is BLT, first operand R2, second operand R3, immediate imm\n           Read registers R2 = "
+                     << dec << b_d_w[0][1] << ", R3 = " << dec << b_d_w[0][2] << ", imm = " << dec << b_d_w[0][4] << endl;
+
+                break;
+
+            case 31:
+                fOut << "EXECUTE:    Operation is BGE, first operand R2, second operand R3, immediate imm\n           Read registers R2 = "
+                     << dec << b_e_w[0][2] << ", R3 = " << dec << b_e_w[0][3] << ", imm = " << dec << b_e_w[0][5] << endl;
+
+                break;
+
+            case 32:
+                fOut << "EXECUTE:    Operation is BLTU, first operand R2, second operand R3, immediate imm\n           Read registers R2 = "
+                     << dec << b_d_w[0][1] << ", R3 = " << dec << b_d_w[0][2] << ", imm = " << dec << b_d_w[0][4] << endl;
+
+                break;
+
+            case 33:
+                fOut << "EXECUTE:    Operation is BGEU, first operand R2, second operand R3, immediate imm\n           Read registers R2 = "
+                     << dec << b_d_w[0][1] << ", R3 = " << dec << b_d_w[0][2] << ", imm = " << dec << b_d_w[0][4] << endl;
+
+                break;
+
+            case 34:
+                fOut << "EXECUTE:    Operation is JAL, destination register R1, immediate imm\n           Read registers R1 = "
+                     << dec << b_d_w[0][3] << ", imm = " << dec << b_d_w[0][4] << endl;
+
+                break;
+
+            case 35:
+                fOut << "EXECUTE:    Operation is JALR, destination register R1, first operand R2, immediate imm\n           Read registers R1 = "
+                     << dec << b_d_w[0][3] << ", R2 = " << dec << b_d_w[0][1] << ", imm = " << dec << b_d_w[0][4] << endl;
+
+                break;
+
+            case 36:
+                fOut << "EXECUTE:    Operation is LUI, destination register R1, immediate imm\n           Read registers R1 = "
+                     << dec << b_d_w[0][3] << ", imm = " << dec << b_d_w[0][4] << endl;
+
+                break;
+
+            case 37:
+                fOut << "EXECUTE:    Operation is AUIPC, destination register R1, immediate imm\n           Read registers R1 = "
+                     << dec << b_d_w[0][3] << ", imm = " << dec << b_d_w[0][4] << endl;
+
+                break;
+
+            case 38:
+                fOut << "EXECUTE: Operation is ECALL " << endl;
+
+                break;
+
+            case 39:
+                fOut << "EXECUTE: Operation is EBREAK " << endl;
+
+                break;
+            default:
+                break;
+            }
+            b_e_w.pop_back();
+            // fOut << endl;
+        }
     }
     if (b_m_w.size())
     {
@@ -1275,7 +1280,6 @@ void DECODE()
                 rs2 = bin_2_dec(b, 20, 24);
                 int mul = 1;
                 imm = 0;
-                // cout << "rs1= " << rs1 << " rs2= " << rs2 << endl;
                 for (int i = 8; i <= 11; i++)
                 {
                     mul = mul << 1;
@@ -1417,7 +1421,6 @@ void DECODE()
                 rs1 = bin_2_dec(b, 15, 19);
                 rd = bin_2_dec(b, 7, 11);
                 imm = bin_2_dec(b, 20, 31);
-                cout << "imm= " << imm << endl;
                 if (b[31])
                     imm = -1 * (1 << 12) + imm;
                 vector<int> val;
@@ -1436,7 +1439,6 @@ void DECODE()
 
                 rd = bin_2_dec(b, 7, 11);
                 long long im = bin_2_dec(b, 12, 31);
-                cout << im << endl;
                 if (b[31])
                 {
                     im = -1 * (1LL << 32) + im;
@@ -1510,38 +1512,48 @@ void DECODE()
 
             else
                 cout << "Given instruction is invalid !!\n";
-            if (r_d.size() == 3)
+
+            r_d.push_back(rd);
+            /*if (r_d.size() == 4)
             {
                 auto it = r_d.begin();
                 r_d.erase(it);
             }
-            r_d.push_back(rd);
+*/
+            int x = r_d.size();
             auto it = find(r_d.begin(), r_d.end(), rs1);
             auto itt = find(r_d.begin(), r_d.end(), rs2);
-            if (it != r_d.end())
-                cout << "it=" << *it << endl;
             if (itt != r_d.end() || it != r_d.end())
             {
                 // stall
-                if (*itt == r_d[1] || *it == r_d[1])
+                if (*itt == r_d[x-2] || *it == r_d[x-2])
                 {
-                    if (!cwds)
+                    if (!cwds && rd == r_d[x-1])
                         stall_d = 2;
+                    pc -= 4;
+                    next_pc = pc;
                 }
                 else if (!cwds)
                 {
-                    if (r_d[1] == rd)
+                    if (r_d[x-2] == rd)
                         stall_d = 2;
-                    else if (r_d[2] == rd)
+                    else if (r_d[x-1] == rd)
                         stall_d = 1;
+                    pc -= 4;
+                    next_pc = pc;
                 }
+                cout << "\nstall_d= " << stall_d << endl
+                     << endl;
             }
         }
 
         else
             cout << "Given instruction is invalid !!\n";
     }
-
+    for(auto it:r_d){
+        cout<<it<<endl;
+    }
+    cout<<'x'<<endl;
     FETCH();
 }
 
@@ -1550,11 +1562,18 @@ void DECODE()
 void EXECUTE()
 {
 
+    if (n_f && stall == 2)
+    {
+        pc += 4;
+        next_pc += 4;
+        stall = 0;
+    }
     if (n_f && stall == 0)
     {
         pc += 4;
         next_pc += 4;
     }
+
     if (b_e.size()) // && stall == 0)
     {
 
@@ -1778,13 +1797,7 @@ void EXECUTE()
 
         n_d++;
     }
-    // cout<<pc<<' '<<next_pc<<"n\n";
-    /*if (pc != next_pc)
-    {
-        //pc=next_pc;
-        stall = 2;
-    }*/
-    //
+
     DECODE();
 }
 
@@ -1863,31 +1876,30 @@ void MEMORY_ACCESS()
             b_w.push_back(val);
             // b_w.push_back(make_pair(x, n));
             n_m++;
+            if (n > 19 && n < 25)
+                r_d.push_back(rd);
+            if (r_d.size() == 4)
+            {
+                auto it = r_d.begin();
+                r_d.erase(it);
+            }
+            auto it = find(r_d.begin(), r_d.end(), rs1);
+            if (it != r_d.end())
+            {
+                // stall
+                if (*it == r_d[1])
+                {
+                    if (!cwds)
+                        stall_d = 1;
+                }
+                else if (!cwds)
+                {
+                    if (r_d[1] == rd)
+                        stall_d = 1;
+                }
+            }
         }
-        cout << "stall_d=" << stall_d << endl;
-        if (stall_d == 2) // && b_w.size())
-        {
-            cwds = 1;
-            //
-            cout << b_w.size() << "=size";
-            // n_w -= 1;
-            stall_d--;
-            FETCH();
-            // WRITE_BACK();
-            //  stall_d--;
-        }
-
-        else if (stall_d == 1 && b_w.size())
-        {
-            // FETCH();
-            cwds = 1;
-            // n_w -= 1;
-            stall_d--;
-            FETCH();
-
-            // WRITE_BACK();
-        }
-        else
+       
             EXECUTE();
     }
 }
@@ -1913,7 +1925,6 @@ void WRITE_BACK()
             b_w_w.push_back(val);
             b_w.pop_back();
 
-            // cout << "“WRITE_BACK: ";
             r[0] = 0;
             if (n > 24 && n < 34)
             {
@@ -1923,35 +1934,31 @@ void WRITE_BACK()
                 r[rd] = result;
             }
 
-            // if (stall_d == 0)
             n_w++;
-        }
-        cout << stall << "=stall\n";
 
-        if (pc != next_pc)
-        {
-            cout << pc << ' ' << next_pc << "wb" << endl;
-            next_pc = pc - 4;
-            pc=next_pc;
-            cout << pc << ' ' << next_pc << "wb" << endl;
+            cout << n_w << "n_x\n\n";
+            if (pc != next_pc)
+            {
 
-            b_e.pop_back();
-            b_d.pop_back();
-            // EXECUTE();
-            //  stall = 0;
-            cout << b_e.size() << "besize";
+                n_w += (pc / 4 - next_pc / 4 + 2);
+                next_pc = pc;
+                pc = next_pc;
+                b_e.pop_back();
+                b_d.pop_back();
+                cout << b_e.size() << "besize";
 
-            stall = 2;
-            FETCH();
-           // n_w--;
-            stall=0;
-            // MEMORY_ACCESS();
+                stall = 2;
+            }
+            cout << stall_d << "stall_d\n\n\n\n";
         }
-        else if (1)
-        {
-            // stall = 0;
-            MEMORY_ACCESS();
-        }
+        // stall = 0;
+
+        MEMORY_ACCESS();
     }
+    for (auto it : r_d)
+    {
+        cout << it << endl;
+    }
+    cout<<endl;
     fOut.close();
 }

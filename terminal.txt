@@ -15,7 +15,7 @@ FETCH:     Fetch instruction 0x100029b7 from address 0x8
 DECODE:    Operation is LUI, destination register R1, immediate imm
            Read registers R1 = 18, imm = 65537
 EXECUTE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
-           Read registers R1 = 18, R2 = 17694912, imm = 65537
+           Read registers R1 = 18, R2 = 17569976, imm = 65537
 
 
 Executing cycle no: 4
@@ -48,656 +48,92 @@ WRITEBACK: write 268439552 to R18
 
 
 Executing cycle no: 7
+FETCH:     Fetch instruction 0x00000ab3 from address 0x14
+MEMORY:     No memory operation
+WRITEBACK: write 10002000 to R13
+
+
+Executing cycle no: 8
 FETCH:     Fetch instruction 0x023ad463 from address 0x18
 DECODE:    Operation is ADD, first operand R2, Second operand R3, destination register R1
            Read registers R1 = 21, R2 = 0, R3 = 0
 EXECUTE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
-           Read registers R1 = 21, R2 = 17700984, imm = 0
-MEMORY:     No memory operation
-WRITEBACK: write 268443648 to R19
-
-
-Executing cycle no: 8
-FETCH:     Fetch instruction 0x0a4000ef from address 0x1c
-DECODE:    Operation is BGE, first operand R2, second operand R3, immediate imm
-           Read registers R2 = 21, R3 = 3, imm = 40
-EXECUTE:    Operation is ADD, first operand R2, Second operand R3, destination register R1
-           Read registers R1 = 0, R2 = 17700984, R3 = 3
-MEMORY:     No memory operation
+           Read registers R1 = 21, R2 = 17570192, imm = 0
 WRITEBACK: write 534388736 to R20
 
 
 Executing cycle no: 9
-FETCH:     Fetch instruction 0x002a9e93 from address 0x20
-DECODE:    Operation is JAL, destination register R1, immediate imm
-           Read registers R1 = 1, imm = 164
-EXECUTE:    Operation is BGE, first operand R2, second operand R3, immediate imm
-           Read registers R2 = 17700984, R3 = 0, imm = 164
+FETCH:     Fetch instruction 0x023ad463 from address 0x18
 MEMORY:     No memory operation
-WRITEBACK: write 187 to R20
 
 
 Executing cycle no: 10
-FETCH:     Fetch instruction 0x01551e93 from address 0xc4
+FETCH:     Fetch instruction 0x0a4000ef from address 0x1c
+DECODE:    Operation is ADD, first operand R2, Second operand R3, destination register R1
+           Read registers R1 = 21, R2 = 0, R3 = 0
+EXECUTE:    Operation is ADD, first operand R2, Second operand R3, destination register R1
+           Read registers R1 = 21, R2 = 17569888, R3 = 0
+WRITEBACK: write 534388923 to R20
+
+
+Executing cycle no: 11
+FETCH:     Fetch instruction 0x002a9e93 from address 0x20
+DECODE:    Operation is BGE, first operand R2, second operand R3, immediate imm
+           Read registers R2 = 21, R3 = 3, imm = 40
+EXECUTE:    Operation is ADD, first operand R2, Second operand R3, destination register R1
+           Read registers R1 = 4324913, R2 = 17569624, R3 = 3
+MEMORY:     No memory operation
+
+
+Executing cycle no: 12
+FETCH:     Fetch instruction 0x002a9e93 from address 0x20
+MEMORY:     No memory operation
+WRITEBACK: write 0 to R15
+
+
+Executing cycle no: 13
+FETCH:     Fetch instruction 0x012e8eb3 from address 0x24
+DECODE:    Operation is JAL, destination register R1, immediate imm
+           Read registers R1 = 1, imm = 164
+EXECUTE:    Operation is BGE, first operand R2, second operand R3, immediate imm
+           Read registers R2 = 17569624, R3 = 1818326131, imm = 164
+WRITEBACK: write 0 to R21
+
+
+Executing cycle no: 14
+FETCH:     Fetch instruction 0x012e8eb3 from address 0x24
+MEMORY:     No memory operation
+
+
+Executing cycle no: 15
+FETCH:     Fetch instruction 0x00aea023 from address 0x28
 DECODE:    Operation is SLLI, first operand R2, immediate imm, destination register R1
            Read registers R1 = 29, R2 = 21, imm = 2
 EXECUTE:    Operation is JAL, destination register R1, immediate imm
            Read registers R1 = 29, imm = 2
-MEMORY:     No memory operation
-No writeback  operation
-
-
-Executing cycle no: 11
-FETCH:     Fetch instruction 0x01d54533 from address 0xc8
-DECODE:    Operation is SLLI, first operand R2, immediate imm, destination register R1
-           Read registers R1 = 29, R2 = 10, imm = 21
-EXECUTE:    Operation is SLLI, first operand R2, immediate imm, destination register R1
-           Read registers R1 = 29, R2 = 17700984, imm = 21
-MEMORY:     No memory operation
-WRITEBACK: write 6521056 to R0
-
-
-Executing cycle no: 12
-FETCH:     Fetch instruction 0x00a55e93 from address 0xcc
-DECODE:    Operation is XOR, first operand R2, Second operand R3, destination register R1
-              Read registers R1 = 10, R2 = 10, R3 = 29
-EXECUTE:    Operation is SLLI, first operand R2, immediate imm, destination register R1
-           Read registers R1 = 10, R2 = 17700984, imm = 0
-MEMORY:     No memory operation
-WRITEBACK: write 36 to R1
-
-
-Executing cycle no: 13
-FETCH:     Fetch instruction 0x01d54533 from address 0xd0
-DECODE:    Operation is SRLI, first operand R2, immediate imm, destination register R1
-           Read registers R1 = 29, R2 = 10, imm = 10
-EXECUTE:    Operation is XOR, first operand R2, Second operand R3, destination register R1
-              Read registers R1 = 29, R2 = 10, R3 = 0
-MEMORY:     No memory operation
-WRITEBACK: write 0 to R29
-
-
-Executing cycle no: 14
-FETCH:     Fetch instruction 0x00451e93 from address 0xd4
-DECODE:    Operation is XOR, first operand R2, Second operand R3, destination register R1
-              Read registers R1 = 10, R2 = 10, R3 = 29
-EXECUTE:    Operation is SRLI, first operand R2, immediate imm, destination register R1
-           Read registers R1 = 10, R2 = 10, imm = 0
-MEMORY:     No memory operation
-WRITEBACK: write 0 to R29
-
-
-Executing cycle no: 15
-FETCH:     Fetch instruction 0x01d54533 from address 0xd8
-DECODE:    Operation is SLLI, first operand R2, immediate imm, destination register R1
-           Read registers R1 = 29, R2 = 10, imm = 4
-EXECUTE:    Operation is XOR, first operand R2, Second operand R3, destination register R1
-              Read registers R1 = 29, R2 = 10, R3 = 0
-MEMORY:     No memory operation
-WRITEBACK: write 0 to R10
+WRITEBACK: write 74 to R4324913
 
 
 Executing cycle no: 16
-FETCH:     Fetch instruction 0x00050a33 from address 0xdc
-DECODE:    Operation is XOR, first operand R2, Second operand R3, destination register R1
-              Read registers R1 = 10, R2 = 10, R3 = 29
-EXECUTE:    Operation is SLLI, first operand R2, immediate imm, destination register R1
-           Read registers R1 = 10, R2 = 10, imm = 0
+FETCH:     Fetch instruction 0x01551e93 from address 0xc4
+DECODE:    Operation is ADD, first operand R2, Second operand R3, destination register R1
+           Read registers R1 = 29, R2 = 29, R3 = 18
 MEMORY:     No memory operation
-WRITEBACK: write 0 to R29
 
 
 Executing cycle no: 17
-FETCH:     Fetch instruction 0x00008067 from address 0xe0
-DECODE:    Operation is ADD, first operand R2, Second operand R3, destination register R1
-           Read registers R1 = 20, R2 = 10, R3 = 0
-EXECUTE:    Operation is XOR, first operand R2, Second operand R3, destination register R1
-              Read registers R1 = 20, R2 = 10, R3 = 0
-MEMORY:     No memory operation
-WRITEBACK: write 0 to R10
+FETCH:     Fetch instruction 0x01551e93 from address 0xc4
+WRITEBACK: write 28 to R1
 
 
 Executing cycle no: 18
-FETCH:     Fetch instruction 0x00052e03 from address 0xe4
-DECODE:    Operation is JALR, destination register R1, first operand R2, immediate imm
-           Read registers R1 = 0, R2 = 1, imm = 0
+FETCH:     Fetch instruction 0x01551e93 from address 0xc4
+DECODE:    Operation is SLLI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 29, R2 = 21, imm = 2
 EXECUTE:    Operation is ADD, first operand R2, Second operand R3, destination register R1
-           Read registers R1 = 0, R2 = 1, R3 = 0
-MEMORY:     No memory operation
-WRITEBACK: write 0 to R29
+           Read registers R1 = 29, R2 = 17570128, R3 = 2053731173
 
 
 Executing cycle no: 19
-FETCH:     Fetch instruction 0x012e8eb3 from address 0x24
-DECODE:    Operation is LW, first operand R2, immediate imm, destination register R1
-           Read registers R1 = 28, R2 = 10, imm = 0
-EXECUTE:    Operation is JALR, destination register R1, first operand R2, immediate imm
-           Read registers R1 = 28, R2 = 10, imm = 0
+FETCH:     Fetch instruction 0x01551e93 from address 0xc4
 MEMORY:     No memory operation
-WRITEBACK: write 0 to R10
-
-
-Executing cycle no: 20
-FETCH:     Fetch instruction 0x00aea023 from address 0x28
-DECODE:    Operation is ADD, first operand R2, Second operand R3, destination register R1
-           Read registers R1 = 29, R2 = 29, R3 = 18
-EXECUTE:    Operation is LW, first operand R2, immediate imm, destination register R1
-           Read registers R1 = 29, R2 = 29, imm = 0
-MEMORY:     No memory operation
-WRITEBACK: write 0 to R20
-
-
-Executing cycle no: 21
-FETCH:     Fetch instruction 0x002a9e93 from address 0x2c
-DECODE:    Operation is SW, first operand R2, second operand R3, immediate imm
-           Read registers R2 = 29, R3 = 10, imm = 0
-EXECUTE:    Operation is ADD, first operand R2, Second operand R3, destination register R1
-           Read registers R1 = 0, R2 = 29, R3 = 10
-WRITEBACK: write 232 to R0
-
-
-Executing cycle no: 22
-FETCH:     Fetch instruction 0x013e8eb3 from address 0x30
-DECODE:    Operation is SLLI, first operand R2, immediate imm, destination register R1
-           Read registers R1 = 29, R2 = 21, imm = 2
-EXECUTE:    Operation is SW, first operand R2, second operand R3, immediate imm
-           Read registers R2 = 21, R3 = 0, imm = 2
-MEMORY:     No memory operation
-
-
-Executing cycle no: 23
-FETCH:     Fetch instruction 0x00aea023 from address 0x34
-DECODE:    Operation is ADD, first operand R2, Second operand R3, destination register R1
-           Read registers R1 = 29, R2 = 29, R3 = 19
-EXECUTE:    Operation is SLLI, first operand R2, immediate imm, destination register R1
-           Read registers R1 = 29, R2 = 29, imm = 0
-MEMORY:    Operation is SW, first operand R2, second operand R3, immediate imm
-           Read registers R2 = 29, R3 = 19, imm = 0
-
-No writeback  operation
-
-
-Executing cycle no: 24
-FETCH:     Fetch instruction 0x001a8a93 from address 0x38
-DECODE:    Operation is SW, first operand R2, second operand R3, immediate imm
-           Read registers R2 = 29, R3 = 10, imm = 0
-EXECUTE:    Operation is ADD, first operand R2, Second operand R3, destination register R1
-           Read registers R1 = 0, R2 = 29, R3 = 10
-MEMORY:     No memory operation
-WRITEBACK: write 6471552 to R0
-
-
-Executing cycle no: 25
-FETCH:     Fetch instruction 0xfc005ee3 from address 0x3c
-DECODE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
-           Read registers R1 = 21, R2 = 21, imm = 1
-EXECUTE:    Operation is SW, first operand R2, second operand R3, immediate imm
-           Read registers R2 = 21, R3 = 0, imm = 1
-MEMORY:     No memory operation
-WRITEBACK: write 0 to R29
-
-
-Executing cycle no: 26
-FETCH:     Fetch instruction 0x008000ef from address 0x40
-DECODE:    Operation is BGE, first operand R2, second operand R3, immediate imm
-           Read registers R2 = 0, R3 = 0, imm = -36
-EXECUTE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
-           Read registers R1 = 0, R2 = 0, imm = -36
-MEMORY:    Operation is SW, first operand R2, second operand R3, immediate imm
-           Read registers R2 = 0, R3 = 0, imm = -36
-
-No writeback  operation
-
-
-Executing cycle no: 27
-FETCH:     Fetch instruction 0x0a4000ef from address 0x1c
-DECODE:    Operation is JAL, destination register R1, immediate imm
-           Read registers R1 = 1, imm = 8
-EXECUTE:    Operation is BGE, first operand R2, second operand R3, immediate imm
-           Read registers R2 = 0, R3 = 0, imm = 8
-MEMORY:     No memory operation
-WRITEBACK: write 6460128 to R0
-
-
-Executing cycle no: 28
-FETCH:     Fetch instruction 0x012e8eb3 from address 0x24
-DECODE:    Operation is JAL, destination register R1, immediate imm
-           Read registers R1 = 1, imm = 164
-EXECUTE:    Operation is JAL, destination register R1, immediate imm
-           Read registers R1 = 1, imm = 164
-MEMORY:     No memory operation
-No writeback  operation
-
-
-Executing cycle no: 29
-FETCH:     Fetch instruction 0x01d54533 from address 0xc8
-DECODE:    Operation is ADD, first operand R2, Second operand R3, destination register R1
-           Read registers R1 = 29, R2 = 29, R3 = 18
-EXECUTE:    Operation is JAL, destination register R1, immediate imm
-           Read registers R1 = 29, imm = 0
-MEMORY:     No memory operation
-WRITEBACK: write 6452512 to R0
-
-
-Executing cycle no: 30
-FETCH:     Fetch instruction 0x00a55e93 from address 0xcc
-DECODE:    Operation is XOR, first operand R2, Second operand R3, destination register R1
-              Read registers R1 = 10, R2 = 10, R3 = 29
-EXECUTE:    Operation is ADD, first operand R2, Second operand R3, destination register R1
-           Read registers R1 = 10, R2 = 10, R3 = 29
-MEMORY:     No memory operation
-WRITEBACK: write 32 to R1
-
-
-Executing cycle no: 31
-FETCH:     Fetch instruction 0x01d54533 from address 0xd0
-DECODE:    Operation is SRLI, first operand R2, immediate imm, destination register R1
-           Read registers R1 = 29, R2 = 10, imm = 10
-EXECUTE:    Operation is XOR, first operand R2, Second operand R3, destination register R1
-              Read registers R1 = 29, R2 = 10, R3 = 0
-MEMORY:     No memory operation
-WRITEBACK: write 40 to R1
-
-
-Executing cycle no: 32
-FETCH:     Fetch instruction 0x00451e93 from address 0xd4
-DECODE:    Operation is XOR, first operand R2, Second operand R3, destination register R1
-              Read registers R1 = 10, R2 = 10, R3 = 29
-EXECUTE:    Operation is SRLI, first operand R2, immediate imm, destination register R1
-           Read registers R1 = 10, R2 = 10, imm = 0
-MEMORY:     No memory operation
-WRITEBACK: write 805322752 to R29
-
-
-Executing cycle no: 33
-FETCH:     Fetch instruction 0x01d54533 from address 0xd8
-DECODE:    Operation is SLLI, first operand R2, immediate imm, destination register R1
-           Read registers R1 = 29, R2 = 10, imm = 4
-EXECUTE:    Operation is XOR, first operand R2, Second operand R3, destination register R1
-              Read registers R1 = 29, R2 = 10, R3 = 0
-MEMORY:     No memory operation
-WRITEBACK: write 536883200 to R10
-
-
-Executing cycle no: 34
-FETCH:     Fetch instruction 0x00050a33 from address 0xdc
-DECODE:    Operation is XOR, first operand R2, Second operand R3, destination register R1
-              Read registers R1 = 10, R2 = 10, R3 = 29
-EXECUTE:    Operation is SLLI, first operand R2, immediate imm, destination register R1
-           Read registers R1 = 10, R2 = 10, imm = 0
-MEMORY:     No memory operation
-WRITEBACK: write 0 to R29
-
-
-Executing cycle no: 35
-FETCH:     Fetch instruction 0x00008067 from address 0xe0
-DECODE:    Operation is ADD, first operand R2, Second operand R3, destination register R1
-           Read registers R1 = 20, R2 = 10, R3 = 0
-EXECUTE:    Operation is XOR, first operand R2, Second operand R3, destination register R1
-              Read registers R1 = 20, R2 = 10, R3 = 0
-MEMORY:     No memory operation
-WRITEBACK: write 268464128 to R10
-
-
-Executing cycle no: 36
-FETCH:     Fetch instruction 0x00052e03 from address 0xe4
-DECODE:    Operation is JALR, destination register R1, first operand R2, immediate imm
-           Read registers R1 = 0, R2 = 1, imm = 0
-EXECUTE:    Operation is ADD, first operand R2, Second operand R3, destination register R1
-           Read registers R1 = 0, R2 = 1, R3 = 0
-MEMORY:     No memory operation
-WRITEBACK: write 196608 to R29
-
-
-Executing cycle no: 37
-FETCH:     Fetch instruction 0x00aea023 from address 0x28
-DECODE:    Operation is LW, first operand R2, immediate imm, destination register R1
-           Read registers R1 = 28, R2 = 10, imm = 0
-EXECUTE:    Operation is JALR, destination register R1, first operand R2, immediate imm
-           Read registers R1 = 28, R2 = 10, imm = 0
-MEMORY:     No memory operation
-WRITEBACK: write 268464128 to R10
-
-
-Executing cycle no: 38
-FETCH:     Fetch instruction 0x002a9e93 from address 0x2c
-DECODE:    Operation is SW, first operand R2, second operand R3, immediate imm
-           Read registers R2 = 29, R3 = 10, imm = 0
-EXECUTE:    Operation is LW, first operand R2, immediate imm, destination register R1
-           Read registers R1 = 0, R2 = 29, imm = 0
-MEMORY:     No memory operation
-WRITEBACK: write 268464128 to R20
-
-
-Executing cycle no: 39
-FETCH:     Fetch instruction 0x013e8eb3 from address 0x30
-DECODE:    Operation is SLLI, first operand R2, immediate imm, destination register R1
-           Read registers R1 = 29, R2 = 21, imm = 2
-EXECUTE:    Operation is SW, first operand R2, second operand R3, immediate imm
-           Read registers R2 = 21, R3 = 0, imm = 2
-WRITEBACK: write 232 to R0
-
-
-Executing cycle no: 40
-FETCH:     Fetch instruction 0x00aea023 from address 0x34
-DECODE:    Operation is ADD, first operand R2, Second operand R3, destination register R1
-           Read registers R1 = 29, R2 = 29, R3 = 19
-EXECUTE:    Operation is SLLI, first operand R2, immediate imm, destination register R1
-           Read registers R1 = 29, R2 = 29, imm = 0
-MEMORY:    Operation is SW, first operand R2, second operand R3, immediate imm
-           Read registers R2 = 29, R3 = 19, imm = 0
-
-
-
-Executing cycle no: 41
-FETCH:     Fetch instruction 0x001a8a93 from address 0x38
-DECODE:    Operation is SW, first operand R2, second operand R3, immediate imm
-           Read registers R2 = 29, R3 = 10, imm = 0
-EXECUTE:    Operation is ADD, first operand R2, Second operand R3, destination register R1
-           Read registers R1 = 0, R2 = 29, R3 = 10
-MEMORY:     No memory operation
-WRITEBACK: write 20 to R0
-
-
-Executing cycle no: 42
-FETCH:     Fetch instruction 0xfc005ee3 from address 0x3c
-DECODE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
-           Read registers R1 = 21, R2 = 21, imm = 1
-EXECUTE:    Operation is SW, first operand R2, second operand R3, immediate imm
-           Read registers R2 = 21, R3 = 0, imm = 1
-MEMORY:     No memory operation
-WRITEBACK: write 4 to R29
-
-
-Executing cycle no: 43
-FETCH:     Fetch instruction 0x008000ef from address 0x40
-DECODE:    Operation is BGE, first operand R2, second operand R3, immediate imm
-           Read registers R2 = 0, R3 = 0, imm = -36
-EXECUTE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
-           Read registers R1 = 0, R2 = 0, imm = -36
-MEMORY:    Operation is SW, first operand R2, second operand R3, immediate imm
-           Read registers R2 = 0, R3 = 0, imm = -36
-
-No writeback  operation
-
-
-Executing cycle no: 44
-FETCH:     Fetch instruction 0x0a4000ef from address 0x1c
-DECODE:    Operation is JAL, destination register R1, immediate imm
-           Read registers R1 = 1, imm = 8
-EXECUTE:    Operation is BGE, first operand R2, second operand R3, immediate imm
-           Read registers R2 = 0, R3 = 0, imm = 8
-MEMORY:     No memory operation
-WRITEBACK: write 6395392 to R0
-
-
-Executing cycle no: 45
-FETCH:     Fetch instruction 0x012e8eb3 from address 0x24
-DECODE:    Operation is JAL, destination register R1, immediate imm
-           Read registers R1 = 1, imm = 164
-EXECUTE:    Operation is JAL, destination register R1, immediate imm
-           Read registers R1 = 1, imm = 164
-MEMORY:     No memory operation
-No writeback  operation
-
-
-Executing cycle no: 46
-FETCH:     Fetch instruction 0x01d54533 from address 0xc8
-DECODE:    Operation is ADD, first operand R2, Second operand R3, destination register R1
-           Read registers R1 = 29, R2 = 29, R3 = 18
-EXECUTE:    Operation is JAL, destination register R1, immediate imm
-           Read registers R1 = 29, imm = 0
-MEMORY:     No memory operation
-WRITEBACK: write 6387776 to R0
-
-
-Executing cycle no: 47
-FETCH:     Fetch instruction 0x00a55e93 from address 0xcc
-DECODE:    Operation is XOR, first operand R2, Second operand R3, destination register R1
-              Read registers R1 = 10, R2 = 10, R3 = 29
-EXECUTE:    Operation is ADD, first operand R2, Second operand R3, destination register R1
-           Read registers R1 = 10, R2 = 10, R3 = 29
-MEMORY:     No memory operation
-WRITEBACK: write 32 to R1
-
-
-Executing cycle no: 48
-FETCH:     Fetch instruction 0x01d54533 from address 0xd0
-DECODE:    Operation is SRLI, first operand R2, immediate imm, destination register R1
-           Read registers R1 = 29, R2 = 10, imm = 10
-EXECUTE:    Operation is XOR, first operand R2, Second operand R3, destination register R1
-              Read registers R1 = 29, R2 = 10, R3 = 0
-MEMORY:     No memory operation
-WRITEBACK: write 40 to R1
-
-
-Executing cycle no: 49
-FETCH:     Fetch instruction 0x00451e93 from address 0xd4
-DECODE:    Operation is XOR, first operand R2, Second operand R3, destination register R1
-              Read registers R1 = 10, R2 = 10, R3 = 29
-EXECUTE:    Operation is SRLI, first operand R2, immediate imm, destination register R1
-           Read registers R1 = 10, R2 = 10, imm = 0
-MEMORY:     No memory operation
-WRITEBACK: write 537079808 to R29
-
-
-Executing cycle no: 50
-FETCH:     Fetch instruction 0x01d54533 from address 0xd8
-DECODE:    Operation is SLLI, first operand R2, immediate imm, destination register R1
-           Read registers R1 = 29, R2 = 10, imm = 4
-EXECUTE:    Operation is XOR, first operand R2, Second operand R3, destination register R1
-              Read registers R1 = 29, R2 = 10, R3 = 0
-MEMORY:     No memory operation
-WRITEBACK: write 217088 to R10
-
-
-Executing cycle no: 51
-FETCH:     Fetch instruction 0x00050a33 from address 0xdc
-DECODE:    Operation is XOR, first operand R2, Second operand R3, destination register R1
-              Read registers R1 = 10, R2 = 10, R3 = 29
-EXECUTE:    Operation is SLLI, first operand R2, immediate imm, destination register R1
-           Read registers R1 = 10, R2 = 10, imm = 0
-MEMORY:     No memory operation
-WRITEBACK: write 262172 to R29
-
-
-Executing cycle no: 52
-FETCH:     Fetch instruction 0x00008067 from address 0xe0
-DECODE:    Operation is ADD, first operand R2, Second operand R3, destination register R1
-           Read registers R1 = 20, R2 = 10, R3 = 0
-EXECUTE:    Operation is XOR, first operand R2, Second operand R3, destination register R1
-              Read registers R1 = 20, R2 = 10, R3 = 0
-MEMORY:     No memory operation
-WRITEBACK: write 536895488 to R10
-
-
-Executing cycle no: 53
-FETCH:     Fetch instruction 0x00052e03 from address 0xe4
-DECODE:    Operation is JALR, destination register R1, first operand R2, immediate imm
-           Read registers R1 = 0, R2 = 1, imm = 0
-EXECUTE:    Operation is ADD, first operand R2, Second operand R3, destination register R1
-           Read registers R1 = 0, R2 = 1, R3 = 0
-MEMORY:     No memory operation
-WRITEBACK: write 3473408 to R29
-
-
-Executing cycle no: 54
-FETCH:     Fetch instruction 0x00aea023 from address 0x28
-DECODE:    Operation is LW, first operand R2, immediate imm, destination register R1
-           Read registers R1 = 28, R2 = 10, imm = 0
-EXECUTE:    Operation is JALR, destination register R1, first operand R2, immediate imm
-           Read registers R1 = 28, R2 = 10, imm = 0
-MEMORY:     No memory operation
-WRITEBACK: write 537157660 to R10
-
-
-Executing cycle no: 55
-FETCH:     Fetch instruction 0x002a9e93 from address 0x2c
-DECODE:    Operation is SW, first operand R2, second operand R3, immediate imm
-           Read registers R2 = 29, R3 = 10, imm = 0
-EXECUTE:    Operation is LW, first operand R2, immediate imm, destination register R1
-           Read registers R1 = 0, R2 = 29, imm = 0
-MEMORY:     No memory operation
-WRITEBACK: write 536895488 to R20
-
-
-Executing cycle no: 56
-FETCH:     Fetch instruction 0x013e8eb3 from address 0x30
-DECODE:    Operation is SLLI, first operand R2, immediate imm, destination register R1
-           Read registers R1 = 29, R2 = 21, imm = 2
-EXECUTE:    Operation is SW, first operand R2, second operand R3, immediate imm
-           Read registers R2 = 21, R3 = 0, imm = 2
-WRITEBACK: write 232 to R0
-
-
-Executing cycle no: 57
-FETCH:     Fetch instruction 0x00aea023 from address 0x34
-DECODE:    Operation is ADD, first operand R2, Second operand R3, destination register R1
-           Read registers R1 = 29, R2 = 29, R3 = 19
-EXECUTE:    Operation is SLLI, first operand R2, immediate imm, destination register R1
-           Read registers R1 = 29, R2 = 29, imm = 0
-MEMORY:    Operation is SW, first operand R2, second operand R3, immediate imm
-           Read registers R2 = 29, R3 = 19, imm = 0
-
-
-
-Executing cycle no: 58
-FETCH:     Fetch instruction 0x001a8a93 from address 0x38
-DECODE:    Operation is SW, first operand R2, second operand R3, immediate imm
-           Read registers R2 = 29, R3 = 10, imm = 0
-EXECUTE:    Operation is ADD, first operand R2, Second operand R3, destination register R1
-           Read registers R1 = 0, R2 = 29, R3 = 10
-MEMORY:     No memory operation
-WRITEBACK: write 20 to R0
-
-
-Executing cycle no: 59
-FETCH:     Fetch instruction 0xfc005ee3 from address 0x3c
-DECODE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
-           Read registers R1 = 21, R2 = 21, imm = 1
-EXECUTE:    Operation is SW, first operand R2, second operand R3, immediate imm
-           Read registers R2 = 21, R3 = 0, imm = 1
-MEMORY:     No memory operation
-WRITEBACK: write 8 to R29
-
-
-Executing cycle no: 60
-FETCH:     Fetch instruction 0x008000ef from address 0x40
-DECODE:    Operation is BGE, first operand R2, second operand R3, immediate imm
-           Read registers R2 = 0, R3 = 0, imm = -36
-EXECUTE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
-           Read registers R1 = 0, R2 = 0, imm = -36
-MEMORY:    Operation is SW, first operand R2, second operand R3, immediate imm
-           Read registers R2 = 0, R3 = 0, imm = -36
-
-No writeback  operation
-
-
-Executing cycle no: 61
-FETCH:     Fetch instruction 0x0a4000ef from address 0x1c
-DECODE:    Operation is JAL, destination register R1, immediate imm
-           Read registers R1 = 1, imm = 8
-EXECUTE:    Operation is BGE, first operand R2, second operand R3, immediate imm
-           Read registers R2 = 0, R3 = 0, imm = 8
-MEMORY:     No memory operation
-WRITEBACK: write 6330656 to R0
-
-
-Executing cycle no: 62
-FETCH:     Fetch instruction 0x012e8eb3 from address 0x24
-DECODE:    Operation is JAL, destination register R1, immediate imm
-           Read registers R1 = 1, imm = 164
-EXECUTE:    Operation is JAL, destination register R1, immediate imm
-           Read registers R1 = 1, imm = 164
-MEMORY:     No memory operation
-No writeback  operation
-
-
-Executing cycle no: 63
-FETCH:     Fetch instruction 0x01d54533 from address 0xc8
-DECODE:    Operation is ADD, first operand R2, Second operand R3, destination register R1
-           Read registers R1 = 29, R2 = 29, R3 = 18
-EXECUTE:    Operation is JAL, destination register R1, immediate imm
-           Read registers R1 = 29, imm = 0
-MEMORY:     No memory operation
-WRITEBACK: write 6323040 to R0
-
-
-Executing cycle no: 64
-FETCH:     Fetch instruction 0x00a55e93 from address 0xcc
-DECODE:    Operation is XOR, first operand R2, Second operand R3, destination register R1
-              Read registers R1 = 10, R2 = 10, R3 = 29
-EXECUTE:    Operation is ADD, first operand R2, Second operand R3, destination register R1
-           Read registers R1 = 10, R2 = 10, R3 = 29
-MEMORY:     No memory operation
-WRITEBACK: write 32 to R1
-
-
-Executing cycle no: 65
-FETCH:     Fetch instruction 0x01d54533 from address 0xd0
-DECODE:    Operation is SRLI, first operand R2, immediate imm, destination register R1
-           Read registers R1 = 29, R2 = 10, imm = 10
-EXECUTE:    Operation is XOR, first operand R2, Second operand R3, destination register R1
-              Read registers R1 = 29, R2 = 10, R3 = 0
-MEMORY:     No memory operation
-WRITEBACK: write 40 to R1
-
-
-Executing cycle no: 66
-FETCH:     Fetch instruction 0x00451e93 from address 0xd4
-DECODE:    Operation is XOR, first operand R2, Second operand R3, destination register R1
-              Read registers R1 = 10, R2 = 10, R3 = 29
-EXECUTE:    Operation is SRLI, first operand R2, immediate imm, destination register R1
-           Read registers R1 = 10, R2 = 10, imm = 0
-MEMORY:     No memory operation
-WRITEBACK: write 540356608 to R29
-
-
-Executing cycle no: 67
-FETCH:     Fetch instruction 0x01d54533 from address 0xd8
-DECODE:    Operation is SLLI, first operand R2, immediate imm, destination register R1
-           Read registers R1 = 29, R2 = 10, imm = 4
-EXECUTE:    Operation is XOR, first operand R2, Second operand R3, destination register R1
-              Read registers R1 = 29, R2 = 10, R3 = 0
-MEMORY:     No memory operation
-WRITEBACK: write 808534044 to R10
-
-
-Executing cycle no: 68
-FETCH:     Fetch instruction 0x00050a33 from address 0xdc
-DECODE:    Operation is XOR, first operand R2, Second operand R3, destination register R1
-              Read registers R1 = 10, R2 = 10, R3 = 29
-EXECUTE:    Operation is SLLI, first operand R2, immediate imm, destination register R1
-           Read registers R1 = 10, R2 = 10, imm = 0
-MEMORY:     No memory operation
-WRITEBACK: write 524568 to R29
-
-
-Executing cycle no: 69
-FETCH:     Fetch instruction 0x00008067 from address 0xe0
-DECODE:    Operation is ADD, first operand R2, Second operand R3, destination register R1
-           Read registers R1 = 20, R2 = 10, R3 = 0
-EXECUTE:    Operation is XOR, first operand R2, Second operand R3, destination register R1
-              Read registers R1 = 20, R2 = 10, R3 = 0
-MEMORY:     No memory operation
-WRITEBACK: write 268726300 to R10
-
-
-Executing cycle no: 70
-FETCH:     Fetch instruction 0x00052e03 from address 0xe4
-DECODE:    Operation is JALR, destination register R1, first operand R2, immediate imm
-           Read registers R1 = 0, R2 = 1, imm = 0
-EXECUTE:    Operation is ADD, first operand R2, Second operand R3, destination register R1
-           Read registers R1 = 0, R2 = 1, R3 = 0
-MEMORY:     No memory operation
-WRITEBACK: write 51642816 to R29
-
-
-Executing cycle no: 71
-FETCH:     Fetch instruction 0x00aea023 from address 0x28
-DECODE:    Operation is LW, first operand R2, immediate imm, destination register R1
-           Read registers R1 = 28, R2 = 10, imm = 0
-EXECUTE:    Operation is JALR, destination register R1, first operand R2, immediate imm
-           Read registers R1 = 28, R2 = 10, imm = 0
-MEMORY:     No memory operation
-WRITEBACK: write 269250820 to R10
