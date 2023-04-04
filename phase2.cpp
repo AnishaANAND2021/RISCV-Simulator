@@ -23,9 +23,11 @@ vector<bitset<32>> words; // vector of instructions
 map<int, int> memory;     // map of memory
 
 int cycle = 0;                                   // stores the no of cycles
-int stall = 0, stalls = 0;                       // stall stores no of stall in a cycle stalls store total no of stalls
 int pc = 0, next_pc = 0;                         // it will store the next pc (in case of any jump);
 int n_f = 0, n_d = 0, n_e = 0, n_m = 0, n_w = 0; // no of write back operations executed
+int stall = 0, stalls = 0, stall_d = 0;          // stall is due to control dependency
+                                                 //  stall stores no of stall in a cycle stalls store total no of stalls
+                                                 // stall_d is stall due to data depenedency
 
 // INSTRUCTIONS:
 void FETCH();
@@ -44,10 +46,11 @@ vector<vector<int>> b_e_w;       // b_w_w;
 vector<vector<int>> b_m_w;       // b_w_w;
 vector<vector<int>> b_w_w;       // b_w_w;
 
-vector<int> r_d;
+vector<int> r_d;                           // stores value of destination registers to check stalls
 string bin_hex(bitset<32> b);              // converts binary to hex
 int bin_2_dec(bitset<32> b, int f, int l); // converts binary to decimal
 
+int cwds = 0;
 ofstream fOut("terminal.txt");
 //----- DRIVER CODE -----
 
@@ -198,7 +201,6 @@ void FETCH()
     int x = words.size();
     int y = next_pc / 4;
     int i = 1;
-    cout << y << ' ' << x << endl;
     if (y < x)
     {
 
@@ -213,7 +215,6 @@ void FETCH()
         b_d.push_back(b);
     }
     n_f++;
-    cout << b_e_w.size() << "=size";
     if (cycle)
         fOut << "\n\nExecuting cycle no: " << dec << cycle << endl;
     if (b_f_w.size())
@@ -1510,10 +1511,22 @@ void DECODE()
             r_d.push_back(rd);
             auto it = find(r_d.begin(), r_d.end(), rs1);
             auto itt = find(r_d.begin(), r_d.end(), rs2);
-            cout<<"it="<<*it<<endl;
+            if (it != r_d.end())
+                cout << "it=" << *it << endl;
             if (itt != r_d.end() || it != r_d.end())
             {
                 // stall
+                if (*itt == r_d[1] || *it == r_d[1])
+                {
+                    if(!cwds) stall_d = 2;
+                }
+                else if(!cwds)
+                {
+                    if (r_d[1] == rd)
+                        stall_d = 2;
+                    else if (r_d[2] == rd)
+                        stall_d = 1;
+                }
             }
         }
 
@@ -1528,6 +1541,7 @@ void DECODE()
 
 void EXECUTE()
 {
+
     if (n_f)
     {
         pc += 4;
@@ -1841,7 +1855,31 @@ void MEMORY_ACCESS()
             // b_w.push_back(make_pair(x, n));
             n_m++;
         }
-        EXECUTE();
+        cout << "stall_d=" << stall_d << endl;
+        if (stall_d == 2)// && b_w.size())
+        {
+            cwds = 1;
+            //
+            cout<<b_w.size()<<"=size";
+            //n_w -= 1;
+            stall_d--;
+             FETCH();
+            //WRITE_BACK();
+            // stall_d--;
+        }
+
+        else if (stall_d == 1 && b_w.size())
+        {
+            // FETCH();
+            cwds = 1;
+            //n_w -= 1;
+            stall_d--;
+            FETCH();
+            
+            //WRITE_BACK();
+        }
+        else
+            EXECUTE();
     }
 }
 
@@ -1849,11 +1887,12 @@ void MEMORY_ACCESS()
 
 void WRITE_BACK()
 {
-
+    cwds=0;
     if (n_w < words.size())
     {
         if (b_w.size())
         {
+            
             int result = b_w[0][1];
             int n = b_w[0][0];
             int rd = b_w[0][4];
@@ -1875,6 +1914,7 @@ void WRITE_BACK()
                 r[rd] = result;
             }
 
+            // if (stall_d == 0)
             n_w++;
         }
         if (stall == 2)
