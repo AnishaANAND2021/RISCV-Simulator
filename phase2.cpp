@@ -22,8 +22,9 @@ int r[N]; // array of registers
 vector<bitset<32>> words; // vector of instructions
 map<int, int> memory;     // map of memory
 
+int cycle = 0;                                   // stores the no of cycles
+int stall = 0, stalls = 0;                       // stall stores no of stall in a cycle stalls store total no of stalls
 int pc = 0, next_pc = 0;                         // it will store the next pc (in case of any jump);
-int cycles = 0, cycle = 0;                       // stores the no of cycles
 int n_f = 0, n_d = 0, n_e = 0, n_m = 0, n_w = 0; // no of write back operations executed
 
 // INSTRUCTIONS:
@@ -43,6 +44,7 @@ vector<vector<int>> b_e_w;       // b_w_w;
 vector<vector<int>> b_m_w;       // b_w_w;
 vector<vector<int>> b_w_w;       // b_w_w;
 
+vector<int> r_d;
 string bin_hex(bitset<32> b);              // converts binary to hex
 int bin_2_dec(bitset<32> b, int f, int l); // converts binary to decimal
 
@@ -781,6 +783,7 @@ void FETCH()
 
 void DECODE()
 {
+
     if (b_d.size())
     {
         int rs1, rs2, rd, imm;
@@ -1499,6 +1502,19 @@ void DECODE()
 
             else
                 cout << "Given instruction is invalid !!\n";
+            if (r_d.size() == 3)
+            {
+                auto it = r_d.begin();
+                r_d.erase(it);
+            }
+            r_d.push_back(rd);
+            auto it = find(r_d.begin(), r_d.end(), rs1);
+            auto itt = find(r_d.begin(), r_d.end(), rs2);
+            cout<<"it="<<*it<<endl;
+            if (itt != r_d.end() || it != r_d.end())
+            {
+                // stall
+            }
         }
 
         else
@@ -1741,7 +1757,10 @@ void EXECUTE()
         n_d++;
     }
     if (pc != next_pc)
+    {
         next_pc = pc;
+        stall = 2;
+    }
     //
     DECODE();
 }
@@ -1857,6 +1876,12 @@ void WRITE_BACK()
             }
 
             n_w++;
+        }
+        if (stall == 2)
+        {
+            b_e.pop_back();
+            b_d.pop_back();
+            stall--;
         }
         MEMORY_ACCESS();
     }
