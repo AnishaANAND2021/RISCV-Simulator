@@ -214,7 +214,6 @@ void FETCH()
         bitset<32> b = words[(y)];
         p_c.push_back(next_pc);
         i++;
-        b_d.clear();
         //if(b_d.size()) b_d.pop_back();
         b_d.push_back(b);
     }
@@ -1988,10 +1987,14 @@ void WRITE_BACK()
             b_w.pop_back();
 
             r[0] = 0;
-            if (n <25 && n >33)
+            if (n > 24 && n < 34)
+            {
+            }
+            else
             {
                 r[rd] = result;
             }
+
             n_w++;
 
             cout << n_w << "n_x\n\n";
