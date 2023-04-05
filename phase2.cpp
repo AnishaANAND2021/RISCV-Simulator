@@ -214,7 +214,8 @@ void FETCH()
         bitset<32> b = words[(y)];
         p_c.push_back(next_pc);
         i++;
-
+        b_d.clear();
+        //if(b_d.size()) b_d.pop_back();
         b_d.push_back(b);
     }
     n_f++;
@@ -1566,7 +1567,7 @@ void DECODE()
             }
         }
     }
-    if (stall_d < 2)
+    if (stall_d != 0)
         cwds = 0;
     else
         cwds = 1;
@@ -1892,28 +1893,28 @@ void MEMORY_ACCESS()
             b_w.push_back(val);
             // b_w.push_back(make_pair(x, n));
             n_m++;
-            if (n > 19 && n < 25)
-                r_d.push_back(rd);
-            if (r_d.size() == 4)
-            {
-                auto it = r_d.begin();
-                r_d.erase(it);
-            }
-            auto it = find(r_d.begin(), r_d.end(), rs1);
-            if (it != r_d.end())
-            {
-                // stall
-                if (*it == r_d[1])
-                {
-                    if (!cwds)
-                        stall_d = 1;
-                }
-                else if (!cwds)
-                {
-                    if (r_d[1] == rd)
-                        stall_d = 1;
-                }
-            }
+            /*/ if (n > 19 && n < 25)
+                // r_d.push_back(rd);
+             if (r_d.size() == 4)
+             {
+                 auto it = r_d.begin();
+                 r_d.erase(it);
+             }
+             auto it = find(r_d.begin(), r_d.end(), rs1);
+             if (it != r_d.end())
+             {
+                 // stall
+                 if (*it == r_d[1])
+                 {
+                     if (!cwds)
+                         stall_d = 1;
+                 }
+                 else if (!cwds)
+                 {
+                     if (r_d[1] == rd)
+                         stall_d = 1;
+                 }
+             }*/
         }
 
         /*if (stall_d == 3)
@@ -1940,9 +1941,24 @@ void MEMORY_ACCESS()
             b_e.pop_back();
             x--;
         }*/
-        if (stall_d != 0)
+        if (pc != next_pc)
         {
-            stall_d --;
+           // fOut<<"BGE\npc= "<<dec<<pc-4<<endl;;
+            n_w += (pc / 4 - (next_pc) / 4 + 0);
+            next_pc = pc - 4;
+            pc = next_pc;
+            b_e.pop_back();
+            b_d.pop_back();
+            b_m.pop_back();
+            fOut << b_d.size() << "besize";
+            stall_d = 0;
+            stall = 2;
+            cwds=0;
+            FETCH();
+        }
+        else if (stall_d != 0)
+        {
+            stall_d--;
             FETCH();
         }
         else
@@ -1972,29 +1988,25 @@ void WRITE_BACK()
             b_w.pop_back();
 
             r[0] = 0;
-            if (n > 24 && n < 34)
-            {
-            }
-            else
+            if (n <25 && n >33)
             {
                 r[rd] = result;
             }
-
             n_w++;
 
             cout << n_w << "n_x\n\n";
-            if (pc != next_pc)
+            /*if (pc != next_pc )
             {
 
                 n_w += (pc / 4 - next_pc / 4 + 2);
-                next_pc = pc;
+                next_pc = pc+4;
                 pc = next_pc;
                 b_e.pop_back();
                 b_d.pop_back();
                 cout << b_e.size() << "besize";
-
+                stall_d=0;
                 stall = 2;
-            }
+            }*/
             cout << stall_d << "stall_d\n\n\n\n";
         }
         // stall = 0;
