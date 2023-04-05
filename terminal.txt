@@ -15,7 +15,7 @@ FETCH:     Fetch instruction 0x100029b7 from address 0x8
 DECODE:    Operation is LUI, destination register R1, immediate imm
            Read registers R1 = 18, imm = 65537
 EXECUTE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
-           Read registers R1 = 18, R2 = 17569976, imm = 65537
+           Read registers R1 = 0, R2 = 10, imm = 3
 
 
 Executing cycle no: 4
@@ -38,7 +38,7 @@ WRITEBACK: write 10 to R3
 
 
 Executing cycle no: 6
-FETCH:     Fetch instruction 0x00000ab3 from address 0x14
+FETCH:     Fetch instruction 0x0bba0a13 from address 0x10
 DECODE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
            Read registers R1 = 20, R2 = 20, imm = 187
 EXECUTE:    Operation is LUI, destination register R1, immediate imm
@@ -48,92 +48,620 @@ WRITEBACK: write 268439552 to R18
 
 
 Executing cycle no: 7
-FETCH:     Fetch instruction 0x00000ab3 from address 0x14
+FETCH:     Fetch instruction 0x0bba0a13 from address 0x10
+DECODE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 20, R2 = 20, imm = 187
+EXECUTE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 0, R2 = 187, imm = 20
 MEMORY:     No memory operation
-WRITEBACK: write 10002000 to R13
+WRITEBACK: write 268443648 to R19
 
 
 Executing cycle no: 8
-FETCH:     Fetch instruction 0x023ad463 from address 0x18
-DECODE:    Operation is ADD, first operand R2, Second operand R3, destination register R1
-           Read registers R1 = 21, R2 = 0, R3 = 0
+FETCH:     Fetch instruction 0x0bba0a13 from address 0x10
+DECODE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 20, R2 = 20, imm = 187
 EXECUTE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
-           Read registers R1 = 21, R2 = 17570192, imm = 0
+           Read registers R1 = 0, R2 = 534388923, imm = 20
+MEMORY:     No memory operation
 WRITEBACK: write 534388736 to R20
 
 
 Executing cycle no: 9
-FETCH:     Fetch instruction 0x023ad463 from address 0x18
+FETCH:     Fetch instruction 0x0bba0a13 from address 0x10
+DECODE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 20, R2 = 20, imm = 187
+EXECUTE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 0, R2 = 374, imm = 20
 MEMORY:     No memory operation
+WRITEBACK: write 187 to R20
 
 
 Executing cycle no: 10
-FETCH:     Fetch instruction 0x0a4000ef from address 0x1c
-DECODE:    Operation is ADD, first operand R2, Second operand R3, destination register R1
-           Read registers R1 = 21, R2 = 0, R3 = 0
-EXECUTE:    Operation is ADD, first operand R2, Second operand R3, destination register R1
-           Read registers R1 = 21, R2 = 17569888, R3 = 0
+FETCH:     Fetch instruction 0x0bba0a13 from address 0x10
+DECODE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 20, R2 = 20, imm = 187
+EXECUTE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 0, R2 = 534389110, imm = 20
+MEMORY:     No memory operation
 WRITEBACK: write 534388923 to R20
 
 
 Executing cycle no: 11
-FETCH:     Fetch instruction 0x002a9e93 from address 0x20
-DECODE:    Operation is BGE, first operand R2, second operand R3, immediate imm
-           Read registers R2 = 21, R3 = 3, imm = 40
-EXECUTE:    Operation is ADD, first operand R2, Second operand R3, destination register R1
-           Read registers R1 = 4324913, R2 = 17569624, R3 = 3
+FETCH:     Fetch instruction 0x0bba0a13 from address 0x10
+DECODE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 20, R2 = 20, imm = 187
+EXECUTE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 0, R2 = 561, imm = 20
 MEMORY:     No memory operation
+WRITEBACK: write 374 to R20
 
 
 Executing cycle no: 12
-FETCH:     Fetch instruction 0x002a9e93 from address 0x20
+FETCH:     Fetch instruction 0x0bba0a13 from address 0x10
+DECODE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 20, R2 = 20, imm = 187
+EXECUTE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 0, R2 = 534389297, imm = 20
 MEMORY:     No memory operation
-WRITEBACK: write 0 to R15
+WRITEBACK: write 534389110 to R20
 
 
 Executing cycle no: 13
-FETCH:     Fetch instruction 0x012e8eb3 from address 0x24
-DECODE:    Operation is JAL, destination register R1, immediate imm
-           Read registers R1 = 1, imm = 164
-EXECUTE:    Operation is BGE, first operand R2, second operand R3, immediate imm
-           Read registers R2 = 17569624, R3 = 1818326131, imm = 164
-WRITEBACK: write 0 to R21
+FETCH:     Fetch instruction 0x0bba0a13 from address 0x10
+DECODE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 20, R2 = 20, imm = 187
+EXECUTE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 0, R2 = 748, imm = 20
+MEMORY:     No memory operation
+WRITEBACK: write 561 to R20
 
 
 Executing cycle no: 14
-FETCH:     Fetch instruction 0x012e8eb3 from address 0x24
+FETCH:     Fetch instruction 0x0bba0a13 from address 0x10
+DECODE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 20, R2 = 20, imm = 187
+EXECUTE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 0, R2 = 534389484, imm = 20
 MEMORY:     No memory operation
+WRITEBACK: write 534389297 to R20
 
 
 Executing cycle no: 15
-FETCH:     Fetch instruction 0x00aea023 from address 0x28
-DECODE:    Operation is SLLI, first operand R2, immediate imm, destination register R1
-           Read registers R1 = 29, R2 = 21, imm = 2
-EXECUTE:    Operation is JAL, destination register R1, immediate imm
-           Read registers R1 = 29, imm = 2
-WRITEBACK: write 74 to R4324913
+FETCH:     Fetch instruction 0x0bba0a13 from address 0x10
+DECODE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 20, R2 = 20, imm = 187
+EXECUTE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 0, R2 = 935, imm = 20
+MEMORY:     No memory operation
+WRITEBACK: write 748 to R20
 
 
 Executing cycle no: 16
-FETCH:     Fetch instruction 0x01551e93 from address 0xc4
-DECODE:    Operation is ADD, first operand R2, Second operand R3, destination register R1
-           Read registers R1 = 29, R2 = 29, R3 = 18
+FETCH:     Fetch instruction 0x0bba0a13 from address 0x10
+DECODE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 20, R2 = 20, imm = 187
+EXECUTE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 0, R2 = 534389671, imm = 20
 MEMORY:     No memory operation
+WRITEBACK: write 534389484 to R20
 
 
 Executing cycle no: 17
-FETCH:     Fetch instruction 0x01551e93 from address 0xc4
-WRITEBACK: write 28 to R1
+FETCH:     Fetch instruction 0x0bba0a13 from address 0x10
+DECODE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 20, R2 = 20, imm = 187
+EXECUTE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 0, R2 = 1122, imm = 20
+MEMORY:     No memory operation
+WRITEBACK: write 935 to R20
 
 
 Executing cycle no: 18
-FETCH:     Fetch instruction 0x01551e93 from address 0xc4
-DECODE:    Operation is SLLI, first operand R2, immediate imm, destination register R1
-           Read registers R1 = 29, R2 = 21, imm = 2
-EXECUTE:    Operation is ADD, first operand R2, Second operand R3, destination register R1
-           Read registers R1 = 29, R2 = 17570128, R3 = 2053731173
+FETCH:     Fetch instruction 0x0bba0a13 from address 0x10
+DECODE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 20, R2 = 20, imm = 187
+EXECUTE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 0, R2 = 534389858, imm = 20
+MEMORY:     No memory operation
+WRITEBACK: write 534389671 to R20
 
 
 Executing cycle no: 19
-FETCH:     Fetch instruction 0x01551e93 from address 0xc4
+FETCH:     Fetch instruction 0x0bba0a13 from address 0x10
+DECODE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 20, R2 = 20, imm = 187
+EXECUTE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 0, R2 = 1309, imm = 20
 MEMORY:     No memory operation
+WRITEBACK: write 1122 to R20
+
+
+Executing cycle no: 20
+FETCH:     Fetch instruction 0x0bba0a13 from address 0x10
+DECODE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 20, R2 = 20, imm = 187
+EXECUTE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 0, R2 = 534390045, imm = 20
+MEMORY:     No memory operation
+WRITEBACK: write 534389858 to R20
+
+
+Executing cycle no: 21
+FETCH:     Fetch instruction 0x0bba0a13 from address 0x10
+DECODE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 20, R2 = 20, imm = 187
+EXECUTE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 0, R2 = 1496, imm = 20
+MEMORY:     No memory operation
+WRITEBACK: write 1309 to R20
+
+
+Executing cycle no: 22
+FETCH:     Fetch instruction 0x0bba0a13 from address 0x10
+DECODE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 20, R2 = 20, imm = 187
+EXECUTE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 0, R2 = 534390232, imm = 20
+MEMORY:     No memory operation
+WRITEBACK: write 534390045 to R20
+
+
+Executing cycle no: 23
+FETCH:     Fetch instruction 0x0bba0a13 from address 0x10
+DECODE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 20, R2 = 20, imm = 187
+EXECUTE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 0, R2 = 1683, imm = 20
+MEMORY:     No memory operation
+WRITEBACK: write 1496 to R20
+
+
+Executing cycle no: 24
+FETCH:     Fetch instruction 0x0bba0a13 from address 0x10
+DECODE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 20, R2 = 20, imm = 187
+EXECUTE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 0, R2 = 534390419, imm = 20
+MEMORY:     No memory operation
+WRITEBACK: write 534390232 to R20
+
+
+Executing cycle no: 25
+FETCH:     Fetch instruction 0x0bba0a13 from address 0x10
+DECODE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 20, R2 = 20, imm = 187
+EXECUTE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 0, R2 = 1870, imm = 20
+MEMORY:     No memory operation
+WRITEBACK: write 1683 to R20
+
+
+Executing cycle no: 26
+FETCH:     Fetch instruction 0x0bba0a13 from address 0x10
+DECODE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 20, R2 = 20, imm = 187
+EXECUTE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 0, R2 = 534390606, imm = 20
+MEMORY:     No memory operation
+WRITEBACK: write 534390419 to R20
+
+
+Executing cycle no: 27
+FETCH:     Fetch instruction 0x0bba0a13 from address 0x10
+DECODE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 20, R2 = 20, imm = 187
+EXECUTE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 0, R2 = 2057, imm = 20
+MEMORY:     No memory operation
+WRITEBACK: write 1870 to R20
+
+
+Executing cycle no: 28
+FETCH:     Fetch instruction 0x0bba0a13 from address 0x10
+DECODE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 20, R2 = 20, imm = 187
+EXECUTE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 0, R2 = 534390793, imm = 20
+MEMORY:     No memory operation
+WRITEBACK: write 534390606 to R20
+
+
+Executing cycle no: 29
+FETCH:     Fetch instruction 0x0bba0a13 from address 0x10
+DECODE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 20, R2 = 20, imm = 187
+EXECUTE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 0, R2 = 2244, imm = 20
+MEMORY:     No memory operation
+WRITEBACK: write 2057 to R20
+
+
+Executing cycle no: 30
+FETCH:     Fetch instruction 0x0bba0a13 from address 0x10
+DECODE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 20, R2 = 20, imm = 187
+EXECUTE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 0, R2 = 534390980, imm = 20
+MEMORY:     No memory operation
+WRITEBACK: write 534390793 to R20
+
+
+Executing cycle no: 31
+FETCH:     Fetch instruction 0x0bba0a13 from address 0x10
+DECODE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 20, R2 = 20, imm = 187
+EXECUTE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 0, R2 = 2431, imm = 20
+MEMORY:     No memory operation
+WRITEBACK: write 2244 to R20
+
+
+Executing cycle no: 32
+FETCH:     Fetch instruction 0x0bba0a13 from address 0x10
+DECODE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 20, R2 = 20, imm = 187
+EXECUTE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 0, R2 = 534391167, imm = 20
+MEMORY:     No memory operation
+WRITEBACK: write 534390980 to R20
+
+
+Executing cycle no: 33
+FETCH:     Fetch instruction 0x0bba0a13 from address 0x10
+DECODE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 20, R2 = 20, imm = 187
+EXECUTE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 0, R2 = 2618, imm = 20
+MEMORY:     No memory operation
+WRITEBACK: write 2431 to R20
+
+
+Executing cycle no: 34
+FETCH:     Fetch instruction 0x0bba0a13 from address 0x10
+DECODE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 20, R2 = 20, imm = 187
+EXECUTE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 0, R2 = 534391354, imm = 20
+MEMORY:     No memory operation
+WRITEBACK: write 534391167 to R20
+
+
+Executing cycle no: 35
+FETCH:     Fetch instruction 0x0bba0a13 from address 0x10
+DECODE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 20, R2 = 20, imm = 187
+EXECUTE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 0, R2 = 2805, imm = 20
+MEMORY:     No memory operation
+WRITEBACK: write 2618 to R20
+
+
+Executing cycle no: 36
+FETCH:     Fetch instruction 0x0bba0a13 from address 0x10
+DECODE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 20, R2 = 20, imm = 187
+EXECUTE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 0, R2 = 534391541, imm = 20
+MEMORY:     No memory operation
+WRITEBACK: write 534391354 to R20
+
+
+Executing cycle no: 37
+FETCH:     Fetch instruction 0x0bba0a13 from address 0x10
+DECODE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 20, R2 = 20, imm = 187
+EXECUTE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 0, R2 = 2992, imm = 20
+MEMORY:     No memory operation
+WRITEBACK: write 2805 to R20
+
+
+Executing cycle no: 38
+FETCH:     Fetch instruction 0x0bba0a13 from address 0x10
+DECODE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 20, R2 = 20, imm = 187
+EXECUTE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 0, R2 = 534391728, imm = 20
+MEMORY:     No memory operation
+WRITEBACK: write 534391541 to R20
+
+
+Executing cycle no: 39
+FETCH:     Fetch instruction 0x0bba0a13 from address 0x10
+DECODE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 20, R2 = 20, imm = 187
+EXECUTE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 0, R2 = 3179, imm = 20
+MEMORY:     No memory operation
+WRITEBACK: write 2992 to R20
+
+
+Executing cycle no: 40
+FETCH:     Fetch instruction 0x0bba0a13 from address 0x10
+DECODE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 20, R2 = 20, imm = 187
+EXECUTE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 0, R2 = 534391915, imm = 20
+MEMORY:     No memory operation
+WRITEBACK: write 534391728 to R20
+
+
+Executing cycle no: 41
+FETCH:     Fetch instruction 0x0bba0a13 from address 0x10
+DECODE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 20, R2 = 20, imm = 187
+EXECUTE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 0, R2 = 3366, imm = 20
+MEMORY:     No memory operation
+WRITEBACK: write 3179 to R20
+
+
+Executing cycle no: 42
+FETCH:     Fetch instruction 0x0bba0a13 from address 0x10
+DECODE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 20, R2 = 20, imm = 187
+EXECUTE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 0, R2 = 534392102, imm = 20
+MEMORY:     No memory operation
+WRITEBACK: write 534391915 to R20
+
+
+Executing cycle no: 43
+FETCH:     Fetch instruction 0x0bba0a13 from address 0x10
+DECODE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 20, R2 = 20, imm = 187
+EXECUTE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 0, R2 = 3553, imm = 20
+MEMORY:     No memory operation
+WRITEBACK: write 3366 to R20
+
+
+Executing cycle no: 44
+FETCH:     Fetch instruction 0x0bba0a13 from address 0x10
+DECODE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 20, R2 = 20, imm = 187
+EXECUTE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 0, R2 = 534392289, imm = 20
+MEMORY:     No memory operation
+WRITEBACK: write 534392102 to R20
+
+
+Executing cycle no: 45
+FETCH:     Fetch instruction 0x0bba0a13 from address 0x10
+DECODE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 20, R2 = 20, imm = 187
+EXECUTE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 0, R2 = 3740, imm = 20
+MEMORY:     No memory operation
+WRITEBACK: write 3553 to R20
+
+
+Executing cycle no: 46
+FETCH:     Fetch instruction 0x0bba0a13 from address 0x10
+DECODE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 20, R2 = 20, imm = 187
+EXECUTE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 0, R2 = 534392476, imm = 20
+MEMORY:     No memory operation
+WRITEBACK: write 534392289 to R20
+
+
+Executing cycle no: 47
+FETCH:     Fetch instruction 0x0bba0a13 from address 0x10
+DECODE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 20, R2 = 20, imm = 187
+EXECUTE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 0, R2 = 3927, imm = 20
+MEMORY:     No memory operation
+WRITEBACK: write 3740 to R20
+
+
+Executing cycle no: 48
+FETCH:     Fetch instruction 0x0bba0a13 from address 0x10
+DECODE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 20, R2 = 20, imm = 187
+EXECUTE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 0, R2 = 534392663, imm = 20
+MEMORY:     No memory operation
+WRITEBACK: write 534392476 to R20
+
+
+Executing cycle no: 49
+FETCH:     Fetch instruction 0x0bba0a13 from address 0x10
+DECODE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 20, R2 = 20, imm = 187
+EXECUTE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 0, R2 = 4114, imm = 20
+MEMORY:     No memory operation
+WRITEBACK: write 3927 to R20
+
+
+Executing cycle no: 50
+FETCH:     Fetch instruction 0x0bba0a13 from address 0x10
+DECODE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 20, R2 = 20, imm = 187
+EXECUTE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 0, R2 = 534392850, imm = 20
+MEMORY:     No memory operation
+WRITEBACK: write 534392663 to R20
+
+
+Executing cycle no: 51
+FETCH:     Fetch instruction 0x0bba0a13 from address 0x10
+DECODE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 20, R2 = 20, imm = 187
+EXECUTE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 0, R2 = 4301, imm = 20
+MEMORY:     No memory operation
+WRITEBACK: write 4114 to R20
+
+
+Executing cycle no: 52
+FETCH:     Fetch instruction 0x0bba0a13 from address 0x10
+DECODE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 20, R2 = 20, imm = 187
+EXECUTE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 0, R2 = 534393037, imm = 20
+MEMORY:     No memory operation
+WRITEBACK: write 534392850 to R20
+
+
+Executing cycle no: 53
+FETCH:     Fetch instruction 0x0bba0a13 from address 0x10
+DECODE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 20, R2 = 20, imm = 187
+EXECUTE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 0, R2 = 4488, imm = 20
+MEMORY:     No memory operation
+WRITEBACK: write 4301 to R20
+
+
+Executing cycle no: 54
+FETCH:     Fetch instruction 0x0bba0a13 from address 0x10
+DECODE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 20, R2 = 20, imm = 187
+EXECUTE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 0, R2 = 534393224, imm = 20
+MEMORY:     No memory operation
+WRITEBACK: write 534393037 to R20
+
+
+Executing cycle no: 55
+FETCH:     Fetch instruction 0x0bba0a13 from address 0x10
+DECODE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 20, R2 = 20, imm = 187
+EXECUTE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 0, R2 = 4675, imm = 20
+MEMORY:     No memory operation
+WRITEBACK: write 4488 to R20
+
+
+Executing cycle no: 56
+FETCH:     Fetch instruction 0x0bba0a13 from address 0x10
+DECODE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 20, R2 = 20, imm = 187
+EXECUTE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 0, R2 = 534393411, imm = 20
+MEMORY:     No memory operation
+WRITEBACK: write 534393224 to R20
+
+
+Executing cycle no: 57
+FETCH:     Fetch instruction 0x0bba0a13 from address 0x10
+DECODE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 20, R2 = 20, imm = 187
+EXECUTE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 0, R2 = 4862, imm = 20
+MEMORY:     No memory operation
+WRITEBACK: write 4675 to R20
+
+
+Executing cycle no: 58
+FETCH:     Fetch instruction 0x0bba0a13 from address 0x10
+DECODE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 20, R2 = 20, imm = 187
+EXECUTE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 0, R2 = 534393598, imm = 20
+MEMORY:     No memory operation
+WRITEBACK: write 534393411 to R20
+
+
+Executing cycle no: 59
+FETCH:     Fetch instruction 0x0bba0a13 from address 0x10
+DECODE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 20, R2 = 20, imm = 187
+EXECUTE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 0, R2 = 5049, imm = 20
+MEMORY:     No memory operation
+WRITEBACK: write 4862 to R20
+
+
+Executing cycle no: 60
+FETCH:     Fetch instruction 0x0bba0a13 from address 0x10
+DECODE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 20, R2 = 20, imm = 187
+EXECUTE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 0, R2 = 534393785, imm = 20
+MEMORY:     No memory operation
+WRITEBACK: write 534393598 to R20
+
+
+Executing cycle no: 61
+FETCH:     Fetch instruction 0x0bba0a13 from address 0x10
+DECODE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 20, R2 = 20, imm = 187
+EXECUTE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 0, R2 = 5236, imm = 20
+MEMORY:     No memory operation
+WRITEBACK: write 5049 to R20
+
+
+Executing cycle no: 62
+FETCH:     Fetch instruction 0x0bba0a13 from address 0x10
+DECODE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 20, R2 = 20, imm = 187
+EXECUTE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 0, R2 = 534393972, imm = 20
+MEMORY:     No memory operation
+WRITEBACK: write 534393785 to R20
+
+
+Executing cycle no: 63
+FETCH:     Fetch instruction 0x0bba0a13 from address 0x10
+DECODE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 20, R2 = 20, imm = 187
+EXECUTE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 0, R2 = 5423, imm = 20
+MEMORY:     No memory operation
+WRITEBACK: write 5236 to R20
+
+
+Executing cycle no: 64
+FETCH:     Fetch instruction 0x0bba0a13 from address 0x10
+DECODE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 20, R2 = 20, imm = 187
+EXECUTE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 0, R2 = 534394159, imm = 20
+MEMORY:     No memory operation
+WRITEBACK: write 534393972 to R20
+
+
+Executing cycle no: 65
+FETCH:     Fetch instruction 0x0bba0a13 from address 0x10
+DECODE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 20, R2 = 20, imm = 187
+EXECUTE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 0, R2 = 5610, imm = 20
+MEMORY:     No memory operation
+WRITEBACK: write 5423 to R20
+
+
+Executing cycle no: 66
+FETCH:     Fetch instruction 0x0bba0a13 from address 0x10
+DECODE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 20, R2 = 20, imm = 187
+EXECUTE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 0, R2 = 534394346, imm = 20
+MEMORY:     No memory operation
+WRITEBACK: write 534394159 to R20
+
+
+Executing cycle no: 67
+FETCH:     Fetch instruction 0x0bba0a13 from address 0x10
+DECODE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 20, R2 = 20, imm = 187
+EXECUTE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 0, R2 = 5797, imm = 20
+MEMORY:     No memory operation
+WRITEBACK: write 5610 to R20
+
+
+Executing cycle no: 68
+FETCH:     Fetch instruction 0x0bba0a13 from address 0x10
+DECODE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 20, R2 = 20, imm = 187
+EXECUTE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 0, R2 = 534394533, imm = 20
+MEMORY:     No memory operation
+WRITEBACK: write 534394346 to R20

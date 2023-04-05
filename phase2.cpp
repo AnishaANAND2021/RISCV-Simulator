@@ -46,10 +46,13 @@ vector<vector<int>> b_e_w;       // b_w_w;
 vector<vector<int>> b_m_w;       // b_w_w;
 vector<vector<int>> b_w_w;       // b_w_w;
 
-vector<int> r_d;                           // stores value of destination registers to check stalls
+vector<int> r_d;
+vector<vector<int>> r_d_f;                 // stores value of destination registers to check stalls
 string bin_hex(bitset<32> b);              // converts binary to hex
 int bin_2_dec(bitset<32> b, int f, int l); // converts binary to decimal
 
+vector<int> p_c;
+map<int, vector<int>> m_p;
 int cwds = 0;
 ofstream fOut("terminal.txt");
 //----- DRIVER CODE -----
@@ -209,7 +212,7 @@ void FETCH()
         int x = no / 16;
         b_f_w.push_back(make_pair(bin_hex(words[y]), (next_pc)));
         bitset<32> b = words[(y)];
-
+        p_c.push_back(next_pc);
         i++;
 
         b_d.push_back(b);
@@ -1512,48 +1515,61 @@ void DECODE()
 
             else
                 cout << "Given instruction is invalid !!\n";
+        }
+        else
+            cout << "Given instruction is invalid !!\n";
+        if (!cwds)
+        {
+            vector<int> val;
+            val.push_back(rd);
+            val.push_back(rs1);
+            val.push_back(rs2);
+            auto itf = m_p.find(p_c[0]);
+            if (itf == m_p.end())
+                m_p[p_c[0]] = val;
+            p_c.pop_back();
 
-            r_d.push_back(rd);
-            /*if (r_d.size() == 4)
+            if (itf == m_p.end())
+                r_d.push_back(rd);
+            if (r_d.size() == 5)
             {
                 auto it = r_d.begin();
                 r_d.erase(it);
             }
-*/
-            int x = r_d.size();
+
             auto it = find(r_d.begin(), r_d.end(), rs1);
             auto itt = find(r_d.begin(), r_d.end(), rs2);
             if (itt != r_d.end() || it != r_d.end())
             {
                 // stall
-                if (*itt == r_d[x-2] || *it == r_d[x-2])
+                if (*itt == r_d[2] || *it == r_d[2])
                 {
-                    if (!cwds && rd == r_d[x-1])
-                        stall_d = 2;
-                    pc -= 4;
-                    next_pc = pc;
+                    stall_d = 3;
                 }
-                else if (!cwds)
+                else if (*itt == r_d[1] || *it == r_d[1])
                 {
-                    if (r_d[x-2] == rd)
+                    if (r_d[2] == rd)
+                        stall_d = 3;
+                    else
                         stall_d = 2;
-                    else if (r_d[x-1] == rd)
+                }
+                else
+                {
+                    if (r_d[1] == rd)
+                        stall_d = 3;
+                    else if (r_d[2] == rd)
+                        stall_d = 2;
+                    else
                         stall_d = 1;
-                    pc -= 4;
-                    next_pc = pc;
                 }
-                cout << "\nstall_d= " << stall_d << endl
-                     << endl;
+                fOut << "stall_d= " << stall_d << endl;
             }
         }
-
-        else
-            cout << "Given instruction is invalid !!\n";
     }
-    for(auto it:r_d){
-        cout<<it<<endl;
-    }
-    cout<<'x'<<endl;
+    if (stall_d < 2)
+        cwds = 0;
+    else
+        cwds = 1;
     FETCH();
 }
 
@@ -1899,7 +1915,37 @@ void MEMORY_ACCESS()
                 }
             }
         }
-       
+
+        /*if (stall_d == 3)
+        {
+            b_e.pop_back();
+            stall_d--;
+            pc -= 4;
+            next_pc = pc;
+        }
+        if (stall_d == 2)
+        {
+            b_e.pop_back();
+            stall_d--;
+        }
+        int x = 0;
+        if (stall_d == 1)
+        {
+            b_e.pop_back();
+            stall_d--;
+            x = 1;
+        }
+        if (x)
+        {
+            b_e.pop_back();
+            x--;
+        }*/
+        if (stall_d != 0)
+        {
+            stall_d --;
+            FETCH();
+        }
+        else
             EXECUTE();
     }
 }
@@ -1952,13 +1998,12 @@ void WRITE_BACK()
             cout << stall_d << "stall_d\n\n\n\n";
         }
         // stall = 0;
-
         MEMORY_ACCESS();
     }
-    for (auto it : r_d)
+    for (auto it : m_p)
     {
-        cout << it << endl;
+        cout << it.second[0] << endl;
     }
-    cout<<endl;
+    // cout<<m_p[0];
     fOut.close();
 }
