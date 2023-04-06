@@ -1944,8 +1944,10 @@ void WRITE_BACK()
 
         if (pc != next_pc)
         {
-            pc = next_pc + 12;
-            next_pc = pc;
+            cout<<pc<<"=pc "<<next_pc<<" next \n";
+            
+            next_pc = pc-4;
+            pc=next_pc;
             stall = 2;
             b_d.pop_back();
             b_e.pop_back();
