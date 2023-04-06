@@ -214,7 +214,6 @@ void FETCH()
         bitset<32> b = words[(y)];
         p_c.push_back(next_pc);
         i++;
-        //if(b_d.size()) b_d.pop_back();
         b_d.push_back(b);
     }
     n_f++;
@@ -483,26 +482,26 @@ void FETCH()
             switch (b_e_w[0][0])
             {
             case 1:
-                fOut << "EXECUTE:    Operation is ADD, first operand R2, Second operand R3, destination register R1\n           Read registers R1 = "
-                     << dec << b_e_w[0][3] << ", R2 = " << dec << b_e_w[0][1] << ", R3 = " << dec << b_e_w[0][2] << endl;
+                fOut << "EXECUTE:     ADD "
+                     << dec << r[b_e_w[0][2]] << " and " << dec << r[b_e_w[0][1]] << endl;
 
                 break;
 
             case 2:
-                fOut << "EXECUTE:    Operation is SUB, first operand R2, Second operand R3, destination register R1\n           Read registers R1 = "
-                     << dec << b_e_w[0][3] << ", R2 = " << dec << b_e_w[0][1] << ", R3 = " << dec << b_e_w[0][2] << endl;
+                fOut << "EXECUTE:    SUB "
+                     << dec << r[b_e_w[0][2]] << " and " << dec << b_e_w[0][1] << endl;
 
                 break;
 
             case 3:
-                fOut << "EXECUTE:    Operation is XOR, first operand R2, Second operand R3, destination register R1\n              Read registers R1 = "
-                     << dec << b_e_w[0][3] << ", R2 = " << dec << b_e_w[0][1] << ", R3 = " << dec << b_e_w[0][2] << endl;
+                fOut << "EXECUTE:    XOR "
+                     << dec << b_e_w[0][2] << " and " << dec << b_e_w[0][1] << endl;
 
                 break;
 
             case 4:
                 fOut << "EXECUTE:    Operation is OR, first operand R2, Second operand R3, destination register R1\n           Read registers R1 = "
-                     << dec << b_e_w[0][3] << ", R2 = " << dec << b_e_w[0][1] << ", R3 = " << dec << b_e_w[0][2] << endl;
+                     << dec << b_e_w[0][2] << " and " << dec << b_e_w[0][1] << ", R3 = " << dec << b_e_w[0][2] << endl;
 
                 break;
 
@@ -1578,17 +1577,12 @@ void DECODE()
 void EXECUTE()
 {
 
-    if (n_f && stall == 2)
-    {
-        pc += 4;
-        next_pc += 4;
-        stall = 0;
-    }
-    if (n_f && stall == 0)
+    if (n_f && stall == 0 && stall_d==0)
     {
         pc += 4;
         next_pc += 4;
     }
+    else stall=0;
 
     if (b_e.size()) // && stall == 0)
     {
@@ -1810,7 +1804,8 @@ void EXECUTE()
         b_e_w.push_back(val);
 
         b_m.push_back(val);
-
+        if (pc != next_pc)
+            stall = 2;
         n_d++;
     }
 
@@ -1890,59 +1885,10 @@ void MEMORY_ACCESS()
             val.push_back(imm);
             b_m_w.push_back(val);
             b_w.push_back(val);
-            // b_w.push_back(make_pair(x, n));
             n_m++;
-            /*/ if (n > 19 && n < 25)
-                // r_d.push_back(rd);
-             if (r_d.size() == 4)
-             {
-                 auto it = r_d.begin();
-                 r_d.erase(it);
-             }
-             auto it = find(r_d.begin(), r_d.end(), rs1);
-             if (it != r_d.end())
-             {
-                 // stall
-                 if (*it == r_d[1])
-                 {
-                     if (!cwds)
-                         stall_d = 1;
-                 }
-                 else if (!cwds)
-                 {
-                     if (r_d[1] == rd)
-                         stall_d = 1;
-                 }
-             }*/
         }
-
-        /*if (stall_d == 3)
+        /*if (pc != next_pc)
         {
-            b_e.pop_back();
-            stall_d--;
-            pc -= 4;
-            next_pc = pc;
-        }
-        if (stall_d == 2)
-        {
-            b_e.pop_back();
-            stall_d--;
-        }
-        int x = 0;
-        if (stall_d == 1)
-        {
-            b_e.pop_back();
-            stall_d--;
-            x = 1;
-        }
-        if (x)
-        {
-            b_e.pop_back();
-            x--;
-        }*/
-        if (pc != next_pc)
-        {
-           // fOut<<"BGE\npc= "<<dec<<pc-4<<endl;;
             n_w += (pc / 4 - (next_pc) / 4 + 0);
             next_pc = pc - 4;
             pc = next_pc;
@@ -1952,10 +1898,11 @@ void MEMORY_ACCESS()
             fOut << b_d.size() << "besize";
             stall_d = 0;
             stall = 2;
-            cwds=0;
+            cwds = 0;
             FETCH();
         }
-        else if (stall_d != 0)
+        else*/
+        if (stall_d != 0)
         {
             stall_d--;
             FETCH();
@@ -1970,7 +1917,10 @@ void MEMORY_ACCESS()
 void WRITE_BACK()
 {
     cwds = 0;
-    if (n_w < words.size())
+    if (pc > 0 && b_d.size() == 0 && b_e.size() == 0 && b_m.size() == 0 && b_w.size() == 0)
+    {
+    }
+    else
     {
         if (b_w.size())
         {
@@ -1998,27 +1948,22 @@ void WRITE_BACK()
             n_w++;
 
             cout << n_w << "n_x\n\n";
-            /*if (pc != next_pc )
-            {
-
-                n_w += (pc / 4 - next_pc / 4 + 2);
-                next_pc = pc+4;
-                pc = next_pc;
-                b_e.pop_back();
-                b_d.pop_back();
-                cout << b_e.size() << "besize";
-                stall_d=0;
-                stall = 2;
-            }*/
             cout << stall_d << "stall_d\n\n\n\n";
         }
-        // stall = 0;
+        /*/ if (stall == 2)
+             {
+                 DECODE();
+                 stall = 0;
+                 pc+=4;
+                 next_pc=pc;
+             }
+         else*/
+        fOut << stall << "=STALL\n";
         MEMORY_ACCESS();
     }
     for (auto it : m_p)
     {
         cout << it.second[0] << endl;
     }
-    // cout<<m_p[0];
     fOut.close();
 }
