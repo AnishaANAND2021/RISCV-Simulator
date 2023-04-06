@@ -1526,8 +1526,9 @@ void DECODE()
         }
         else
             cout << "Given instruction is invalid !!\n";
-        if (!cwds)
+        if (!cwds && pc!=next_pc)
         {
+            cout<<rd<< " =rd "<<pc<<" =pc "<<next_pc<<" =nextpc\n";
             vector<int> val;
             val.push_back(rd);
             val.push_back(rs1);
