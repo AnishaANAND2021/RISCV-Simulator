@@ -56,7 +56,7 @@ map<int, vector<int>> m_p;
 int cwds = 0;
 ofstream fOut("terminal.txt");
 //----- DRIVER CODE -----
-
+int erase;
 int main()
 {
 
@@ -214,6 +214,7 @@ void FETCH()
         bitset<32> b = words[(y)];
         p_c.push_back(next_pc);
         i++;
+        if(b_d.size()) b_d.pop_back();
         b_d.push_back(b);
     }
     n_f++;
@@ -782,7 +783,8 @@ void FETCH()
     // fOut << b_w_w.size();
     if (b_w_w.size())
     {
-        if (b_w[0][0] != 25 && b_w[0][0] != 26 && b_w[0][0] != 27 && b_w[0][0] != 28 && b_w[0][0] != 29 && b_w[0][0] != 30 && b_w[0][0] != 31 && b_w[0][0] != 32 && b_w[0][0] != 33)
+        // if (b_w_w[0][0] < 25 ||b_w_w[0][0] < 33)// && b_w_w[0][0] != 26 && b_w[0][0] != 27 && b_w[0][0] != 28 && b_w[0][0] != 29 && b_w[0][0] != 30 && b_w[0][0] != 31 && b_w[0][0] != 32 && b_w[0][0] != 33)
+        if (b_w_w[0][2] != -1)
             fOut << "WRITEBACK: write " << b_w_w[0][1] << " to R" << b_w_w[0][2];
         else
             fOut << "No writeback  operation";
@@ -790,6 +792,7 @@ void FETCH()
         b_w_w.pop_back();
         fOut << endl;
     }
+    fOut << "stall_d= " << stall_d << endl;
 
     WRITE_BACK();
 }
@@ -805,6 +808,7 @@ void DECODE()
         bitset<32> b = b_d[0];
         reverse(b_d.begin(), b_d.end());
         b_d.pop_back();
+        if(b_e.size()) b_e.pop_back();
         if (b[0] && b[1]) // might be a valid code
         {
 
@@ -1222,7 +1226,7 @@ void DECODE()
             else if (b[6] == 0 && b[5] == 1 && b[4] == 0 && b[3] == 0 && b[2] == 0)
             {
                 // S type
-
+                rd = -1;
                 rs1 = bin_2_dec(b, 15, 19);
                 rs2 = bin_2_dec(b, 20, 24);
                 int imm1 = bin_2_dec(b, 7, 11);
@@ -1281,6 +1285,7 @@ void DECODE()
                 rs1 = bin_2_dec(b, 15, 19);
                 rs2 = bin_2_dec(b, 20, 24);
                 int mul = 1;
+                rd = -1;
                 imm = 0;
                 for (int i = 8; i <= 11; i++)
                 {
@@ -1328,6 +1333,7 @@ void DECODE()
                 else if (b[14] == 1 && b[13] == 0 && b[12] == 0)
                 {
                     // blt
+                    rd = -1;
                     vector<int> val;
                     val.push_back(30);
                     val.push_back(rs1);
@@ -1341,6 +1347,7 @@ void DECODE()
                 else if (b[14] == 1 && b[13] == 0 && b[12] == 1)
                 {
                     // bge
+                    rd = -1;
                     vector<int> val;
                     val.push_back(31);
                     val.push_back(rs1);
@@ -1354,6 +1361,7 @@ void DECODE()
                 else if (b[14] == 1 && b[13] == 1 && b[12] == 0)
                 {
                     // bltu
+                    rd = -1;
                     imm = (1 << 13) - imm;
                     vector<int> val;
                     val.push_back(32);
@@ -1368,6 +1376,7 @@ void DECODE()
                 else if (b[14] == 1 && b[13] == 1 && b[12] == 1)
                 {
                     // bgeu
+                    rd = -1;
                     imm = (1 << 13) - imm;
                     vector<int> val;
                     val.push_back(33);
@@ -1561,10 +1570,10 @@ void DECODE()
                     else
                         stall_d = 1;
                 }
-                fOut << "stall_d= " << stall_d << endl;
             }
         }
     }
+
     if (stall_d != 0)
         cwds = 0;
     else
@@ -1577,12 +1586,13 @@ void DECODE()
 void EXECUTE()
 {
 
-    if (n_f && stall == 0 && stall_d==0)
+    if (n_f && stall == 0 && stall_d == 0)
     {
         pc += 4;
         next_pc += 4;
     }
-    else stall=0;
+    else
+        stall = 0;
 
     if (b_e.size()) // && stall == 0)
     {
@@ -1761,9 +1771,7 @@ void EXECUTE()
 
         case 34: // jal
             x = pc;
-            // cout<<"imm===="<<imm<<' '<<pc+imm-4<<endl;
             pc += imm - 4;
-            cout << pc << endl;
             n = 34;
             cout << "EXECUTE:   JUMP AND LINK pc + " << imm << endl;
             break;
@@ -1802,10 +1810,8 @@ void EXECUTE()
         val.push_back(rd);
         val.push_back(imm);
         b_e_w.push_back(val);
-
+        if(b_m.size()) b_m.pop_back();
         b_m.push_back(val);
-        if (pc != next_pc)
-            stall = 2;
         n_d++;
     }
 
@@ -1827,7 +1833,7 @@ void MEMORY_ACCESS()
             int rd = b_m[0][4];
             int imm = b_m[0][5];
             // reverse(b_m.begin(), b_m.end());
-
+            if(b_w.size()) b_w.pop_back();
             b_m.pop_back();
             if ((n >= 1 && n < 20) || (n > 27))
             {
@@ -1887,22 +1893,10 @@ void MEMORY_ACCESS()
             b_w.push_back(val);
             n_m++;
         }
-        /*if (pc != next_pc)
-        {
-            n_w += (pc / 4 - (next_pc) / 4 + 0);
-            next_pc = pc - 4;
-            pc = next_pc;
-            b_e.pop_back();
-            b_d.pop_back();
-            b_m.pop_back();
-            fOut << b_d.size() << "besize";
-            stall_d = 0;
-            stall = 2;
-            cwds = 0;
-            FETCH();
+        if(stall_d==1){
+            erase=1;
         }
-        else*/
-        if (stall_d != 0)
+         if (stall_d != 0)
         {
             stall_d--;
             FETCH();
@@ -1946,24 +1940,18 @@ void WRITE_BACK()
             }
 
             n_w++;
-
-            cout << n_w << "n_x\n\n";
-            cout << stall_d << "stall_d\n\n\n\n";
         }
-        /*/ if (stall == 2)
-             {
-                 DECODE();
-                 stall = 0;
-                 pc+=4;
-                 next_pc=pc;
-             }
-         else*/
-        fOut << stall << "=STALL\n";
+
+        if (pc != next_pc)
+        {
+            pc = next_pc + 12;
+            next_pc = pc;
+            stall = 2;
+            b_d.pop_back();
+            b_e.pop_back();
+        }
+       fOut << stall << "=STALL\n";
         MEMORY_ACCESS();
-    }
-    for (auto it : m_p)
-    {
-        cout << it.second[0] << endl;
     }
     fOut.close();
 }
