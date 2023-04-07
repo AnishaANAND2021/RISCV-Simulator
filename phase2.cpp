@@ -1,18 +1,3 @@
-/*
-
-The project is developed as part of Computer Architecture class
-Project Name: Functional Simulator for subset of RISCV Processor
-
-Developers' Name: ANISHA PRAKASH & NIROOPMA VERMA
-Developers' Email id: 2021CSB1067@iitrpr.ac.in & 2021CSB1115@iitrpr.ac.in
-Date: 13/03/2023
-
-*/
-
-/* myRISCVSim.cpp
-   Purpose of this file: implementation file for myRISCVSim
-*/
-
 #include <bits/stdc++.h>
 using namespace std;
 
@@ -21,6 +6,7 @@ int r[N]; // array of registers
 
 vector<bitset<32>> words; // vector of instructions
 map<int, int> memory;     // map of memory
+long long int im = 20000;
 
 int cycle = 0;                                   // stores the no of cycles
 int pc = 0, next_pc = 0;                         // it will store the next pc (in case of any jump);
@@ -59,6 +45,11 @@ ofstream fOut("terminal.txt");
 int erase;
 int main()
 {
+    memory[0] = 0;
+    while (im--)
+    {
+        memory[im] = 0;
+    }
 
     // UPDATING INITIAL VALUES OF x2 AND x3
     r[2] = 0X7FFFFFF0;
@@ -214,7 +205,8 @@ void FETCH()
         bitset<32> b = words[(y)];
         p_c.push_back(next_pc);
         i++;
-        if(b_d.size()) b_d.pop_back();
+        if (b_d.size())
+            b_d.pop_back();
         b_d.push_back(b);
     }
     n_f++;
@@ -808,7 +800,8 @@ void DECODE()
         bitset<32> b = b_d[0];
         reverse(b_d.begin(), b_d.end());
         b_d.pop_back();
-        if(b_e.size()) b_e.pop_back();
+        if (b_e.size())
+            b_e.pop_back();
         if (b[0] && b[1]) // might be a valid code
         {
 
@@ -1015,6 +1008,7 @@ void DECODE()
                 if (b[14] == 0 && b[13] == 0 && b[12] == 0)
                 {
                     // addi
+                    rs2 = -23;
                     vector<int> val;
                     val.push_back(11);
                     val.push_back(rs1);
@@ -1027,10 +1021,12 @@ void DECODE()
 
                 else if (b[14] == 0 && b[13] == 0 && b[12] == 1)
                 {
-                    // might be slli
+                    // might be
+
                     if (b[31] == 0 && b[30] == 0 && b[29] == 0 && b[28] == 0 && b[27] == 0 && b[26] == 0 && b[25] == 0)
                     {
                         // slli
+                        rs2 = -24;
                         vector<int> val;
                         val.push_back(15);
                         val.push_back(rs1);
@@ -1047,6 +1043,7 @@ void DECODE()
                 else if (b[14] == 0 && b[13] == 1 && b[12] == 0)
                 {
                     // might be slti
+                    rs2 = -25;
                     vector<int> val;
                     val.push_back(18);
                     val.push_back(rs1);
@@ -1060,6 +1057,7 @@ void DECODE()
                 else if (b[14] == 0 && b[13] == 1 && b[12] == 1)
                 {
                     // might be sltiu
+                    rs2 = -26;
                     imm = bin_2_dec(b, 20, 31);
                     vector<int> val;
                     val.push_back(19);
@@ -1073,6 +1071,7 @@ void DECODE()
 
                 else if (b[14] == 1 && b[13] == 0 && b[12] == 0)
                 {
+                    rs2 = -27;
                     // xori
                     vector<int> val;
                     val.push_back(12);
@@ -1089,6 +1088,7 @@ void DECODE()
                     // might be srli or srai
                     if (b[31] == 0 && b[30] == 0 && b[29] == 0 && b[28] == 0 && b[27] == 0 && b[26] == 0 && b[25] == 0)
                     {
+                        rs2 = -28;
                         // srli
                         vector<int> val;
                         val.push_back(16);
@@ -1101,6 +1101,7 @@ void DECODE()
                     }
                     else if (b[31] == 0 && b[30] == 1 && b[29] == 0 && b[28] == 0 && b[27] == 0 && b[26] == 0 && b[25] == 0)
                     {
+                        rs2 = -29;
                         // srai
                         vector<int> val;
                         val.push_back(17);
@@ -1118,6 +1119,7 @@ void DECODE()
                 else if (b[14] == 1 && b[13] == 1 && b[12] == 0)
                 {
                     // ori
+                    rs2 = -30;
                     vector<int> val;
                     val.push_back(13);
                     val.push_back(rs1);
@@ -1131,6 +1133,7 @@ void DECODE()
                 else if (b[14] == 1 && b[13] == 1 && b[12] == 1)
                 {
                     // andi
+                    rs2 = -31;
                     vector<int> val;
                     val.push_back(14);
                     val.push_back(rs1);
@@ -1156,6 +1159,7 @@ void DECODE()
                 if (b[14] == 0 && b[13] == 0 && b[12] == 0)
                 {
                     // lb
+                    rs2 = -18;
                     vector<int> val;
                     val.push_back(20);
                     val.push_back(rs1);
@@ -1169,6 +1173,7 @@ void DECODE()
                 else if (b[14] == 0 && b[13] == 0 && b[12] == 1)
                 {
                     // lh
+                    rs2 = -19;
                     vector<int> val;
                     val.push_back(21);
                     val.push_back(rs1);
@@ -1182,6 +1187,7 @@ void DECODE()
                 else if (b[14] == 0 && b[13] == 1 && b[12] == 0)
                 {
                     // lw
+                    rs2 = -20;
                     vector<int> val;
                     val.push_back(22);
                     val.push_back(rs1);
@@ -1194,6 +1200,7 @@ void DECODE()
 
                 else if (b[14] == 1 && b[13] == 0 && b[12] == 0)
                 {
+                    rs2 = -21;
                     // lbu---Load byte(U)
                     imm = bin_2_dec(b, 20, 31);
                     vector<int> val;
@@ -1208,6 +1215,7 @@ void DECODE()
 
                 else if (b[14] == 1 && b[13] == 0 && b[12] == 1)
                 {
+                    rs2 = -22;
                     // lhu---Load half(U)
                     imm = bin_2_dec(b, 20, 31);
                     vector<int> val;
@@ -1226,7 +1234,7 @@ void DECODE()
             else if (b[6] == 0 && b[5] == 1 && b[4] == 0 && b[3] == 0 && b[2] == 0)
             {
                 // S type
-                rd = -1;
+
                 rs1 = bin_2_dec(b, 15, 19);
                 rs2 = bin_2_dec(b, 20, 24);
                 int imm1 = bin_2_dec(b, 7, 11);
@@ -1239,6 +1247,7 @@ void DECODE()
                 if (b[14] == 0 && b[13] == 0 && b[12] == 0)
                 {
                     // sb
+                    rd = -15;
                     vector<int> val;
                     val.push_back(25);
                     val.push_back(rs1);
@@ -1252,6 +1261,7 @@ void DECODE()
                 else if (b[14] == 0 && b[13] == 0 && b[12] == 1)
                 {
                     // sh
+                    rd = -16;
                     vector<int> val;
                     val.push_back(26);
                     val.push_back(rs1);
@@ -1265,6 +1275,7 @@ void DECODE()
                 else if (b[14] == 0 && b[13] == 1 && b[12] == 0)
                 {
                     // sw
+                    rd = -17;
                     vector<int> val;
                     val.push_back(27);
                     val.push_back(rs1);
@@ -1285,7 +1296,7 @@ void DECODE()
                 rs1 = bin_2_dec(b, 15, 19);
                 rs2 = bin_2_dec(b, 20, 24);
                 int mul = 1;
-                rd = -1;
+                // rd = -1;
                 imm = 0;
                 for (int i = 8; i <= 11; i++)
                 {
@@ -1307,6 +1318,7 @@ void DECODE()
                 if (b[14] == 0 && b[13] == 0 && b[12] == 0)
                 {
                     // beq
+                    rd = -14;
                     vector<int> val;
                     val.push_back(28);
                     val.push_back(rs1);
@@ -1320,6 +1332,7 @@ void DECODE()
                 else if (b[14] == 0 && b[13] == 0 && b[12] == 1)
                 {
                     // bne
+                    rd = -13;
                     vector<int> val;
                     val.push_back(29);
                     val.push_back(rs1);
@@ -1333,7 +1346,7 @@ void DECODE()
                 else if (b[14] == 1 && b[13] == 0 && b[12] == 0)
                 {
                     // blt
-                    rd = -1;
+                    rd = -12;
                     vector<int> val;
                     val.push_back(30);
                     val.push_back(rs1);
@@ -1347,7 +1360,7 @@ void DECODE()
                 else if (b[14] == 1 && b[13] == 0 && b[12] == 1)
                 {
                     // bge
-                    rd = -1;
+                    rd = -11;
                     vector<int> val;
                     val.push_back(31);
                     val.push_back(rs1);
@@ -1361,7 +1374,7 @@ void DECODE()
                 else if (b[14] == 1 && b[13] == 1 && b[12] == 0)
                 {
                     // bltu
-                    rd = -1;
+                    rd = -10;
                     imm = (1 << 13) - imm;
                     vector<int> val;
                     val.push_back(32);
@@ -1415,6 +1428,8 @@ void DECODE()
                     im = -1 * (1 << 20) + im;
                 imm = im;
                 rd = bin_2_dec(b, 7, 11);
+                rs1 = -2;
+                rs2 = -3;
                 vector<int> val;
                 val.push_back(34);
                 val.push_back(rs1);
@@ -1430,6 +1445,7 @@ void DECODE()
                 // I type (jalr)
 
                 rs1 = bin_2_dec(b, 15, 19);
+                rs2 = -4;
                 rd = bin_2_dec(b, 7, 11);
                 imm = bin_2_dec(b, 20, 31);
                 if (b[31])
@@ -1449,6 +1465,8 @@ void DECODE()
                 // U type (lui)
 
                 rd = bin_2_dec(b, 7, 11);
+                rs1 = -5;
+                rs2 = -6;
                 long long im = bin_2_dec(b, 12, 31);
                 if (b[31])
                 {
@@ -1470,6 +1488,8 @@ void DECODE()
                 // U type (auipc)
 
                 rd = bin_2_dec(b, 7, 11);
+                rs1 = -7;
+                rs2 = -8;
                 long long im = bin_2_dec(b, 12, 31);
 
                 if (b[31])
@@ -1526,9 +1546,10 @@ void DECODE()
         }
         else
             cout << "Given instruction is invalid !!\n";
-        if (!cwds && pc!=next_pc)
+
+        if (!cwds && pc == next_pc)
         {
-            cout<<rd<< " =rd "<<pc<<" =pc "<<next_pc<<" =nextpc\n";
+            cout << rd << " =rd " << pc << " =pc " << next_pc << " =nextpc\n";
             vector<int> val;
             val.push_back(rd);
             val.push_back(rs1);
@@ -1548,9 +1569,10 @@ void DECODE()
 
             auto it = find(r_d.begin(), r_d.end(), rs1);
             auto itt = find(r_d.begin(), r_d.end(), rs2);
+
             if (itt != r_d.end() || it != r_d.end())
             {
-                // stall
+                cout << r_d[2] << " " << endl;
                 if (*itt == r_d[2] || *it == r_d[2])
                 {
                     stall_d = 3;
@@ -1691,6 +1713,7 @@ void EXECUTE()
 
         case 15: // slli
             cout << "EXECUTE:   LEFT SHIFT IMMEDIATE " << r[rs1] << " " << r[rs2] << " times" << endl;
+            // cout << "Anisha anisha anisha Anisha anisha anisha"<<endl;
             x = r[rs1] << imm;
             break;
 
@@ -1713,16 +1736,16 @@ void EXECUTE()
             break;
 
         case 20: // lb
-            cout << "EXECUTE:   LOAD BYTE M[" << r[rs1] << "+" << imm << "] [0:7] in " << r[rd] << endl;
+            cout << "EXECUTE:hello   LOAD BYTE M[" << r[rs1] << "+" << imm << "] [0:7] in " << r[rd] << endl;
             break;
 
         case 21: // lh
             cout << "EXECUTE:   LOAD BYTE M[" << r[rs1] << "+" << imm << "] [0:15] in " << r[rd] << endl;
-
+            // cout<<
             break;
 
         case 22: // lw
-            cout << "EXECUTE:   LOAD BYTE M[" << r[rs1] << "+" << imm << "] [0:31] in " << r[rd] << endl;
+            cout << "EXECUTE:   LOAD word M[" << r[rs1] << "+" << imm << "] [0:31] in " << r[rd] << endl;
             break;
 
         case 23: // lbu
@@ -1811,7 +1834,8 @@ void EXECUTE()
         val.push_back(rd);
         val.push_back(imm);
         b_e_w.push_back(val);
-        if(b_m.size()) b_m.pop_back();
+        if (b_m.size())
+            b_m.pop_back();
         b_m.push_back(val);
         n_d++;
     }
@@ -1834,7 +1858,8 @@ void MEMORY_ACCESS()
             int rd = b_m[0][4];
             int imm = b_m[0][5];
             // reverse(b_m.begin(), b_m.end());
-            if(b_w.size()) b_w.pop_back();
+            if (b_w.size())
+                b_w.pop_back();
             b_m.pop_back();
             if ((n >= 1 && n < 20) || (n > 27))
             {
@@ -1894,10 +1919,11 @@ void MEMORY_ACCESS()
             b_w.push_back(val);
             n_m++;
         }
-        if(stall_d==1){
-            erase=1;
+        if (stall_d == 1)
+        {
+            erase = 1;
         }
-         if (stall_d != 0)
+        if (stall_d != 0)
         {
             stall_d--;
             FETCH();
@@ -1911,6 +1937,7 @@ void MEMORY_ACCESS()
 
 void WRITE_BACK()
 {
+
     cwds = 0;
     if (pc > 0 && b_d.size() == 0 && b_e.size() == 0 && b_m.size() == 0 && b_w.size() == 0)
     {
@@ -1945,15 +1972,13 @@ void WRITE_BACK()
 
         if (pc != next_pc)
         {
-            cout<<pc<<"=pc "<<next_pc<<" next \n";
-            
-            next_pc = pc-4;
-            pc=next_pc;
+            next_pc = pc - 4;
+            pc = next_pc;
             stall = 2;
             b_d.pop_back();
             b_e.pop_back();
         }
-       fOut << stall << "=STALL\n";
+        fOut << stall << "=STALL\n";
         MEMORY_ACCESS();
     }
     fOut.close();
