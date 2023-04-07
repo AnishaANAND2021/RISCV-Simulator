@@ -1794,13 +1794,14 @@ void EXECUTE()
             break;
 
         case 34: // jal
-            x = pc;
+            x = pc-4;
+            cout << x << "=jal result\n";
             pc += imm - 4;
             n = 34;
             cout << "EXECUTE:   JUMP AND LINK pc + " << imm << endl;
             break;
         case 35: // jalr
-            x = pc;
+            x = pc-4;
             pc = r[rs1] + imm;
             pc /= 4;
             pc *= 4;
@@ -1969,9 +1970,10 @@ void WRITE_BACK()
 
             n_w++;
         }
-
         if (pc != next_pc)
         {
+
+            cout << hex << next_pc << "============ja\n";
             next_pc = pc - 4;
             pc = next_pc;
             stall = 2;
