@@ -36,6 +36,12 @@ vector<int> r_d;
 vector<vector<int>> r_d_f;                 // stores value of destination registers to check stalls
 string bin_hex(bitset<32> b);              // converts binary to hex
 int bin_2_dec(bitset<32> b, int f, int l); // converts binary to decimal
+// int control_pc;
+map<int, pair<int, int>> btb; // branch target buffer : map(pc,target address, taken/not -taken)
+                              // btb.first stores the instruction value in which branch is there
+                              // btb.second checks if the branch is taken or not
+                              // it is 1 if taken otherwise 0
+                              // if taken then we will jump to the address which is stored in the pair
 
 vector<int> p_c;
 map<int, vector<int>> m_p;
@@ -198,7 +204,12 @@ void FETCH()
     int i = 1;
     if (y < x)
     {
-
+        auto it = btb.find(pc);
+        if (it != btb.end() && (it->second.first))
+        {
+            pc = ((it->second).second) - 4;
+            next_pc = pc;
+        }
         int no = next_pc;
         string s;
         int x = no / 16;
@@ -1316,6 +1327,9 @@ void DECODE()
                 imm += b[31] * mul;
                 if (b[31] == 1)
                     imm = -1 * (1 << 13) + imm;
+                auto it = btb.find(pc - 8 + imm);
+                if (it != btb.end()) // cout<<hex<<words[((it->first))/4]<<" anisha======== anisha\n";
+                    pc += imm - 4;
                 //-------Checking func3------
                 if (b[14] == 0 && b[13] == 0 && b[12] == 0)
                 {
@@ -1348,7 +1362,6 @@ void DECODE()
                 else if (b[14] == 1 && b[13] == 0 && b[12] == 0)
                 {
                     // blt
-                    rd = -12;
                     vector<long long int> val;
                     val.push_back(30);
                     val.push_back(rs1);
@@ -1598,8 +1611,7 @@ void DECODE()
             }
         }
     }
-
-    if (stall_d != 0)
+   if (stall_d != 0)
         cwds = 0;
     else
         cwds = 1;
@@ -1631,7 +1643,7 @@ void EXECUTE()
 
         // reverse(b_e.begin(), b_e.end());
         b_e.pop_back();
-        long long  x;
+        long long x;
 
         switch (n)
         {
@@ -1772,30 +1784,85 @@ void EXECUTE()
 
         case 28: // beq
             if (r[rs1] == r[rs2])
-                pc += imm - 4;
+            {
+                auto ittt = btb.find(pc - 8);
+                if (ittt == btb.end())
+                    pc += imm - 4;
+                btb[pc - 8] = make_pair(1, pc + imm - 4);
+                // auto it = btb.find(pc - 8 + imm);
+                // cout << hex << words[((it->first)) / 4] << " anisha anisha\n";
+            }
+            else
+            {
+                pc = next_pc;
+                auto ittt = btb.find(pc - 8);
+                if (ittt != btb.end() && (ittt->second).first)
+                {
+                    pc = ittt->first;
+                    b_d.pop_back();
+                }
+                btb[pc - 8] = make_pair(0, pc + imm - 4);
+            }
             cout << "EXECUTE:   BRANCH if " << r[rs1] << "==" << r[rs2] << endl;
             break;
 
         case 29: // bne
             if (r[rs1] != r[rs2])
+            {
+                btb[pc - 8] = make_pair(1, pc + imm - 4);
                 pc += imm - 4;
+            }
+            else
+            {
+                pc = next_pc;
+                auto ittt = btb.find(pc - 8);
+                if ((ittt->second).first)
+                    b_d.pop_back();
+                btb[pc - 8] = make_pair(0, pc + imm - 4);
+            }
             cout << "EXECUTE:   BRANCH if " << r[rs1] << "!=" << r[rs2] << endl;
             break;
 
         case 30: // blt or bltu
             if (r[rs1] < r[rs2])
+            {
+                cout << "hello=========================" << pc - 8 << endl;
+
+                btb[pc - 8] = make_pair(1, pc + imm - 4);
                 pc += imm - 4;
+            }
+            else
+            {
+                pc = next_pc;
+                auto ittt = btb.find(pc - 8);
+                if ((ittt->second).first)
+                    b_d.pop_back();
+                btb[pc - 8] = make_pair(0, pc + imm - 4);
+            }
             cout << "EXECUTE:   BRANCH if " << r[rs1] << "<" << r[rs2] << endl;
             break;
 
         case 31: // bge or bgeu
             if (r[rs1] >= r[rs2])
+            {
+                btb[pc - 8] = make_pair(1, pc + imm - 4);
                 pc += imm - 4;
+            }
+            else
+            {
+                pc = next_pc;
+                auto ittt = btb.find(pc - 8);
+                if ((ittt->second).first)
+                    b_d.pop_back();
+                btb[pc - 8] = make_pair(0, pc + imm - 4);
+            }
             cout << "EXECUTE:   BRANCH if " << r[rs1] << ">=" << r[rs2] << endl;
             // cout << "pc_bge=" << r[rs2] << endl;
             break;
 
         case 34: // jal
+            btb[pc - 8] = make_pair(1, pc + imm - 4);
+
             x = pc - 4;
             cout << x << "=jal result\n";
             pc += imm - 4;
@@ -1804,6 +1871,7 @@ void EXECUTE()
             break;
         case 35: // jalr
             x = pc - 4;
+            btb[pc - 8] = make_pair(1, pc + imm - 4);
             pc = r[rs1] + imm;
             pc /= 4;
             pc *= 4;
@@ -1829,7 +1897,7 @@ void EXECUTE()
 
             break;
         };
-        vector<long long > val;
+        vector<long long> val;
         val.push_back(n);
         val.push_back(x);
         val.push_back(rs1);
