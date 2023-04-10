@@ -48,7 +48,11 @@ class CppRunnerGUI(Frame):
         self.output_text.pack()
 
     def compile_and_run_cpp_program(self):
+<<<<<<< HEAD
         compile_process = subprocess.Popen(["g++", "a.cpp", "-o", "a.exe"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+=======
+        compile_process = subprocess.Popen(["g++", "phase2.cpp", "-o", "a.exe"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+>>>>>>> 0e0d3de0f74db8e6666c43364640bda7360138c3
 
         # Wait for the compilation process to finish and capture the output and error messages (if any)
         compile_output, compile_error = compile_process.communicate()
