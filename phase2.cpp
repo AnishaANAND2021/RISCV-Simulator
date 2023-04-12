@@ -4,16 +4,16 @@ using namespace std;
 const int N = 32;
 int r[N]; // array of registers
 
-vector<bitset<32>> words;                 // vector of instructions
-map<long long int, long long int> memory; // map of memory
-long long int im = 20000;
-
-int cycle = 0;                                   // stores the no of cycles
-int pc = 0, next_pc = 0;                         // it will store the next pc (in case of any jump);
-int n_f = 0, n_d = 0, n_e = 0, n_m = 0, n_w = 0; // no of write back operations executed
-int stall = 0, stalls = 0, stall_d = 0;          // stall is due to control dependency
-                                                 //  stall stores no of stall in a cycle stalls store total no of stalls
-                                                 // stall_d is stall due to data depenedency
+vector<bitset<32>> words;                                          // vector of instructions
+map<long long int, long long int> memory;                          // map of memory
+long long int im = 20000;                                          // size of memory
+int k1, k2, k3, k4, k5;                                            // knobs
+int cycle = 0;                                                     // stores the no of cycles
+int pc = 0, next_pc = 0;                                           // it will store the next pc (in case of any jump);
+int n_f = 0, n_d = 0, n_e = 0, n_m = 0, n_w = 0, n_a = 0, n_c = 0; // no of write back operations executed
+int stall = 0, stalls = 0, stall_d = 0, stall_ds = 0;              // stall is due to control dependency
+int ch = 0, dh = 0, bm = 0;                                        //  stall stores no of stall in a cycle stalls store total no of stalls
+                                                                   // stall_d is stall due to data depenedency
 
 // INSTRUCTIONS:
 void FETCH();
@@ -26,13 +26,15 @@ vector<bitset<32>> b_d;                              // pipelined register for f
 vector<pair<bitset<32>, vector<long long int>>> b_e; // pipelined register for decode
 vector<vector<long long int>> b_m, b_w;              // pipelined register for memory and write back
 
-vector<pair<string, long long int>> b_f_w; // it's what performed in fetch
-vector<vector<long long int>> b_d_w;       // pipelined register for decode
-vector<vector<long long int>> b_e_w;       // b_w_w;
-vector<vector<long long int>> b_m_w;       // b_w_w;
-vector<vector<long long int>> b_w_w;       // b_w_w;
+vector<pair<string, long long int>> b_f_w;
+vector<vector<long long int>> b_d_w;
+vector<vector<long long int>> b_e_w;
+vector<vector<long long int>> b_m_w;
+vector<vector<long long int>> b_w_w;
 
-vector<int> r_d;
+// for data forwarding
+vector<int> result_d;
+vector<int> r_d, rs_1, rs_2;               // for checking data dependency
 vector<vector<int>> r_d_f;                 // stores value of destination registers to check stalls
 string bin_hex(bitset<32> b);              // converts binary to hex
 int bin_2_dec(bitset<32> b, int f, int l); // converts binary to decimal
@@ -45,13 +47,26 @@ map<int, pair<int, int>> btb; // branch target buffer : map(pc,target address, t
 
 vector<int> p_c;
 map<int, vector<int>> m_p;
-int cwds = 0;
+int cwds = 0, pc_i;
 ofstream fOut("terminal.txt");
-
+ofstream FoUT("output.txt");
 //----- DRIVER CODE -----
 
 int main()
 {
+    printf("Print 1 to Enable a knob and O to disable a Knob: \n Knob 1: ");
+    cin >> k1;
+    if (k1)
+    {
+        cout << " Knob 2: ";
+        cin >> k2;
+        cout << " Knob 3: ";
+        cin >> k3;
+        cout << " Knob 4: ";
+        cin >> k4;
+        cout << " Knob 5: ";
+        cin >> k5;
+    }
     memory[0] = 0;
     while (im--)
     {
@@ -150,8 +165,19 @@ int main()
         FOUT << it << endl;
     }
     FOUT.close();
-
-    cout << "\n-----TOTAL NO OF CYCLES = " << dec << cycle << "-----" << endl;
+    FoUT << "• Stat1: Total number of cycles " << dec << cycle << endl;
+    FoUT << "• Stat2: Total instructions executed " << dec << n_e << endl;
+    FoUT << "• Stat3: CPI " << dec << cycle / n_e << endl;
+    FoUT << "• Stat4: Number of Data-transfer (load and store) instructions executed " << dec << n_m << endl;
+    FoUT << "• Stat5: Number of ALU instructions executed " << dec << n_a << endl;
+    FoUT << "• Stat6: Number of Control instructions executed " << dec << n_c << endl;
+    FoUT << "• Stat7: Number of stalls/bubbles in the pipeline " << dec << stall_ds + stalls << endl;
+    FoUT << "• Stat8: Number of data hazards " << dec << dh << endl;
+    FoUT << "• Stat9: Number of control hazards " << dec << ch << endl;
+    FoUT << "• Stat10: Number of branch mispredictions " << dec << bm << endl;
+    FoUT << "• Stat11: Number of stalls due to data hazards " << dec << stall_ds << endl;
+    FoUT << "• Stat12: Number of stalls due to control hazards " << dec << stalls << endl;
+    FoUT.close();
     return 0;
 }
 
@@ -204,12 +230,7 @@ void FETCH()
     int i = 1;
     if (y < x)
     {
-        auto it = btb.find(pc);
-        if (it != btb.end() && (it->second.first))
-        {
-            pc = ((it->second).second) - 4;
-            next_pc = pc;
-        }
+
         int no = next_pc;
         string s;
         int x = no / 16;
@@ -220,8 +241,16 @@ void FETCH()
         if (b_d.size())
             b_d.pop_back();
         b_d.push_back(b);
+        auto it = btb.find(pc);
+        if (it != btb.end() && (it->second.first))
+        {
+            pc_i = pc;
+            pc = ((it->second).second) - 4;
+            next_pc = pc;
+        }
+        n_f++;
     }
-    n_f++;
+
     if (cycle)
         fOut << "\n\nExecuting cycle no: " << dec << cycle << endl;
     if (b_f_w.size())
@@ -1327,9 +1356,6 @@ void DECODE()
                 imm += b[31] * mul;
                 if (b[31] == 1)
                     imm = -1 * (1 << 13) + imm;
-                auto it = btb.find(pc - 8 + imm);
-                if (it != btb.end()) // cout<<hex<<words[((it->first))/4]<<" anisha======== anisha\n";
-                    pc += imm - 4;
                 //-------Checking func3------
                 if (b[14] == 0 && b[13] == 0 && b[12] == 0)
                 {
@@ -1570,48 +1596,53 @@ void DECODE()
             val.push_back(rs1);
             val.push_back(rs2);
             auto itf = m_p.find(p_c[0]);
-            if (itf == m_p.end())
+            if (stall == 0 && stall_d == 0 && pc == next_pc)
                 m_p[p_c[0]] = val;
             p_c.pop_back();
 
-            if (itf == m_p.end())
+            if (stall_d == 0) // ((itf == m_p.end()))
+            {
                 r_d.push_back(rd);
+                rs_1.push_back(rs1);
+                rs_2.push_back(rs2);
+            }
             if (r_d.size() == 5)
             {
                 auto it = r_d.begin();
                 r_d.erase(it);
+                it = rs_1.begin();
+                rs_1.erase(it);
+                it = rs_2.begin();
+                rs_2.erase(it);
             }
-
-            auto it = find(r_d.begin(), r_d.end(), rs1);
-            auto itt = find(r_d.begin(), r_d.end(), rs2);
-
-            if (itt != r_d.end() || it != r_d.end())
+            //----------checking stall due to data hazard----------
+            if (r_d.size() == 4)
             {
-                cout << r_d[2] << " " << endl;
-                if (*itt == r_d[2] || *it == r_d[2])
-                {
+                if ((rs_1[3] == r_d[2] || rs_2[3] == r_d[2]))
                     stall_d = 3;
-                }
-                else if (*itt == r_d[1] || *it == r_d[1])
-                {
-                    if (r_d[2] == rd)
-                        stall_d = 3;
-                    else
-                        stall_d = 2;
-                }
-                else
-                {
-                    if (r_d[1] == rd)
-                        stall_d = 3;
-                    else if (r_d[2] == rd)
-                        stall_d = 2;
-                    else
-                        stall_d = 1;
-                }
+                else if ((rs_1[2] != r_d[1]) && (rs_2[2] != r_d[1]) && ((rs_1[3] == r_d[1] || rs_2[3] == r_d[1])))
+                    stall_d = 2;
+                else if ((rs_1[1] != r_d[0]) && (rs_2[1] != r_d[0]) && (rs_1[2] != r_d[0]) && (rs_2[2] != r_d[0]) && (rs_1[2] != r_d[1]) && (rs_2[2] != r_d[1]) && (rs_1[3] == r_d[0] || rs_2[3] == r_d[0]))
+                    stall_d = 1;
             }
+            else if (r_d.size() == 3)
+            {
+                if ((rs_1[2] == r_d[1] || rs_2[2] == r_d[1]))
+                    stall_d = 3;
+                else if ((rs_1[1] != r_d[0]) && (rs_2[1] != r_d[0]) && ((rs_1[2] == r_d[0] || rs_2[2] == r_d[0])))
+                    stall_d = 2;
+            }
+            else if ((rs_1[1] == r_d[0] || rs_2[1] == r_d[0]) && r_d.size() == 2)
+                stall_d = 3;
+            if (stall_d > 0)
+                dh++;
+            if (k2 && stall_d == 3)
+                stall_ds += 1;
+            else
+                stall_ds += stall_d;
         }
     }
-   if (stall_d != 0)
+    if (stall_d != 0)
         cwds = 0;
     else
         cwds = 1;
@@ -1633,7 +1664,8 @@ void EXECUTE()
 
     if (b_e.size()) // && stall == 0)
     {
-
+        auto ittt = btb.find(pc_i);
+        n_e++;
         bitset<32> b = b_e[0].first;
         int n = b_e[0].second[0];
         int rs1 = b_e[0].second[1];
@@ -1642,9 +1674,22 @@ void EXECUTE()
         int imm = b_e[0].second[4];
 
         // reverse(b_e.begin(), b_e.end());
+        int r_1, r_2;
+        if (k2 && stall_d)
+        {
+            if ((rs_1[3] == r_d[0]) || (rs_1[3] == r_d[1]) || (rs_1[3] == r_d[2]) || (rs_1[1] == r_d[0]) || (rs_1[2] == r_d[0]) || (rs_1[2] == r_d[1]))
+                r[rs1] = result_d[0];
+            if ((rs_2[3] == r_d[0]) || (rs_2[3] == r_d[1]) || (rs_2[3] == r_d[2]) || (rs_2[1] == r_d[0]) || (rs_2[2] == r_d[0]) || (rs_2[2] == r_d[1]))
+                r[rs2] = result_d[0];
+            stall_d = 0;
+            result_d.clear();
+        }
         b_e.pop_back();
         long long x;
-
+        if (n < 20 || n > 35)
+            n_a++;
+        else if (n > 27 && n < 36)
+            n_c++;
         switch (n)
         {
 
@@ -1785,20 +1830,19 @@ void EXECUTE()
         case 28: // beq
             if (r[rs1] == r[rs2])
             {
-                auto ittt = btb.find(pc - 8);
-                if (ittt == btb.end())
+                ch++;
+                if (ittt == btb.end() || (ittt->second).first == 0)
                     pc += imm - 4;
                 btb[pc - 8] = make_pair(1, pc + imm - 4);
-                // auto it = btb.find(pc - 8 + imm);
-                // cout << hex << words[((it->first)) / 4] << " anisha anisha\n";
             }
             else
             {
                 pc = next_pc;
-                auto ittt = btb.find(pc - 8);
                 if (ittt != btb.end() && (ittt->second).first)
                 {
-                    pc = ittt->first;
+                    bm++;
+                    b_w.pop_back();
+                    pc = ittt->first + 4;
                     b_d.pop_back();
                 }
                 btb[pc - 8] = make_pair(0, pc + imm - 4);
@@ -1809,15 +1853,21 @@ void EXECUTE()
         case 29: // bne
             if (r[rs1] != r[rs2])
             {
+                ch++;
+                if (ittt == btb.end() || (ittt->second).first == 0)
+                    pc += imm - 4;
                 btb[pc - 8] = make_pair(1, pc + imm - 4);
-                pc += imm - 4;
             }
             else
             {
                 pc = next_pc;
-                auto ittt = btb.find(pc - 8);
-                if ((ittt->second).first)
+                if (ittt != btb.end() && (ittt->second).first)
+                {
+                    bm++;
+                    b_w.pop_back();
+                    pc = ittt->first + 4;
                     b_d.pop_back();
+                }
                 btb[pc - 8] = make_pair(0, pc + imm - 4);
             }
             cout << "EXECUTE:   BRANCH if " << r[rs1] << "!=" << r[rs2] << endl;
@@ -1826,17 +1876,24 @@ void EXECUTE()
         case 30: // blt or bltu
             if (r[rs1] < r[rs2])
             {
-                cout << "hello=========================" << pc - 8 << endl;
-
+                ch++;
+                if (ittt == btb.end() || (ittt->second).first == 0)
+                    pc += imm - 4;
                 btb[pc - 8] = make_pair(1, pc + imm - 4);
-                pc += imm - 4;
             }
             else
             {
+                bm++;
+                cout << "xxxxxxxxxxxxxxxxxxxxxx" << endl;
+
                 pc = next_pc;
-                auto ittt = btb.find(pc - 8);
-                if ((ittt->second).first)
+                if (ittt != btb.end() && (ittt->second).first)
+                {
+                    cout << "xxxxxxxxxxxxxxxxxxxxxx" << endl;
                     b_d.pop_back();
+                    pc = ittt->first + 4;
+                    b_d.pop_back();
+                }
                 btb[pc - 8] = make_pair(0, pc + imm - 4);
             }
             cout << "EXECUTE:   BRANCH if " << r[rs1] << "<" << r[rs2] << endl;
@@ -1845,36 +1902,43 @@ void EXECUTE()
         case 31: // bge or bgeu
             if (r[rs1] >= r[rs2])
             {
+                ch++;
+                if (ittt == btb.end() || (ittt->second).first == 0)
+                    pc += imm - 4;
                 btb[pc - 8] = make_pair(1, pc + imm - 4);
-                pc += imm - 4;
             }
             else
             {
+                bm++;
                 pc = next_pc;
-                auto ittt = btb.find(pc - 8);
-                if ((ittt->second).first)
+                if (ittt != btb.end() && (ittt->second).first)
+                {
+                    b_w.pop_back();
+                    pc = ittt->first + 4;
                     b_d.pop_back();
+                }
                 btb[pc - 8] = make_pair(0, pc + imm - 4);
             }
             cout << "EXECUTE:   BRANCH if " << r[rs1] << ">=" << r[rs2] << endl;
-            // cout << "pc_bge=" << r[rs2] << endl;
             break;
-
         case 34: // jal
+        {
+            ch++;
+            if (ittt == btb.end()) // || (ii->second).first == 0)
+                pc += imm - 4;
             btb[pc - 8] = make_pair(1, pc + imm - 4);
-
             x = pc - 4;
             cout << x << "=jal result\n";
-            pc += imm - 4;
             n = 34;
             cout << "EXECUTE:   JUMP AND LINK pc + " << imm << endl;
-            break;
+        }
+        break;
         case 35: // jalr
             x = pc - 4;
-            btb[pc - 8] = make_pair(1, pc + imm - 4);
-            pc = r[rs1] + imm;
-            pc /= 4;
-            pc *= 4;
+            ch++;
+            if (ittt == btb.end() || (ittt->second).first == 0)
+                pc = r[rs1] + imm;
+            btb[pc - 8] = make_pair(1, r[rs1] + imm - 4);
             cout << "EXECUTE:   JUMP AND LINK pc + " << r[rs1] << " + " << imm << endl;
             break;
 
@@ -1920,9 +1984,10 @@ void MEMORY_ACCESS()
 {
 
     {
+        int n;
         if (b_m.size())
         {
-            int n = b_m[0][0];
+            n = b_m[0][0];
             long long x = b_m[0][1];
             int rs1 = b_m[0][2];
             int rs2 = b_m[0][3];
@@ -1935,11 +2000,14 @@ void MEMORY_ACCESS()
             if ((n >= 1 && n < 20) || (n > 27))
             {
                 cout << "MEMORY:    No memory  operation\n";
+                if (k2)
+                    result_d.push_back(x);
             }
             else
             {
                 if (n > 24 && n < 28) // store
                 {
+                    n_m++;
                     bitset<32> B = r[rs2];
                     if (n == 27) // sw
                         memory[r[rs1] + imm] = r[rs2];
@@ -1988,9 +2056,16 @@ void MEMORY_ACCESS()
             val.push_back(imm);
             b_m_w.push_back(val);
             b_w.push_back(val);
-            n_m++;
         }
-        if (stall_d != 0)
+        if (k2)
+        {
+            // if(stall_d==)
+            if ((stall_d == 1) && n > 19 && n < 25 && result_d.size())
+                EXECUTE();
+            else if ((stall_d == 1 || stall_d == 2) && n < 20 && n > 24 && result_d.size())
+                EXECUTE();
+        }
+        else if (stall_d != 0)
         {
             stall_d--;
             FETCH();
@@ -2004,7 +2079,6 @@ void MEMORY_ACCESS()
 
 void WRITE_BACK()
 {
-
     cwds = 0;
     if (pc > 0 && b_d.size() == 0 && b_e.size() == 0 && b_m.size() == 0 && b_w.size() == 0)
     {
@@ -2013,11 +2087,9 @@ void WRITE_BACK()
     {
         if (b_w.size())
         {
-
             int result = b_w[0][1];
             int n = b_w[0][0];
             int rd = b_w[0][4];
-            // reverse(b_w.begin(), b_w.end());
             vector<long long int> val;
             val.push_back(n);
             val.push_back(result);
@@ -2032,20 +2104,33 @@ void WRITE_BACK()
             else
             {
                 r[rd] = result;
+                if (n > 19 && n < 25 && k2)
+                    result_d.push_back(result);
             }
 
             n_w++;
         }
         if (pc != next_pc)
         {
-
-            cout << hex << next_pc << "============ja\n";
             next_pc = pc - 4;
             pc = next_pc;
             stall = 2;
+            stalls += stall;
+            r_d.push_back(-1);
+            rs_1.push_back(-1);
+            rs_2.push_back(-1);
+            r_d.push_back(-1);
+            rs_1.push_back(-1);
+            rs_2.push_back(-1);
+            while (r_d.size() >= 5)
+            {
+                auto it = r_d.begin();
+                r_d.erase(it);
+            }
             b_d.pop_back();
             b_e.pop_back();
         }
+
         fOut << stall << "=STALL\n";
         MEMORY_ACCESS();
     }
