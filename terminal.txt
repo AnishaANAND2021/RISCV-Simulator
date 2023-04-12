@@ -1,138 +1,157 @@
-0=STALL
 
 
 Executing cycle no: 1
-FETCH:     Fetch instruction 0x00000093 from address 0x0
+FETCH:     Fetch instruction 0x10000113 from address 0x0
 stall_d= 0
-0=STALL
 
 
 Executing cycle no: 2
-FETCH:     Fetch instruction 0x10000113 from address 0x4
+FETCH:     Fetch instruction 0x00a00513 from address 0x4
 DECODE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
-           Read registers R1 = 1, R2 = 0, imm = 0
+           Read registers R1 = 2, R2 = 0, imm = 256
 stall_d= 0
-0=STALL
 
 
 Executing cycle no: 3
-FETCH:     Fetch instruction 0x20000713 from address 0x8
+FETCH:     Fetch instruction 0x00400213 from address 0x8
 DECODE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
-           Read registers R1 = 2, R2 = 0, imm = 256
+           Read registers R1 = 10, R2 = 0, imm = 10
 EXECUTE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
-           Read registers R1 = 0, R2 = 0, imm = 1
+           Read registers R1 = -23, R2 = 256, imm = 2
 stall_d= 0
-0=STALL
 
 
 Executing cycle no: 4
-FETCH:     Fetch instruction 0x00a00193 from address 0xc
+FETCH:     Fetch instruction 0x00500293 from address 0xc
 DECODE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
-           Read registers R1 = 14, R2 = 0, imm = 512
+           Read registers R1 = 4, R2 = 0, imm = 4
 EXECUTE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
-           Read registers R1 = 0, R2 = 256, imm = 2
+           Read registers R1 = -23, R2 = 10, imm = 10
 MEMORY:     No memory operation
 stall_d= 0
-0=STALL
 
 
 Executing cycle no: 5
-FETCH:     Fetch instruction 0x00000213 from address 0x10
+FETCH:     Fetch instruction 0x00700393 from address 0x10
 DECODE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
-           Read registers R1 = 3, R2 = 0, imm = 10
+           Read registers R1 = 5, R2 = 0, imm = 5
 EXECUTE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
-           Read registers R1 = 0, R2 = 512, imm = 14
-MEMORY:     No memory operation
-WRITEBACK: write 0 to R1
-stall_d= 0
-0=STALL
-
-
-Executing cycle no: 6
-FETCH:     Fetch instruction 0x002003b3 from address 0x14
-DECODE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
-           Read registers R1 = 4, R2 = 0, imm = 0
-EXECUTE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
-           Read registers R1 = 0, R2 = 10, imm = 3
+           Read registers R1 = -23, R2 = 4, imm = 4
 MEMORY:     No memory operation
 WRITEBACK: write 256 to R2
 stall_d= 0
-0=STALL
+
+
+Executing cycle no: 6
+FETCH:     Fetch instruction 0x00a12023 from address 0x14
+DECODE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 7, R2 = 0, imm = 7
+EXECUTE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
+           Read registers R1 = -23, R2 = 5, imm = 5
+MEMORY:     No memory operation
+WRITEBACK: write 10 to R10
+stall_d= 0
 
 
 Executing cycle no: 7
-FETCH:     Fetch instruction 0x00e007b3 from address 0x18
-DECODE:    Operation is ADD, first operand R2, Second operand R3, destination register R1
-           Read registers R1 = 7, R2 = 0, R3 = 2
+FETCH:     Fetch instruction 0x00012083 from address 0x18
+DECODE:    Operation is SW, first operand R2, second operand R3, immediate imm
+           Read registers R2 = 2, R3 = 10, imm = 0
 EXECUTE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
-           Read registers R1 = 0, R2 = 0, imm = 4
+           Read registers R1 = -23, R2 = 7, imm = 7
 MEMORY:     No memory operation
-WRITEBACK: write 512 to R14
+WRITEBACK: write 4 to R4
 stall_d= 0
-0=STALL
 
 
 Executing cycle no: 8
-FETCH:     Fetch instruction 0x10000613 from address 0x1c
-DECODE:    Operation is ADD, first operand R2, Second operand R3, destination register R1
-           Read registers R1 = 15, R2 = 0, R3 = 14
-EXECUTE:     ADD 0 and 0
+FETCH:     Fetch instruction 0x004081b3 from address 0x1c
+DECODE:    Operation is LW, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 1, R2 = 2, imm = 0
+EXECUTE:    Operation is SW, first operand R2, second operand R3, immediate imm
+           Read registers R2 = 1998617750, R3 = 2, imm = -17
 MEMORY:     No memory operation
-WRITEBACK: write 10 to R3
+WRITEBACK: write 5 to R5
 stall_d= 0
-0=STALL
 
 
 Executing cycle no: 9
-FETCH:     Fetch instruction 0x00060313 from address 0x20
-DECODE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
-           Read registers R1 = 12, R2 = 0, imm = 256
-EXECUTE:     ADD 0 and 0
-MEMORY:     No memory operation
-WRITEBACK: write 0 to R4
-stall_d= 0
-0=STALL
+FETCH:     Fetch instruction 0x00412283 from address 0x20
+DECODE:    Operation is ADD, first operand R2, Second operand R3, destination register R1
+           Read registers R1 = 3, R2 = 1, R3 = 4
+EXECUTE:    Operation is LW, first operand R2, immediate imm, destination register R1
+           Read registers R1 = -20, R2 = 1998617750, imm = 1
+MEMORY:    Operation is SW, first operand R2, second operand R3, immediate imm
+           Read registers R2 = 1, R3 = 4, imm = 0
+
+WRITEBACK: write 7 to R7
+stall_d= 3
 
 
 Executing cycle no: 10
-FETCH:     Fetch instruction 0x02325263 from address 0x24
-DECODE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
-           Read registers R1 = 6, R2 = 12, imm = 0
-EXECUTE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
-           Read registers R1 = 0, R2 = 256, imm = 12
-MEMORY:     No memory operation
-WRITEBACK: write 256 to R7
-stall_d= 0
-0=STALL
+FETCH:     Fetch instruction 0x00412283 from address 0x20
+MEMORY:    Operation is LW, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 3, R2 = 1, imm = 0
+
+WRITEBACK: write 1998617750 to R-17
+stall_d= 2
 
 
 Executing cycle no: 11
-DECODE:    Operation is BGE, first operand R2, second operand R3, immediate imm
-           Read registers R2 = 4, R3 = 3, imm = 36
-EXECUTE:    Operation is ADDI, first operand R2, immediate imm, destination register R1
-           Read registers R1 = 0, R2 = 0, imm = 6
-MEMORY:     No memory operation
-WRITEBACK: write 512 to R15
-stall_d= 0
-0=STALL
+FETCH:     Fetch instruction 0x00412283 from address 0x20
+WRITEBACK: write a to R1
+stall_d= 1
 
 
 Executing cycle no: 12
-EXECUTE:    Operation is BGE, first operand R2, second operand R3, immediate imm
-           Read registers R2 = 4, R3 = 3, imm = 36
-MEMORY:     No memory operation
-WRITEBACK: write 256 to R12
+FETCH:     Fetch instruction 0x00412283 from address 0x20
 stall_d= 0
-0=STALL
 
 
 Executing cycle no: 13
-MEMORY:     No memory operation
-WRITEBACK: write 0 to R6
+FETCH:     Fetch instruction 0x00728333 from address 0x24
+DECODE:    Operation is LW, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 5, R2 = 2, imm = 4
+EXECUTE:     ADD 10 and 0
 stall_d= 0
-0=STALL
 
 
 Executing cycle no: 14
-No writeback  operation
+DECODE:    Operation is ADD, first operand R2, Second operand R3, destination register R1
+           Read registers R1 = 6, R2 = 5, R3 = 7
+EXECUTE:    Operation is LW, first operand R2, immediate imm, destination register R1
+           Read registers R1 = -20, R2 = 1998617750, imm = 5
+MEMORY:     No memory operation
+stall_d= 3
+
+
+Executing cycle no: 15
+MEMORY:    Operation is LW, first operand R2, immediate imm, destination register R1
+           Read registers R1 = 25977758696930, R2 = 14, imm = 72621368641984928
+
+WRITEBACK: write 14 to R3
+stall_d= 2
+
+
+Executing cycle no: 16
+WRITEBACK: write 0 to R5
+stall_d= 1
+
+
+Executing cycle no: 17
+stall_d= 0
+
+
+Executing cycle no: 18
+EXECUTE:     ADD 0 and 7
+stall_d= 0
+
+
+Executing cycle no: 19
+MEMORY:     No memory operation
+stall_d= 0
+
+
+Executing cycle no: 20
+WRITEBACK: write 7 to R6
 stall_d= 0

@@ -1,4 +1,4 @@
-This folder consists of 6 files:
+This folder consists of 6 files for phase 1:
 
 1. input.txt -> It consists of the machine code in the formate: 0x0 0x00000093
                 The first number represents PC value and the second one is the 
@@ -22,6 +22,16 @@ This folder consists of 6 files:
 
 6. register_file_hex -> Shows the values of 32 registers(in hexadecimal) after 
                         the execution of the code.
+
+For phase 2, we have added some more files:
+
+1. phase2.cpp -> C++ code of the simulator (updated version)
+
+2. phase2_gui.py -> python code for phase2_gui
+
+3. terminal.txt -> showing the operations performed in each cycle
+
+4. output.txt -> giving basic information after running the code
 
 
 -----------------------------------THANK YOU-----------------------------------
