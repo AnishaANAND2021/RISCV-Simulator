@@ -50,10 +50,45 @@ map<int, vector<int>> m_p;
 int cwds = 0, pc_i;
 ofstream fOut("terminal.txt");
 ofstream FoUT("output.txt");
+
+//----------- INTRODUCING CACHE -----------
+int $_size, $_block_size, no_of_blocks, no_of_ways, no_of_sets; // no_of_sets determines the no of set in case of FA it is equal to 1
+string assoc, rep_policy;                                       // assoc is associativity , rep_policy is the replacement policy
+map<int, vector<int>> mi$;                                      // map of an instruction cache map.first represent index of a block
+map<int, vector<int>> md$;                                      // map of an data cache map.first represent index of a block
+void check_I_$(int next_pc);                                    // it will check and update instruction cache
+void check_D_$(int next_pc);                                    // it will check and update instruction cache
 //----- DRIVER CODE -----
 
 int main()
 {
+    //----------- Taking input for basic structure of a cache -----------
+    cout << "Cache size (in KB): ";
+    cin >> $_size;
+    cout << "Cache block size (in KB): ";
+    cin >> $_block_size;
+    cout << "Direct mapped(DM)/Full Assoc (FA)/ Set Assoc(SA): ";
+    cin >> assoc;
+    if (assoc == "SA")
+    {
+        cout << "Number of ways for SA: ";
+        cin >> no_of_ways;
+    }
+    else if (assoc == "FA")
+        no_of_ways = no_of_blocks; // in case of fully associative , only one set is there
+    else
+        no_of_ways = 1; // in case of direct mapped , it is equal to no of blocks
+
+    no_of_blocks = $_size / $_block_size;
+    no_of_sets = no_of_blocks / no_of_ways;
+
+    // checking for replacement policy
+    if (assoc == "FA" || assoc == "SA")
+    {
+        cout << "Replacement policy: ";
+        cin >> rep_policy;
+    }
+
     /*printf("Print 1 to Enable a knob and O to disable a Knob: \n Knob 1: ");
     cin >> k1;
     if (k1)
@@ -68,7 +103,7 @@ int main()
         cin >> k5;
     }*/
     memory[0] = 0;
-    while (im--)
+    while (im-=4)
     {
         memory[im] = 0;
     }
@@ -179,6 +214,18 @@ int main()
     FoUT << "• Stat12: Number of stalls due to control hazards " << dec << stalls << endl;
     FoUT.close();
     return 0;
+}
+
+//------CHECKING AND UPDATING INSTRUCTION CACHE------
+void check_I_$(int next_pc)
+{
+
+}
+
+//------CHECKING AND UPDATING DATA CACHE------
+void check_D_$(int next_pc)
+{
+
 }
 
 //-----CONVERTING BINARY TO DECIMAL-----
