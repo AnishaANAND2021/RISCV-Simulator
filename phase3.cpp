@@ -53,11 +53,19 @@ ofstream FoUT("output.txt");
 
 //----------- INTRODUCING CACHE -----------
 int $_size, $_block_size, no_of_blocks, no_of_ways, no_of_sets; // no_of_sets determines the no of set in case of FA it is equal to 1
+int tag_address, Index, block_offset;                           // a $block
+int f_tag, set_no, f_bo;                                        // the location of the memory index we want to find
 string assoc, rep_policy;                                       // assoc is associativity , rep_policy is the replacement policy
-map<int, vector<int>> mi$;                                      // map of an instruction cache map.first represent index of a block
-map<int, vector<int>> md$;                                      // map of an data cache map.first represent index of a block
-void check_I_$(int next_pc);                                    // it will check and update instruction cache
-void check_D_$(int next_pc);                                    // it will check and update instruction cache
+
+map<int, map<int, vector<int>>> mi$; // map of an instruction cache map.first represent set no
+map<int, map<int, vector<int>>> md$; // map of an data cache map.first represent set no
+
+void check_I_$(int next_pc); // it will check and update instruction cache
+void check_D_$(int mem_loc); // it will check and update instruction cache
+
+void replacement_I$(int set_no); // it will replace the block in a set in instruction cache
+void replacement_D$(int set_no); // it will replace the block in a set in data cache
+
 //----- DRIVER CODE -----
 
 int main()
@@ -81,7 +89,9 @@ int main()
 
     no_of_blocks = $_size / $_block_size;
     no_of_sets = no_of_blocks / no_of_ways;
-
+    block_offset = log2($_block_size); //-------------------------------------in last check for Kilos it is in byte actually-------------------------------
+    Index = log2(no_of_sets);
+    tag_address = 32 - Index - block_offset;
     // checking for replacement policy
     if (assoc == "FA" || assoc == "SA")
     {
@@ -103,7 +113,7 @@ int main()
         cin >> k5;
     }*/
     memory[0] = 0;
-    while (im-=4)
+    while (im -= 4)
     {
         memory[im] = 0;
     }
@@ -219,15 +229,62 @@ int main()
 //------CHECKING AND UPDATING INSTRUCTION CACHE------
 void check_I_$(int next_pc)
 {
+    bitset<32> i_p;
+    bitset<32> find = next_pc;
+    int f_tag = bin_2_dec(find, (31 - tag_address + 1), 31);
+    int set_no = bin_2_dec(find, block_offset, (31 - tag_address));
+    int f_bo = bin_2_dec(find, 0, (block_offset - 1));
+    map<int, vector<int>> mpb;
+    auto it = mi$.find(set_no);
+    if (it != mi$.end()) /// initailly you have to make empty cache
+        mpb = it->second;
+    else
+        cout << "Invalid input of cache datas!!!!!!!!!!!!";
 
+    auto It = mpb.find(f_tag);
+    if (It == mpb.end()) // miss (check replacement policies)
+    {
+        replacement_I$(set_no);
+    }
+    auto IT = mpb.find(f_tag);
+    vector<int>v=IT->second;
+    //bitset<4>in=v[]
+
+    // cout << find << ' ' << f_tag << ' ' << f_I << ' ' << f_bo << "blockkkkkkkkkkkkkkkkk" << 31-tag_address+1 << endl;
 }
 
 //------CHECKING AND UPDATING DATA CACHE------
-void check_D_$(int next_pc)
+void check_D_$(int mem_loc)
 {
+    bitset<32> i_p;
+    bitset<32> find = mem_loc;
+    int f_tag = bin_2_dec(find, (31 - tag_address + 1), 31);
+    int set_no = bin_2_dec(find, block_offset, (31 - tag_address));
+    int f_bo = bin_2_dec(find, 0, (block_offset - 1));
+    map<int, vector<int>> mpb;
+    auto it = md$.find(set_no);
+    if (it != md$.end()) /// initailly you have to make empty cache
+        mpb = it->second;
+    else
+        cout << "Invalid input of cache datas!!!!!!!!!!!!";
 
+    auto It = mpb.find(f_tag);
+    if (It == mpb.end()) // miss (check replacement policies)
+    {
+        replacement_D$(set_no);
+    }
+    
 }
 
+//------REPLACEMENT OF A BLOCK IN INSTRUCTION CACHE------
+void replacement_I$(int set_no)
+{
+}
+
+//------REPLACEMENT OF A BLOCK IN INSTRUCTION CACHE------
+void replacement_D$(int set_no)
+{
+}
 //-----CONVERTING BINARY TO DECIMAL-----
 
 int bin_2_dec(bitset<32> b, int f, int l)
@@ -277,6 +334,7 @@ void FETCH()
     int i = 1;
     if (y < x)
     {
+        check_I_$(next_pc);
 
         int no = next_pc;
         string s;
