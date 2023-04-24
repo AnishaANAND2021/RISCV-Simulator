@@ -52,19 +52,31 @@ ofstream fOut("terminal.txt");
 ofstream FoUT("output.txt");
 
 //----------- INTRODUCING CACHE -----------
-int $_size, $_block_size, no_of_blocks, no_of_ways, no_of_sets; // no_of_sets determines the no of set in case of FA it is equal to 1
-int tag_address, Index, block_offset;                           // a $block
-int f_tag, set_no, f_bo;                                        // the location of the memory index we want to find
-string assoc, rep_policy;                                       // assoc is associativity , rep_policy is the replacement policy
+vector<vector<bitset<32>>> words_block;     // blocks of instruction memory stored in the main memory
+vector<vector<long long int>> memory_block; // blocks of data memory stored in the main memory
 
-map<int, map<int, vector<int>>> mi$; // map of an instruction cache map.first represent set no
-map<int, map<int, vector<int>>> md$; // map of an data cache map.first represent set no
+float $_size, $_block_size;
+int no_of_blocks, no_of_ways, no_of_sets; // no_of_sets determines the no of set in case of FA it is equal to 1
+int tag_address, Index, block_offset;     // a $block
+int f_tag, set_no, f_bo;                  // the location of the memory index we want to find
+string assoc, rep_policy;                 // assoc is associativity , rep_policy is the replacement policy
+//-----------------------------------------------------------make them zero initially--------XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX*******************************************************
+map<int, map<int, vector<bitset<32>>>> mi$; // map of an instruction cache map.first represent set no ...external vector (sie=32*8bits) is containing the information in a block
+map<int, map<int, vector<bitset<32>>>> md$; // map of an data cache map.first represent set no ...internal vector is representing a byte
 
-void check_I_$(int next_pc); // it will check and update instruction cache
-void check_D_$(int mem_loc); // it will check and update instruction cache
+bitset<32> check_I_$(int next_pc); // it will check and return instruction cache
+bitset<32> check_D_$(int mem_loc); // it will check and return instruction cache
 
-void replacement_I$(int set_no); // it will replace the block in a set in instruction cache
-void replacement_D$(int set_no); // it will replace the block in a set in data cache
+void replacement_I$(int set_no, bool hit); // it will replace the block in a set in instruction cache
+void replacement_D$(int set_no, bool hit); // it will replace the block in a set in data cache
+
+map<int, queue<pair<int, vector<bitset<32>>>>> fifo_rl_I$; // stores recency list of each set in case of FIFO
+map<int, map<int, vector<bitset<32>>>> lru_rl_I$;          // stores recency list of each set in case of LRU
+map<int, map<int, vector<bitset<32>>>> lfu_rl_I$;          // stores recency list of each set in case of LFU
+
+map<int, queue<vector<bitset<32>>>> fifo_rl_D$;   // stores recency list of each set in case of FIFO
+map<int, map<int, vector<bitset<32>>>> lru_rl_D$; // stores recency list of each set in case of LRU
+map<int, map<int, vector<bitset<32>>>> lfu_rl_D$; // stores recency list of each set in case of LFU
 
 //----- DRIVER CODE -----
 
@@ -89,7 +101,7 @@ int main()
 
     no_of_blocks = $_size / $_block_size;
     no_of_sets = no_of_blocks / no_of_ways;
-    block_offset = log2($_block_size); //-------------------------------------in last check for Kilos it is in byte actually-------------------------------
+    block_offset = log2($_block_size / 1024); // changing kB to B
     Index = log2(no_of_sets);
     tag_address = 32 - Index - block_offset;
     // checking for replacement policy
@@ -113,7 +125,7 @@ int main()
         cin >> k5;
     }*/
     memory[0] = 0;
-    while (im -= 4)
+    while (im--)
     {
         memory[im] = 0;
     }
@@ -129,7 +141,7 @@ int main()
         cerr << "Error in opening the input file" << endl;
         return 1;
     }
-
+    int no_of_inst = 0;
     string line;
     while (getline(file, line))
     {
@@ -143,6 +155,7 @@ int main()
 
             if (j % 2)
             {
+                no_of_inst++;
                 if (sizeof(word) < 10)
                 {
                     printf("Incorrect number of arguments. Please invoke the simulator !! \n");
@@ -164,6 +177,38 @@ int main()
 
     file.close();
 
+    {
+        int i = 0;
+        long long int ii = 0;
+        while (i < no_of_inst)
+        {
+            vector<bitset<32>> v;
+            for (int j = 0; j < $_block_size * 256; j++)
+            {
+                v.push_back(words[i]);
+                i++;
+                if (i == no_of_inst)
+                    break;
+            }
+            words_block.push_back(v);
+        }
+        while (ii < 5000)
+        {
+
+            vector<long long int> m;
+            for (long long int j = 0; j < $_block_size * 256; j++) //(1024/8)
+            {
+                m.push_back(memory[ii]);
+                ii += 1;
+
+                if ((ii) >= 5000)
+                    break;
+            }
+            memory_block.push_back(m);
+            // ii += $_block_size*128;
+        }
+    }
+
     WRITE_BACK();
 
     // WRITING IN THE MEMORY FILE
@@ -180,6 +225,46 @@ int main()
     }
     fout.close();
 
+    //--------STORING DATAS AS BLOCKS-------
+    {
+        ofstream foUt("data_mem.txt");
+        int count = 0;
+        for (auto it : memory_block)
+        {
+            foUt << "BLOCK ";
+            foUt << count << ":\n";
+            count++;
+            for (auto i : it)
+            {
+                // cout << i << endl;
+                bitset<32> Mm = i;
+                string s = bin_hex(Mm);
+                // cout << Mm << endl;
+                foUt << "  " << s[2] << s[3] << "  " << s[4] << s[5] << "  " << s[6] << s[7] << "  " << s[8] << s[9] << endl;
+            }
+            foUt << endl;
+        }
+        foUt.close();
+
+        ofstream fOUt("inst_mem.txt");
+        count = 0;
+        for (auto it : words_block)
+        {
+            fOUt << "BLOCK ";
+            fOUt << count << ":\n";
+            count++;
+            for (auto i : it)
+            {
+                // cout << i << endl;
+                bitset<32> Mm = i;
+                string s = bin_hex(Mm);
+                // cout << Mm << endl;
+                fOUt << "  " << s[8] << s[9] << "  " << s[6] << s[7] << "  " << s[4] << s[5] << "  " << s[2] << s[3] << endl;
+            }
+            fOUt << endl;
+        }
+        fOUt.close();
+    }
     // WRITING IN THE REGISTER FILE IN HEXADECIMAL
 
     ofstream fot("register_file_hex.txt");
@@ -226,65 +311,6 @@ int main()
     return 0;
 }
 
-//------CHECKING AND UPDATING INSTRUCTION CACHE------
-void check_I_$(int next_pc)
-{
-    bitset<32> i_p;
-    bitset<32> find = next_pc;
-    int f_tag = bin_2_dec(find, (31 - tag_address + 1), 31);
-    int set_no = bin_2_dec(find, block_offset, (31 - tag_address));
-    int f_bo = bin_2_dec(find, 0, (block_offset - 1));
-    map<int, vector<int>> mpb;
-    auto it = mi$.find(set_no);
-    if (it != mi$.end()) /// initailly you have to make empty cache
-        mpb = it->second;
-    else
-        cout << "Invalid input of cache datas!!!!!!!!!!!!";
-
-    auto It = mpb.find(f_tag);
-    if (It == mpb.end()) // miss (check replacement policies)
-    {
-        replacement_I$(set_no);
-    }
-    auto IT = mpb.find(f_tag);
-    vector<int>v=IT->second;
-    //bitset<4>in=v[]
-
-    // cout << find << ' ' << f_tag << ' ' << f_I << ' ' << f_bo << "blockkkkkkkkkkkkkkkkk" << 31-tag_address+1 << endl;
-}
-
-//------CHECKING AND UPDATING DATA CACHE------
-void check_D_$(int mem_loc)
-{
-    bitset<32> i_p;
-    bitset<32> find = mem_loc;
-    int f_tag = bin_2_dec(find, (31 - tag_address + 1), 31);
-    int set_no = bin_2_dec(find, block_offset, (31 - tag_address));
-    int f_bo = bin_2_dec(find, 0, (block_offset - 1));
-    map<int, vector<int>> mpb;
-    auto it = md$.find(set_no);
-    if (it != md$.end()) /// initailly you have to make empty cache
-        mpb = it->second;
-    else
-        cout << "Invalid input of cache datas!!!!!!!!!!!!";
-
-    auto It = mpb.find(f_tag);
-    if (It == mpb.end()) // miss (check replacement policies)
-    {
-        replacement_D$(set_no);
-    }
-    
-}
-
-//------REPLACEMENT OF A BLOCK IN INSTRUCTION CACHE------
-void replacement_I$(int set_no)
-{
-}
-
-//------REPLACEMENT OF A BLOCK IN INSTRUCTION CACHE------
-void replacement_D$(int set_no)
-{
-}
 //-----CONVERTING BINARY TO DECIMAL-----
 
 int bin_2_dec(bitset<32> b, int f, int l)
@@ -334,7 +360,6 @@ void FETCH()
     int i = 1;
     if (y < x)
     {
-        check_I_$(next_pc);
 
         int no = next_pc;
         string s;
