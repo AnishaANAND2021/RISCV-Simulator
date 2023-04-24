@@ -67,14 +67,14 @@ map<int, map<int, vector<bitset<32>>>> md$; // map of an data cache map.first re
 bitset<32> check_I_$(int next_pc); // it will check and return instruction cache
 bitset<32> check_D_$(int mem_loc); // it will check and return instruction cache
 
-void replacement_I$(int set_no, bool hit); // it will replace the block in a set in instruction cache
-void replacement_D$(int set_no, bool hit); // it will replace the block in a set in data cache
+void replacement_I$(int set_no, bool hit, int f_tag); // it will replace the block in a set in instruction cache
+void replacement_D$(int set_no, bool hit);            // it will replace the block in a set in data cache
 
-map<int, queue<pair<int, vector<bitset<32>>>>> fifo_rl_I$; // stores recency list of each set in case of FIFO
-map<int, map<int, vector<bitset<32>>>> lru_rl_I$;          // stores recency list of each set in case of LRU
-map<int, map<int, vector<bitset<32>>>> lfu_rl_I$;          // stores recency list of each set in case of LFU
+map<int, vector<pair<int, vector<bitset<32>>>>> fifo_rl_I$; // stores recency list of each set in case of FIFO
+map<int, map<int, vector<bitset<32>>>> lru_rl_I$;           // stores recency list of each set in case of LRU
+map<int, map<int, vector<bitset<32>>>> lfu_rl_I$;           // stores recency list of each set in case of LFU
 
-map<int, queue<vector<bitset<32>>>> fifo_rl_D$;   // stores recency list of each set in case of FIFO
+map<int, vector<vector<bitset<32>>>> fifo_rl_D$;  // stores recency list of each set in case of FIFO
 map<int, map<int, vector<bitset<32>>>> lru_rl_D$; // stores recency list of each set in case of LRU
 map<int, map<int, vector<bitset<32>>>> lfu_rl_D$; // stores recency list of each set in case of LFU
 
@@ -110,7 +110,38 @@ int main()
         cout << "Replacement policy: ";
         cin >> rep_policy;
     }
-
+    // initially caches will be empty so simply assign them to zero
+    {
+        for (int i = 0; i < no_of_sets; i++)
+        {
+            map<int, vector<bitset<32>>> mi, md;
+            mi$[i] = mi;
+            md$[i] = md;
+        }
+    }
+    // printing caches--------------it will be printed after every cycle---transferred to stack-------------------------------------------------------------
+    {
+        ofstream fout("i_$.txt");
+        ofstream fOut("d_$.txt");
+        for (int i = 0; i < no_of_sets; i++)
+        {
+            fout << "SET " << i << ":\n";
+            fOut << "SET " << i << ":\n";
+            map<int, vector<bitset<32>>> mi = mi$[i], md = md$[i];
+            for (auto it : mi)
+            {
+                fout << "  TAG ADDRESS " << it.first << endl;
+                /*for (auto x : it.second)
+                {
+                   fout << x ;
+                }*/
+            }
+            for (auto it : md)
+                fOut << "  TAG ADDRESS " << it.first << endl;
+            fout << endl;
+            fOut << endl;
+        }
+    }
     /*printf("Print 1 to Enable a knob and O to disable a Knob: \n Knob 1: ");
     cin >> k1;
     if (k1)
@@ -133,50 +164,52 @@ int main()
     // UPDATING INITIAL VALUES OF x2 AND x3
     r[2] = 0X7FFFFFF0;
     r[3] = 0X10000000;
-
-    // READING FROM THE FILE
-    ifstream file("input.txt");
-    if (!file.is_open())
-    {
-        cerr << "Error in opening the input file" << endl;
-        return 1;
-    }
     int no_of_inst = 0;
-    string line;
-    while (getline(file, line))
+    // READING FROM THE FILE
     {
+        ifstream file("input.txt");
+        if (!file.is_open())
+        {
+            cerr << "Error in opening the input file" << endl;
+            return 1;
+        }
 
-        stringstream ss(line);
-        string word;
-        string s;
-        int j = 0;
-        while (ss >> word)
+        string line;
+        while (getline(file, line))
         {
 
-            if (j % 2)
+            stringstream ss(line);
+            string word;
+            string s;
+            int j = 0;
+            while (ss >> word)
             {
-                no_of_inst++;
-                if (sizeof(word) < 10)
+
+                if (j % 2)
                 {
-                    printf("Incorrect number of arguments. Please invoke the simulator !! \n");
-                    break;
+                    no_of_inst++;
+                    if (sizeof(word) < 10)
+                    {
+                        printf("Incorrect number of arguments. Please invoke the simulator !! \n");
+                        break;
+                    }
+
+                    s = word;
+                    stringstream S;
+                    S << hex << s;
+                    unsigned n;
+                    S >> n;
+                    bitset<32> bit(n);
+                    words.push_back(bit);
                 }
 
-                s = word;
-                stringstream S;
-                S << hex << s;
-                unsigned n;
-                S >> n;
-                bitset<32> bit(n);
-                words.push_back(bit);
+                j++;
             }
-
-            j++;
         }
+
+        file.close();
     }
-
-    file.close();
-
+    // making memory blocks
     {
         int i = 0;
         long long int ii = 0;
@@ -211,21 +244,21 @@ int main()
 
     WRITE_BACK();
 
-    // WRITING IN THE MEMORY FILE
-
-    ofstream fout("Memory_file.txt");
-    for (auto it : memory)
+    // WRITING IN THE MEMORY_FILE
     {
-        bitset<32> MEM(it.first);
-        string s = (bin_hex(MEM));
-        fout << s << "\t\t"; //
-        bitset<32> MEm(it.second);
-        s = bin_hex(MEm);
-        fout << s[8] << s[9] << "\t" << s[6] << s[7] << "\t" << s[4] << s[5] << "\t" << s[2] << s[3] << endl;
+        ofstream fout("Memory_file.txt");
+        for (auto it : memory)
+        {
+            bitset<32> MEM(it.first);
+            string s = (bin_hex(MEM));
+            fout << s << "\t\t"; //
+            bitset<32> MEm(it.second);
+            s = bin_hex(MEm);
+            fout << s[8] << s[9] << "\t" << s[6] << s[7] << "\t" << s[4] << s[5] << "\t" << s[2] << s[3] << endl;
+        }
+        fout.close();
     }
-    fout.close();
-
-    //--------STORING DATAS AS BLOCKS-------
+    //--------WRITING IN THE MEMORY IN BLOCKS-------
     {
         ofstream foUt("data_mem.txt");
         int count = 0;
@@ -240,7 +273,7 @@ int main()
                 bitset<32> Mm = i;
                 string s = bin_hex(Mm);
                 // cout << Mm << endl;
-                foUt << "  " << s[2] << s[3] << "  " << s[4] << s[5] << "  " << s[6] << s[7] << "  " << s[8] << s[9] << endl;
+                foUt << "  " << s[8] << s[9] << "  " << s[6] << s[7] << "  " << s[4] << s[5] << "  " << s[2] << s[3] << endl;
             }
             foUt << endl;
         }
@@ -259,56 +292,182 @@ int main()
                 bitset<32> Mm = i;
                 string s = bin_hex(Mm);
                 // cout << Mm << endl;
-                fOUt << "  " << s[8] << s[9] << "  " << s[6] << s[7] << "  " << s[4] << s[5] << "  " << s[2] << s[3] << endl;
+
+                fOUt << "  " << s[2] << s[3] << "  " << s[4] << s[5] << "  " << s[6] << s[7] << "  " << s[8] << s[9] << endl;
             }
             fOUt << endl;
         }
         fOUt.close();
     }
     // WRITING IN THE REGISTER FILE IN HEXADECIMAL
-
-    ofstream fot("register_file_hex.txt");
-    int i = 0;
-    for (auto it : r)
     {
+        ofstream fot("register_file_hex.txt");
+        int i = 0;
+        for (auto it : r)
+        {
 
-        fot << "(x" << i << ")"
-            << "\t"; //
-        i++;
-        bitset<32> MEm(it);
-        string s = bin_hex(MEm);
-        fot << s[2] << s[3] << s[4] << s[5] << s[6] << s[7] << s[8] << s[9] << endl;
+            fot << "(x" << i << ")"
+                << "\t"; //
+            i++;
+            bitset<32> MEm(it);
+            string s = bin_hex(MEm);
+            fot << s[2] << s[3] << s[4] << s[5] << s[6] << s[7] << s[8] << s[9] << endl;
+        }
+        fot.close();
     }
-    fot.close();
-
     // WRITING IN THE REGISTER FILE IN DECIMAL
-
-    ofstream FOUT("register_file_dec.txt");
-    i = 0;
-    for (auto it : r)
     {
+        ofstream FOUT("register_file_dec.txt");
+        int i = 0;
+        for (auto it : r)
+        {
 
-        FOUT << "(x" << i << ")"
-             << "\t"; //
-        i++;
+            FOUT << "(x" << i << ")"
+                 << "\t"; //
+            i++;
 
-        FOUT << it << endl;
+            FOUT << it << endl;
+        }
+        FOUT.close();
+        FoUT << "• Stat1: Total number of cycles " << dec << cycle << endl;
+        FoUT << "• Stat2: Total instructions executed " << dec << n_e << endl;
+        FoUT << "• Stat3: CPI " << dec << cycle / n_e << endl;
+        FoUT << "• Stat4: Number of Data-transfer (load and store) instructions executed " << dec << n_m << endl;
+        FoUT << "• Stat5: Number of ALU instructions executed " << dec << n_a << endl;
+        FoUT << "• Stat6: Number of Control instructions executed " << dec << n_c << endl;
+        FoUT << "• Stat7: Number of stalls/bubbles in the pipeline " << dec << stall_ds + stalls << endl;
+        FoUT << "• Stat8: Number of data hazards " << dec << dh << endl;
+        FoUT << "• Stat9: Number of control hazards " << dec << ch << endl;
+        FoUT << "• Stat10: Number of branch mispredictions " << dec << bm << endl;
+        FoUT << "• Stat11: Number of stalls due to data hazards " << dec << stall_ds << endl;
+        FoUT << "• Stat12: Number of stalls due to control hazards " << dec << stalls << endl;
+        FoUT.close();
     }
-    FOUT.close();
-    FoUT << "• Stat1: Total number of cycles " << dec << cycle << endl;
-    FoUT << "• Stat2: Total instructions executed " << dec << n_e << endl;
-    FoUT << "• Stat3: CPI " << dec << cycle / n_e << endl;
-    FoUT << "• Stat4: Number of Data-transfer (load and store) instructions executed " << dec << n_m << endl;
-    FoUT << "• Stat5: Number of ALU instructions executed " << dec << n_a << endl;
-    FoUT << "• Stat6: Number of Control instructions executed " << dec << n_c << endl;
-    FoUT << "• Stat7: Number of stalls/bubbles in the pipeline " << dec << stall_ds + stalls << endl;
-    FoUT << "• Stat8: Number of data hazards " << dec << dh << endl;
-    FoUT << "• Stat9: Number of control hazards " << dec << ch << endl;
-    FoUT << "• Stat10: Number of branch mispredictions " << dec << bm << endl;
-    FoUT << "• Stat11: Number of stalls due to data hazards " << dec << stall_ds << endl;
-    FoUT << "• Stat12: Number of stalls due to control hazards " << dec << stalls << endl;
-    FoUT.close();
     return 0;
+}
+
+//-----RETURNING REQUESTED MEMORY-----
+bitset<32> check_I_$(int next_pc)
+{
+    bitset<32> i_p;
+    bitset<32> find = next_pc;
+    int f_tag = bin_2_dec(find, (31 - tag_address + 1), 31);
+    int set_no = bin_2_dec(find, block_offset, (31 - tag_address));
+    int f_bo = bin_2_dec(find, 0, (block_offset - 1));
+    map<int, vector<bitset<32>>> mpb;
+    auto it = mi$.find(set_no);
+    if (it != mi$.end()) /// initailly you have to make empty cache
+        mpb = it->second;
+    else
+        cout << "Invalid input of cache datas!!!!!!!!!!!!";
+
+    auto It = mpb.find(f_tag);
+    bool hit = 1;
+    if (It == mpb.end()) // miss (check replacement policies)
+        hit = 0;
+    cout << hit << "=hit----------" << endl;
+    replacement_I$(set_no, hit, f_tag);
+    mpb = mi$[set_no];
+    auto IT = mpb.find(f_tag);
+    int j = 0;
+    vector<bitset<32>> v = IT->second;
+    return v[f_bo];
+}
+bitset<32> check_D_$(int mem_loc)
+{
+    bitset<32> i_p;
+    bitset<32> find = mem_loc;
+    int f_tag = bin_2_dec(find, (31 - tag_address + 1), 31);
+    int set_no = bin_2_dec(find, block_offset, (31 - tag_address));
+    int f_bo = bin_2_dec(find, 0, (block_offset - 1));
+    map<int, vector<bitset<32>>> mpb;
+    auto it = md$.find(set_no);
+    if (it != md$.end()) /// initailly you have to make empty cache
+        mpb = it->second;
+    else
+        cout << "Invalid input of cache datas!!!!!!!!!!!!";
+
+    auto It = mpb.find(f_tag);
+    bool hit = 1;
+    if (It == mpb.end()) // miss (check replacement policies)
+        hit = 0;
+    replacement_D$(set_no, hit);
+    auto IT = mpb.find(f_tag);
+    vector<bitset<32>> v = IT->second;
+    int j = 0;
+    i_p = v[f_bo];
+    return i_p;
+}
+
+//------REPLACEMENT OF A BLOCK IN INSTRUCTION CACHE------
+void replacement_I$(int set_no, bool hit, int f_tag)
+{
+    if (rep_policy == "LRU")
+    {
+        if (!hit)
+        {
+        }
+        else
+        {
+        }
+    }
+    else if (rep_policy == "FIFO")
+    {
+        if (!hit)
+        {
+            map<int, vector<bitset<32>>> mi = mi$[set_no];
+            vector<pair<int, vector<bitset<32>>>> fif = fifo_rl_I$[set_no];
+            fif.push_back(make_pair(f_tag, words_block[f_tag]));
+            int n;
+            if ((fif.size()) > no_of_ways)
+            {
+                n = fif[no_of_ways].first;
+                fif.pop_back();
+            }
+            auto it = mi.find(n);
+            mi.erase(it);
+            fifo_rl_I$[set_no] = fif;
+            mi[f_tag] = words_block[f_tag];
+            mi$[set_no] = mi;
+        }
+    }
+    else if (rep_policy == "LFU")
+    {
+        if (!hit)
+        {
+        }
+        else
+        {
+        }
+    }
+    else if (rep_policy == "RANDOM")
+    {
+        if (!hit)
+        {
+        }
+        else
+        {
+        }
+    }
+    else if (assoc == "DM")
+    {
+        map<int, vector<bitset<32>>> mi = mi$[set_no];
+        mi[f_tag] = words_block[f_tag];
+        mi$[set_no] = mi;
+    }
+    else
+        cout << "Invalid replacement policy!!!!!";
+}
+
+//------REPLACEMENT OF A BLOCK IN INSTRUCTION CACHE------
+void replacement_D$(int set_no, bool hit)
+{
+    if (hit)
+    {
+    }
+    else
+    {
+    }
 }
 
 //-----CONVERTING BINARY TO DECIMAL-----
@@ -365,7 +524,7 @@ void FETCH()
         string s;
         int x = no / 16;
         b_f_w.push_back(make_pair(bin_hex(words[y]), (next_pc)));
-        bitset<32> b = words[(y)];
+        bitset<32> b = check_I_$(next_pc); // words[(y)];
         p_c.push_back(next_pc);
         i++;
         if (b_d.size())
