@@ -93,6 +93,7 @@ int main()
     cin >> $_block_size;
     cout << "Direct mapped(DM)/Full Assoc (FA)/ Set Assoc(SA): ";
     cin >> assoc;
+    no_of_blocks = $_size / $_block_size;
     if (assoc == "SA")
     {
         cout << "Number of ways for SA: ";
@@ -103,9 +104,8 @@ int main()
     else
         no_of_ways = 1; // in case of direct mapped , it is equal to no of blocks
 
-    no_of_blocks = $_size / $_block_size;
     no_of_sets = no_of_blocks / no_of_ways;
-    block_offset = log2($_block_size / 1024); // changing kB to B
+    block_offset = log2($_block_size * 1024); // changing kB to B
     Index = log2(no_of_sets);
     tag_address = 32 - Index - block_offset;
     // checking for replacement policy
@@ -370,13 +370,12 @@ bitset<32> check_I_$(int next_pc)
     bool hit = 1;
     if (It == mpb.end()) // miss (check replacement policies)
         hit = 0;
-    cout << hit << "=hit----------" << endl;
     replacement_I$(set_no, hit, f_tag);
     mpb = mi$[set_no];
     auto IT = mpb.find(f_tag);
     int j = 0;
     vector<bitset<32>> v = IT->second;
-    return v[f_bo];
+    return v[f_bo / 4];
 }
 long long int check_D_$(int mem_loc)
 {
@@ -396,13 +395,12 @@ long long int check_D_$(int mem_loc)
     bool hit = 1;
     if (It == mpb.end()) // miss (check replacement policies)
         hit = 0;
-    cout << hit << "=hit----------" << endl;
     replacement_D$(set_no, hit, f_tag);
     mpb = md$[set_no];
     auto IT = mpb.find(f_tag);
     int j = 0;
     vector<long long int> v = IT->second;
-    return v[f_bo];
+    return v[f_bo / 4];
 }
 
 //------REPLACEMENT OF A BLOCK IN INSTRUCTION CACHE------
@@ -418,18 +416,18 @@ void replacement_I$(int set_no, bool hit, int f_tag)
     fOut << x << " cycles delay due to data cache ";
     if (rep_policy == "LRU" || rep_policy == "LFU")
     {
-
         map<int, vector<bitset<32>>> mi = mi$[set_no];
         map<int, pair<int, vector<bitset<32>>>> fif = lru_rl_I$[set_no];
         auto it = fif.find(f_tag);
+
         for (auto it : fif)
             (it.second).first--;
 
         if (it == fif.end())
             fif[f_tag] = make_pair(no_of_ways - 1, words_block[f_tag]);
 
-        int n;
-        if ((fif.size()) == no_of_ways)
+        int n = -1;
+        if ((fif.size()) > no_of_ways)
         {
             for (auto it : fif)
             {
@@ -439,24 +437,27 @@ void replacement_I$(int set_no, bool hit, int f_tag)
                     break;
                 }
             }
+            auto itt = fif.find(n);
+            fif.erase(itt);
+            auto ittt = mi.find(n);
+            mi.erase(ittt);
         }
-        auto itt = fif.find(n);
-        fif.erase(itt);
-        auto ittt = mi.find(n);
-        mi.erase(ittt);
+
         lru_rl_I$[set_no] = fif;
         mi[f_tag] = words_block[f_tag];
         mi$[set_no] = mi;
         for (auto it : lru_rl_I$)
         {
-            ft << "CYCLE"<<cycle<<endl<<"SET "<<it.first << "\n";
+            ft << "CYCLE" << cycle << endl
+               << "SET " << it.first << "\n";
             for (auto i : it.second)
             {
                 ft << "   " << i.first << "  \n";
                 for (auto t : i.second.second)
                     ft << "      " << t << "  \n";
             }
-            ft<<endl<<endl;
+            ft << endl
+               << endl;
         }
     }
     else if (rep_policy == "FIFO")
@@ -466,28 +467,30 @@ void replacement_I$(int set_no, bool hit, int f_tag)
             map<int, vector<bitset<32>>> mi = mi$[set_no];
             vector<pair<int, vector<bitset<32>>>> fif = fifo_rl_I$[set_no];
             fif.push_back(make_pair(f_tag, words_block[f_tag]));
-            int n;
+            int n = -1;
             if ((fif.size()) > no_of_ways)
             {
                 n = fif[no_of_ways].first;
                 fif.pop_back();
+                auto it = mi.find(n);
+                mi.erase(it);
             }
-            auto it = mi.find(n);
-            mi.erase(it);
             fifo_rl_I$[set_no] = fif;
             mi[f_tag] = words_block[f_tag];
             mi$[set_no] = mi;
         }
         for (auto it : fifo_rl_I$)
         {
-            ft << "CYCLE"<<cycle<<endl<<"SET "<<it.first << "\n";
+            ft << "CYCLE" << cycle << endl
+               << "SET " << it.first << "\n";
             for (auto i : it.second)
             {
                 ft << "   " << i.first << "  \n";
                 for (auto t : i.second)
                     ft << "      " << t << "  \n";
             }
-            ft<<endl<<endl;
+            ft << endl
+               << endl;
         }
     }
 
@@ -497,20 +500,19 @@ void replacement_I$(int set_no, bool hit, int f_tag)
         {
             map<int, vector<bitset<32>>> mi = mi$[set_no];
             mi[f_tag] = words_block[f_tag];
-            int n;
-            if (mi.size() == no_of_ways)
+            int n = -1;
+            if (mi.size() > no_of_ways)
             {
                 for (auto it : mi)
                 {
                     n = it.first;
                     break;
                 }
+                auto it = mi.find(n);
+                mi.erase(it);
             }
-            auto it = mi.find(n);
-            mi.erase(it);
             mi$[set_no] = mi;
         }
-        
     }
     else if (assoc == "DM")
     {
@@ -545,8 +547,8 @@ void replacement_D$(int set_no, bool hit, int f_tag)
         if (it == fif.end())
             fif[f_tag] = make_pair(no_of_ways - 1, memory_block[f_tag]);
 
-        int n;
-        if ((fif.size()) == no_of_ways)
+        int n = -1;
+        if ((fif.size()) > no_of_ways)
         {
             for (auto it : fif)
             {
@@ -556,24 +558,26 @@ void replacement_D$(int set_no, bool hit, int f_tag)
                     break;
                 }
             }
+            auto itt = fif.find(n);
+            fif.erase(itt);
+            auto ittt = mi.find(n);
+            mi.erase(ittt);
         }
-        auto itt = fif.find(n);
-        fif.erase(itt);
-        auto ittt = mi.find(n);
-        mi.erase(ittt);
         lru_rl_D$[set_no] = fif;
         mi[f_tag] = memory_block[f_tag];
         md$[set_no] = mi;
-        for (auto it : fifo_rl_D$)
+        for (auto it : lru_rl_D$)
         {
-            ft << "CYCLE"<<cycle<<endl<<"SET "<<it.first << "\n";
+            ft << "CYCLE" << cycle << endl
+               << "SET " << it.first << "\n";
             for (auto i : it.second)
             {
                 ft << "   " << i.first << "  \n";
-                for (auto t : i.second)
+                for (auto t : i.second.second)
                     ft << "      " << t << "  \n";
             }
-            ft<<endl<<endl;
+            ft << endl
+               << endl;
         }
     }
     else if (rep_policy == "FIFO")
@@ -583,28 +587,30 @@ void replacement_D$(int set_no, bool hit, int f_tag)
             map<int, vector<long long int>> mi = md$[set_no];
             vector<pair<int, vector<long long int>>> fif = fifo_rl_D$[set_no];
             fif.push_back(make_pair(f_tag, memory_block[f_tag]));
-            int n;
+            int n = -1;
             if ((fif.size()) > no_of_ways)
             {
                 n = fif[no_of_ways].first;
                 fif.pop_back();
+                auto it = mi.find(n);
+                mi.erase(it);
             }
-            auto it = mi.find(n);
-            mi.erase(it);
             fifo_rl_D$[set_no] = fif;
             mi[f_tag] = memory_block[f_tag];
             md$[set_no] = mi;
         }
         for (auto it : fifo_rl_D$)
         {
-            ft << "CYCLE"<<cycle<<endl<<"SET "<<it.first << "\n";
+            ft << "CYCLE" << cycle << endl
+               << "SET " << it.first << "\n";
             for (auto i : it.second)
             {
                 ft << "   " << i.first << "  \n";
                 for (auto t : i.second)
                     ft << "      " << t << "  \n";
             }
-            ft<<endl<<endl;
+            ft << endl
+               << endl;
         }
     }
 
@@ -614,17 +620,18 @@ void replacement_D$(int set_no, bool hit, int f_tag)
         {
             map<int, vector<long long int>> mi = md$[set_no];
             mi[f_tag] = memory_block[f_tag];
-            int n;
-            if (mi.size() == no_of_ways)
+            int n = -1;
+            if (mi.size() > no_of_ways)
             {
                 for (auto it : mi)
                 {
                     n = it.first;
                     break;
                 }
+                auto it = mi.find(n);
+                mi.erase(it);
             }
-            auto it = mi.find(n);
-            mi.erase(it);
+
             md$[set_no] = mi;
         }
     }
@@ -719,7 +726,7 @@ void FETCH()
             fut << "  TAG ADDRESS " << it.first << "   ";
             for (auto x : it.second)
             {
-                fut << x;
+                fut << x << ' ';
             }
             fut << endl;
         }
@@ -728,7 +735,7 @@ void FETCH()
             fUt << "  TAG ADDRESS " << it.first << "   ";
             for (auto x : it.second)
             {
-                fUt << x;
+                fUt << x << ' ';
             }
             fUt << endl;
         }
