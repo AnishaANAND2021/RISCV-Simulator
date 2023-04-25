@@ -400,6 +400,7 @@ long long int check_D_$(int mem_loc)
     auto IT = mpb.find(f_tag);
     int j = 0;
     vector<long long int> v = IT->second;
+    cout << v[f_bo / 4] << "helllllll" << endl;
     return v[f_bo / 4];
 }
 
@@ -715,6 +716,7 @@ void FETCH()
         n_f++;
     }
     fut << "\n\ncycle " << cycle << ": \n";
+    fUt << "\n\ncycle " << cycle << ": \n";
     for (int i = 0; i < no_of_sets; i++)
     {
         fut << "SET " << i << ":\n";
@@ -2496,13 +2498,12 @@ void MEMORY_ACCESS()
             else
             {
                 long long int it = check_D_$(r[rs1] + imm);
+                bitset<32> find = r[rs1] + imm;
+                int f_tag = bin_2_dec(find, (31 - tag_address + 1), 31);
+                int set_no = bin_2_dec(find, block_offset, (31 - tag_address));
+                int f_bo = bin_2_dec(find, 0, (block_offset - 1));
                 if (n > 24 && n < 28) // store
                 {
-                    bitset<32> find = r[rs1] + imm;
-                    int f_tag = bin_2_dec(find, (31 - tag_address + 1), 31);
-                    int set_no = bin_2_dec(find, block_offset, (31 - tag_address));
-                    int f_bo = bin_2_dec(find, 0, (block_offset - 1));
-
                     n_m++;
                     bitset<32> B = r[rs2];
                     if (n == 27) // sw
@@ -2518,19 +2519,22 @@ void MEMORY_ACCESS()
                         int y = bin_2_dec(B, 0, 15);
                         md$[set_no][f_tag][f_bo] = r[rs2];
                     }
+                    memory[r[rs1] + imm] = md$[set_no][f_tag][f_bo];
+                    memory_block[set_no][f_bo] = md$[set_no][f_tag][f_bo];
                 }
                 else // load
                 {
                     {
+                        cout << md$[set_no][f_tag][f_bo] << "====================" << endl;
                         bitset<32> B = it;
                         if (n == 22)
-                            x = it;
+                            x = md$[set_no][f_tag][f_bo];
                         else if (n == 20 || n == 23)
                         {
-                            x = bin_2_dec(B, 0, 7);
+                            x = md$[set_no][f_tag][f_bo];
                         }
                         else
-                            x = bin_2_dec(B, 0, 15);
+                            x = md$[set_no][f_tag][f_bo];
                     }
                 }
             }
