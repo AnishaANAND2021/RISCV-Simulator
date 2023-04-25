@@ -12,7 +12,7 @@ int k1, k2, k3, k4, k5;                                            // knobs
 int cycle = 0;                                                     // stores the no of cycles
 int pc = 0, next_pc = 0;                                           // it will store the next pc (in case of any jump);
 int n_f = 0, n_d = 0, n_e = 0, n_m = 0, n_w = 0, n_a = 0, n_c = 0; // no of write back operations executed
-int stall = 0, stalls = 0, stall_d = 0, stall_ds = 0;              // stall is due to control dependency
+int stall = 0, stalls = 0, stall_d = 0, stall_ds = 0,stall_$=0;              // stall is due to control dependency
 int ch = 0, dh = 0, bm = 0;                                        //  stall stores no of stall in a cycle stalls store total no of stalls
                                                                    // stall_d is stall due to data depenedency
 
@@ -62,22 +62,20 @@ int tag_address, Index, block_offset;     // a $block
 int f_tag, set_no, f_bo;                  // the location of the memory index we want to find
 string assoc, rep_policy;                 // assoc is associativity , rep_policy is the replacement policy
 
-map<int, map<int, vector<bitset<32>>>> mi$; // map of an instruction cache map.first represent set no ...external vector (sie=32*8bits) is containing the information in a block
-map<int, map<int, vector<bitset<32>>>> md$; // map of an data cache map.first represent set no ...internal vector is representing a byte
+map<int, map<int, vector<bitset<32>>>> mi$;    // map of an instruction cache map.first represent set no ...external vector (sie=32*8bits) is containing the information in a block
+map<int, map<int, vector<long long int>>> md$; // map of an data cache map.first represent set no ...internal vector is representing a byte
 
 bitset<32> check_I_$(int next_pc); // it will check and return instruction cache
 bitset<32> check_D_$(int mem_loc); // it will check and return instruction cache
 
 void replacement_I$(int set_no, bool hit, int f_tag); // it will replace the block in a set in instruction cache
-void replacement_D$(int set_no, bool hit);            // it will replace the block in a set in data cache
+void replacement_D$(int set_no, bool hit, int f_tag); // it will replace the block in a set in data cache
 
 map<int, vector<pair<int, vector<bitset<32>>>>> fifo_rl_I$;  // stores recency list of each set in case of FIFO
 map<int, map<int, pair<int, vector<bitset<32>>>>> lru_rl_I$; // stores recency list of each set in case of LRU
-map<int, map<int, vector<pair<int, bitset<32>>>>> lfu_rl_I$; // stores recency list of each set in case of LFU
 
-map<int, vector<pair<int, vector<bitset<32>>>>> fifo_rl_D$;  // stores recency list of each set in case of FIFO
-map<int, map<int, vector<pair<int, bitset<32>>>>> lru_rl_D$; // stores recency list of each set in case of LRU
-map<int, map<int, vector<pair<int, bitset<32>>>>> lfu_rl_D$; // stores recency list of each set in case of LFU
+map<int, vector<pair<int, vector<long long int>>>> fifo_rl_D$;  // stores recency list of each set in case of FIFO
+map<int, map<int, pair<int, vector<long long int>>>> lru_rl_D$; // stores recency list of each set in case of LRU
 
 //----- DRIVER CODE -----
 
@@ -115,7 +113,8 @@ int main()
     {
         for (int i = 0; i < no_of_sets; i++)
         {
-            map<int, vector<bitset<32>>> mi, md;
+            map<int, vector<bitset<32>>> mi;
+            map<int, vector<long long int>> md;
             mi$[i] = mi;
             md$[i] = md;
         }
@@ -128,7 +127,8 @@ int main()
         {
             fout << "SET " << i << ":\n";
             fOut << "SET " << i << ":\n";
-            map<int, vector<bitset<32>>> mi = mi$[i], md = md$[i];
+            map<int, vector<bitset<32>>> mi = mi$[i];
+            map<int, vector<long long int>> md = md$[i];
             for (auto it : mi)
             {
                 fout << "  TAG ADDRESS " << it.first << endl;
@@ -336,7 +336,7 @@ int main()
         FoUT << "• Stat4: Number of Data-transfer (load and store) instructions executed " << dec << n_m << endl;
         FoUT << "• Stat5: Number of ALU instructions executed " << dec << n_a << endl;
         FoUT << "• Stat6: Number of Control instructions executed " << dec << n_c << endl;
-        FoUT << "• Stat7: Number of stalls/bubbles in the pipeline " << dec << stall_ds + stalls << endl;
+        FoUT << "• Stat7: Number of stalls/bubbles in the pipeline " << dec << stall_ds + stalls+stall_$ << endl;
         FoUT << "• Stat8: Number of data hazards " << dec << dh << endl;
         FoUT << "• Stat9: Number of control hazards " << dec << ch << endl;
         FoUT << "• Stat10: Number of branch mispredictions " << dec << bm << endl;
@@ -377,11 +377,11 @@ bitset<32> check_I_$(int next_pc)
 bitset<32> check_D_$(int mem_loc)
 {
     bitset<32> i_p;
-    bitset<32> find = mem_loc;
+    bitset<32> find = next_pc;
     int f_tag = bin_2_dec(find, (31 - tag_address + 1), 31);
     int set_no = bin_2_dec(find, block_offset, (31 - tag_address));
     int f_bo = bin_2_dec(find, 0, (block_offset - 1));
-    map<int, vector<bitset<32>>> mpb;
+    map<int, vector<long long int>> mpb;
     auto it = md$.find(set_no);
     if (it != md$.end()) /// initailly you have to make empty cache
         mpb = it->second;
@@ -392,21 +392,26 @@ bitset<32> check_D_$(int mem_loc)
     bool hit = 1;
     if (It == mpb.end()) // miss (check replacement policies)
         hit = 0;
-    replacement_D$(set_no, hit);
+    cout << hit << "=hit----------" << endl;
+    replacement_D$(set_no, hit, f_tag);
+    mpb = md$[set_no];
     auto IT = mpb.find(f_tag);
-    vector<bitset<32>> v = IT->second;
     int j = 0;
-    i_p = v[f_bo];
-    return i_p;
+    vector<long long int> v = IT->second;
+    return v[f_bo];
 }
 
 //------REPLACEMENT OF A BLOCK IN INSTRUCTION CACHE------
 void replacement_I$(int set_no, bool hit, int f_tag)
 {
+    int x = cycle;
     if (hit)
         cycle++;
     else
         cycle += 20;
+    x = cycle - x;
+    stall_$+=x;
+    fOut << x << " cycles delay due to data cache ";
     if (rep_policy == "LRU" || rep_policy == "LFU")
     {
 
@@ -490,15 +495,98 @@ void replacement_I$(int set_no, bool hit, int f_tag)
         cout << "Invalid replacement policy!!!!!";
 }
 
-//------REPLACEMENT OF A BLOCK IN INSTRUCTION CACHE------
-void replacement_D$(int set_no, bool hit)
+//------REPLACEMENT OF A BLOCK IN DATA CACHE------
+void replacement_D$(int set_no, bool hit, int f_tag)
 {
+    int x = cycle;
     if (hit)
+        cycle++;
+    else
+        cycle += 20;
+    x = cycle - x;
+     stall_$+=x;
+    fOut << x << " cycles delay due to data cache ";
+    if (rep_policy == "LRU" || rep_policy == "LFU")
     {
+
+        map<int, vector<long long int>> mi = md$[set_no];
+        map<int, pair<int, vector<long long int>>> fif = lru_rl_D$[set_no];
+        auto it = fif.find(f_tag);
+        for (auto it : fif)
+            (it.second).first--;
+
+        if (it == fif.end())
+            fif[f_tag] = make_pair(no_of_ways - 1, memory_block[f_tag]);
+
+        int n;
+        if ((fif.size()) == no_of_ways)
+        {
+            for (auto it : fif)
+            {
+                if (((it.second).first) == 0)
+                {
+                    n = it.first;
+                    break;
+                }
+            }
+        }
+        auto itt = fif.find(n);
+        fif.erase(itt);
+        auto ittt = mi.find(n);
+        mi.erase(ittt);
+        lru_rl_D$[set_no] = fif;
+        mi[f_tag] = memory_block[f_tag];
+        md$[set_no] = mi;
+    }
+    else if (rep_policy == "FIFO")
+    {
+        if (!hit)
+        {
+            map<int, vector<long long int>> mi = md$[set_no];
+            vector<pair<int, vector<long long int>>> fif = fifo_rl_D$[set_no];
+            fif.push_back(make_pair(f_tag, memory_block[f_tag]));
+            int n;
+            if ((fif.size()) > no_of_ways)
+            {
+                n = fif[no_of_ways].first;
+                fif.pop_back();
+            }
+            auto it = mi.find(n);
+            mi.erase(it);
+            fifo_rl_D$[set_no] = fif;
+            mi[f_tag] = memory_block[f_tag];
+            md$[set_no] = mi;
+        }
+    }
+
+    else if (rep_policy == "RANDOM")
+    {
+        if (!hit)
+        {
+            map<int, vector<long long int>> mi = md$[set_no];
+            mi[f_tag] = memory_block[f_tag];
+            int n;
+            if (mi.size() == no_of_ways)
+            {
+                for (auto it : mi)
+                {
+                    n = it.first;
+                    break;
+                }
+            }
+            auto it = mi.find(n);
+            mi.erase(it);
+            md$[set_no] = mi;
+        }
+    }
+    else if (assoc == "DM")
+    {
+        map<int, vector<long long int>> mi = md$[set_no];
+        mi[f_tag] = memory_block[f_tag];
+        md$[set_no] = mi;
     }
     else
-    {
-    }
+        cout << "Invalid replacement policy!!!!!";
 }
 
 //-----CONVERTING BINARY TO DECIMAL-----
