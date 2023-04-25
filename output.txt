@@ -1,10 +1,10 @@
-• Stat1: Total number of cycles 20
+• Stat1: Total number of cycles 74
 • Stat2: Total instructions executed 10
-• Stat3: CPI 2
+• Stat3: CPI 7
 • Stat4: Number of Data-transfer (load and store) instructions executed 1
 • Stat5: Number of ALU instructions executed 7
 • Stat6: Number of Control instructions executed 0
-• Stat7: Number of stalls/bubbles in the pipeline 6
+• Stat7: Number of stalls/bubbles in the pipeline 60
 • Stat8: Number of data hazards 2
 • Stat9: Number of control hazards 0
 • Stat10: Number of branch mispredictions 0

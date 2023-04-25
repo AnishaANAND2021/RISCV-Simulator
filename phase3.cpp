@@ -400,7 +400,6 @@ long long int check_D_$(int mem_loc)
     auto IT = mpb.find(f_tag);
     int j = 0;
     vector<long long int> v = IT->second;
-    cout << v[f_bo / 4] << "helllllll" << endl;
     return v[f_bo / 4];
 }
 
@@ -419,13 +418,25 @@ void replacement_I$(int set_no, bool hit, int f_tag)
     {
         map<int, vector<bitset<32>>> mi = mi$[set_no];
         map<int, pair<int, vector<bitset<32>>>> fif = lru_rl_I$[set_no];
-        auto it = fif.find(f_tag);
-
+        if (rep_policy == "LRU")
+            fif[f_tag] = make_pair(no_of_ways, words_block[f_tag]);
+        else
+        {
+            auto it = fif.find(f_tag);
+            int x = 0;
+            if (it == fif.end())
+                fif[f_tag] = make_pair(2, words_block[f_tag]);
+            else
+                fif[f_tag].first += 2;
+        }
         for (auto it : fif)
-            (it.second).first--;
+        {
+            int x=(it.second).first-1;
+            int y=it.first;
+            vector<bitset<32>> v=it.second.second;
+            fif[y]=make_pair(x,v);
 
-        if (it == fif.end())
-            fif[f_tag] = make_pair(no_of_ways - 1, words_block[f_tag]);
+        }
 
         int n = -1;
         if ((fif.size()) > no_of_ways)
@@ -453,9 +464,8 @@ void replacement_I$(int set_no, bool hit, int f_tag)
                << "SET " << it.first << "\n";
             for (auto i : it.second)
             {
-                ft << "   " << i.first << "  \n";
-                for (auto t : i.second.second)
-                    ft << "      " << t << "  \n";
+                ft << "  " << i.second.first << "  : " << i.first;
+                ft << endl;
             }
             ft << endl
                << endl;
@@ -488,7 +498,8 @@ void replacement_I$(int set_no, bool hit, int f_tag)
             {
                 ft << "   " << i.first << "  \n";
                 for (auto t : i.second)
-                    ft << "      " << t << "  \n";
+                    ft << t;
+                ft << endl;
             }
             ft << endl
                << endl;
@@ -541,12 +552,25 @@ void replacement_D$(int set_no, bool hit, int f_tag)
 
         map<int, vector<long long int>> mi = md$[set_no];
         map<int, pair<int, vector<long long int>>> fif = lru_rl_D$[set_no];
-        auto it = fif.find(f_tag);
+        if (rep_policy == "LRU")
+            fif[f_tag] = make_pair(no_of_ways, memory_block[f_tag]);
+        else
+        {
+            auto it = fif.find(f_tag);
+            int x = 0;
+            if (it == fif.end())
+                fif[f_tag] = make_pair(2, memory_block[f_tag]);
+            else
+                fif[f_tag].first += 2;
+        }
         for (auto it : fif)
-            (it.second).first--;
+        {
+            int x=(it.second).first-1;
+            int y=it.first;
+            vector<long long int> v=it.second.second;
+            fif[y]=make_pair(x,v);
 
-        if (it == fif.end())
-            fif[f_tag] = make_pair(no_of_ways - 1, memory_block[f_tag]);
+        }
 
         int n = -1;
         if ((fif.size()) > no_of_ways)
@@ -569,15 +593,16 @@ void replacement_D$(int set_no, bool hit, int f_tag)
         md$[set_no] = mi;
         for (auto it : lru_rl_D$)
         {
-            ft << "CYCLE" << cycle << endl
+            fT << "CYCLE" << cycle << endl
                << "SET " << it.first << "\n";
             for (auto i : it.second)
             {
-                ft << "   " << i.first << "  \n";
+                fT << "   " << i.second.first << "  :" << i.first;
                 for (auto t : i.second.second)
-                    ft << "      " << t << "  \n";
+                    fT << t << "  ";
+                fT << endl;
             }
-            ft << endl
+            fT << endl
                << endl;
         }
     }
@@ -587,7 +612,7 @@ void replacement_D$(int set_no, bool hit, int f_tag)
         {
             map<int, vector<long long int>> mi = md$[set_no];
             vector<pair<int, vector<long long int>>> fif = fifo_rl_D$[set_no];
-            fif.push_back(make_pair(f_tag, memory_block[f_tag]));
+            fif.push_back(make_pair(no_of_ways - 1, memory_block[f_tag]));
             int n = -1;
             if ((fif.size()) > no_of_ways)
             {
@@ -602,15 +627,16 @@ void replacement_D$(int set_no, bool hit, int f_tag)
         }
         for (auto it : fifo_rl_D$)
         {
-            ft << "CYCLE" << cycle << endl
+            fT << "CYCLE" << cycle << endl
                << "SET " << it.first << "\n";
             for (auto i : it.second)
             {
-                ft << "   " << i.first << "  \n";
+                fT << "   " << i.first << "  \n";
                 for (auto t : i.second)
-                    ft << "      " << t << "  \n";
+                    fT << t << "  ";
+                fT << endl;
             }
-            ft << endl
+            fT << endl
                << endl;
         }
     }
@@ -2156,6 +2182,7 @@ void EXECUTE()
 
     if (b_e.size()) // && stall == 0)
     {
+        int btbb = 1;
         auto ittt = btb.find(pc_i);
         n_e++;
         bitset<32> b = b_e[0].first;
@@ -2332,8 +2359,10 @@ void EXECUTE()
                 pc = next_pc;
                 if (ittt != btb.end() && (ittt->second).first)
                 {
+                    btbb = 0;
                     bm++;
                     b_w.pop_back();
+                    b_m.pop_back();
                     pc = ittt->first + 4;
                     b_d.pop_back();
                 }
@@ -2355,8 +2384,10 @@ void EXECUTE()
                 pc = next_pc;
                 if (ittt != btb.end() && (ittt->second).first)
                 {
-                    bm++;
+                    btbb = 0;
                     b_w.pop_back();
+                    b_m.pop_back();
+                    bm++;
                     pc = ittt->first + 4;
                     b_d.pop_back();
                 }
@@ -2376,13 +2407,12 @@ void EXECUTE()
             else
             {
                 bm++;
-                cout << "xxxxxxxxxxxxxxxxxxxxxx" << endl;
-
                 pc = next_pc;
                 if (ittt != btb.end() && (ittt->second).first)
                 {
-                    cout << "xxxxxxxxxxxxxxxxxxxxxx" << endl;
-                    b_d.pop_back();
+                    btbb = 0;
+                    b_w.pop_back();
+                    b_m.pop_back();
                     pc = ittt->first + 4;
                     b_d.pop_back();
                 }
@@ -2405,7 +2435,9 @@ void EXECUTE()
                 pc = next_pc;
                 if (ittt != btb.end() && (ittt->second).first)
                 {
+                    btbb = 0;
                     b_w.pop_back();
+                    b_m.pop_back();
                     pc = ittt->first + 4;
                     b_d.pop_back();
                 }
@@ -2463,7 +2495,8 @@ void EXECUTE()
         b_e_w.push_back(val);
         if (b_m.size())
             b_m.pop_back();
-        b_m.push_back(val);
+        if (btbb)
+            b_m.push_back(val);
         n_d++;
     }
 
@@ -2512,29 +2545,38 @@ void MEMORY_ACCESS()
                     {
 
                         int y = bin_2_dec(B, 0, 7);
-                        md$[set_no][f_tag][f_bo] = r[rs2];
+                        md$[set_no][f_tag][f_bo] = y;
                     }
                     else // sh
                     {
                         int y = bin_2_dec(B, 0, 15);
-                        md$[set_no][f_tag][f_bo] = r[rs2];
+                        md$[set_no][f_tag][f_bo] = y;
                     }
                     memory[r[rs1] + imm] = md$[set_no][f_tag][f_bo];
-                    memory_block[set_no][f_bo] = md$[set_no][f_tag][f_bo];
+                    memory_block[f_tag][f_bo] = md$[set_no][f_tag][f_bo];
+                    // cout
                 }
                 else // load
                 {
+                    auto it = memory.find(r[rs1] + imm);
+                    if (it == memory.end())
                     {
-                        cout << md$[set_no][f_tag][f_bo] << "====================" << endl;
-                        bitset<32> B = it;
+                        // cout << "The memory doesn't exist, can't perform load operation!\n";
+
+                        /// b_w.push_back(make_pair(x, 25));
+                        EXECUTE(); // 2 WRITE_BACK();
+                    }
+                    else
+                    {
+                        bitset<32> B = it->second;
                         if (n == 22)
-                            x = md$[set_no][f_tag][f_bo];
+                            x = it->second;
                         else if (n == 20 || n == 23)
                         {
-                            x = md$[set_no][f_tag][f_bo];
+                            x = bin_2_dec(B, 0, 7);
                         }
                         else
-                            x = md$[set_no][f_tag][f_bo];
+                            x = bin_2_dec(B, 0, 15);
                     }
                 }
             }
