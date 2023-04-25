@@ -1,3 +1,4 @@
+// do same for data $
 #include <bits/stdc++.h>
 using namespace std;
 
@@ -60,7 +61,7 @@ int no_of_blocks, no_of_ways, no_of_sets; // no_of_sets determines the no of set
 int tag_address, Index, block_offset;     // a $block
 int f_tag, set_no, f_bo;                  // the location of the memory index we want to find
 string assoc, rep_policy;                 // assoc is associativity , rep_policy is the replacement policy
-//-----------------------------------------------------------make them zero initially--------XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX*******************************************************
+
 map<int, map<int, vector<bitset<32>>>> mi$; // map of an instruction cache map.first represent set no ...external vector (sie=32*8bits) is containing the information in a block
 map<int, map<int, vector<bitset<32>>>> md$; // map of an data cache map.first represent set no ...internal vector is representing a byte
 
@@ -70,13 +71,13 @@ bitset<32> check_D_$(int mem_loc); // it will check and return instruction cache
 void replacement_I$(int set_no, bool hit, int f_tag); // it will replace the block in a set in instruction cache
 void replacement_D$(int set_no, bool hit);            // it will replace the block in a set in data cache
 
-map<int, vector<pair<int, vector<bitset<32>>>>> fifo_rl_I$; // stores recency list of each set in case of FIFO
-map<int, map<int, vector<bitset<32>>>> lru_rl_I$;           // stores recency list of each set in case of LRU
-map<int, map<int, vector<bitset<32>>>> lfu_rl_I$;           // stores recency list of each set in case of LFU
+map<int, vector<pair<int, vector<bitset<32>>>>> fifo_rl_I$;  // stores recency list of each set in case of FIFO
+map<int, map<int, pair<int, vector<bitset<32>>>>> lru_rl_I$; // stores recency list of each set in case of LRU
+map<int, map<int, vector<pair<int, bitset<32>>>>> lfu_rl_I$; // stores recency list of each set in case of LFU
 
-map<int, vector<vector<bitset<32>>>> fifo_rl_D$;  // stores recency list of each set in case of FIFO
-map<int, map<int, vector<bitset<32>>>> lru_rl_D$; // stores recency list of each set in case of LRU
-map<int, map<int, vector<bitset<32>>>> lfu_rl_D$; // stores recency list of each set in case of LFU
+map<int, vector<pair<int, vector<bitset<32>>>>> fifo_rl_D$;  // stores recency list of each set in case of FIFO
+map<int, map<int, vector<pair<int, bitset<32>>>>> lru_rl_D$; // stores recency list of each set in case of LRU
+map<int, map<int, vector<pair<int, bitset<32>>>>> lfu_rl_D$; // stores recency list of each set in case of LFU
 
 //----- DRIVER CODE -----
 
@@ -402,14 +403,41 @@ bitset<32> check_D_$(int mem_loc)
 //------REPLACEMENT OF A BLOCK IN INSTRUCTION CACHE------
 void replacement_I$(int set_no, bool hit, int f_tag)
 {
-    if (rep_policy == "LRU")
+    if (hit)
+        cycle++;
+    else
+        cycle += 20;
+    if (rep_policy == "LRU" || rep_policy == "LFU")
     {
-        if (!hit)
+
+        map<int, vector<bitset<32>>> mi = mi$[set_no];
+        map<int, pair<int, vector<bitset<32>>>> fif = lru_rl_I$[set_no];
+        auto it = fif.find(f_tag);
+        for (auto it : fif)
+            (it.second).first--;
+
+        if (it == fif.end())
+            fif[f_tag] = make_pair(no_of_ways - 1, words_block[f_tag]);
+
+        int n;
+        if ((fif.size()) == no_of_ways)
         {
+            for (auto it : fif)
+            {
+                if (((it.second).first) == 0)
+                {
+                    n = it.first;
+                    break;
+                }
+            }
         }
-        else
-        {
-        }
+        auto itt = fif.find(n);
+        fif.erase(itt);
+        auto ittt = mi.find(n);
+        mi.erase(ittt);
+        lru_rl_I$[set_no] = fif;
+        mi[f_tag] = words_block[f_tag];
+        mi$[set_no] = mi;
     }
     else if (rep_policy == "FIFO")
     {
@@ -431,22 +459,25 @@ void replacement_I$(int set_no, bool hit, int f_tag)
             mi$[set_no] = mi;
         }
     }
-    else if (rep_policy == "LFU")
-    {
-        if (!hit)
-        {
-        }
-        else
-        {
-        }
-    }
+
     else if (rep_policy == "RANDOM")
     {
         if (!hit)
         {
-        }
-        else
-        {
+            map<int, vector<bitset<32>>> mi = mi$[set_no];
+            mi[f_tag] = words_block[f_tag];
+            int n;
+            if (mi.size() == no_of_ways)
+            {
+                for (auto it : mi)
+                {
+                    n = it.first;
+                    break;
+                }
+            }
+            auto it = mi.find(n);
+            mi.erase(it);
+            mi$[set_no] = mi;
         }
     }
     else if (assoc == "DM")
