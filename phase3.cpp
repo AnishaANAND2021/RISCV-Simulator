@@ -12,7 +12,7 @@ int k1, k2, k3, k4, k5;                                            // knobs
 int cycle = 0;                                                     // stores the no of cycles
 int pc = 0, next_pc = 0;                                           // it will store the next pc (in case of any jump);
 int n_f = 0, n_d = 0, n_e = 0, n_m = 0, n_w = 0, n_a = 0, n_c = 0; // no of write back operations executed
-int stall = 0, stalls = 0, stall_d = 0, stall_ds = 0,stall_$=0;              // stall is due to control dependency
+int stall = 0, stalls = 0, stall_d = 0, stall_ds = 0, stall_$ = 0; // stall is due to control dependency
 int ch = 0, dh = 0, bm = 0;                                        //  stall stores no of stall in a cycle stalls store total no of stalls
                                                                    // stall_d is stall due to data depenedency
 
@@ -65,8 +65,8 @@ string assoc, rep_policy;                 // assoc is associativity , rep_policy
 map<int, map<int, vector<bitset<32>>>> mi$;    // map of an instruction cache map.first represent set no ...external vector (sie=32*8bits) is containing the information in a block
 map<int, map<int, vector<long long int>>> md$; // map of an data cache map.first represent set no ...internal vector is representing a byte
 
-bitset<32> check_I_$(int next_pc); // it will check and return instruction cache
-bitset<32> check_D_$(int mem_loc); // it will check and return instruction cache
+bitset<32> check_I_$(int next_pc);    // it will check and return instruction cache
+long long int check_D_$(int mem_loc); // it will check and return instruction cache
 
 void replacement_I$(int set_no, bool hit, int f_tag); // it will replace the block in a set in instruction cache
 void replacement_D$(int set_no, bool hit, int f_tag); // it will replace the block in a set in data cache
@@ -76,6 +76,11 @@ map<int, map<int, pair<int, vector<bitset<32>>>>> lru_rl_I$; // stores recency l
 
 map<int, vector<pair<int, vector<long long int>>>> fifo_rl_D$;  // stores recency list of each set in case of FIFO
 map<int, map<int, pair<int, vector<long long int>>>> lru_rl_D$; // stores recency list of each set in case of LRU
+
+ofstream fut("i_$.txt"); // writing in instruction cache
+ofstream fUt("d_$.txt"); // writing in data cache
+ofstream ft("i_rl.txt"); // recency list display
+ofstream fT("d_rl.txt"); // recency list display
 
 //----- DRIVER CODE -----
 
@@ -120,28 +125,22 @@ int main()
         }
     }
     // printing caches--------------it will be printed after every cycle---transferred to stack-------------------------------------------------------------
+    for (int i = 0; i < no_of_sets; i++)
     {
-        ofstream fout("i_$.txt");
-        ofstream fOut("d_$.txt");
-        for (int i = 0; i < no_of_sets; i++)
+        fut << "SET " << i << ":\n";
+        fUt << "SET " << i << ":\n";
+        map<int, vector<bitset<32>>> mi = mi$[i];
+        map<int, vector<long long int>> md = md$[i];
+        for (auto it : mi)
         {
-            fout << "SET " << i << ":\n";
-            fOut << "SET " << i << ":\n";
-            map<int, vector<bitset<32>>> mi = mi$[i];
-            map<int, vector<long long int>> md = md$[i];
-            for (auto it : mi)
+            fut << "  TAG ADDRESS " << it.first << endl;
+            /*for (auto x : it.second)
             {
-                fout << "  TAG ADDRESS " << it.first << endl;
-                /*for (auto x : it.second)
-                {
-                   fout << x ;
-                }*/
-            }
-            for (auto it : md)
-                fOut << "  TAG ADDRESS " << it.first << endl;
-            fout << endl;
-            fOut << endl;
+               fout << x ;
+            }*/
         }
+        for (auto it : md)
+            fUt << "  TAG ADDRESS " << it.first << endl;
     }
     /*printf("Print 1 to Enable a knob and O to disable a Knob: \n Knob 1: ");
     cin >> k1;
@@ -336,7 +335,7 @@ int main()
         FoUT << "• Stat4: Number of Data-transfer (load and store) instructions executed " << dec << n_m << endl;
         FoUT << "• Stat5: Number of ALU instructions executed " << dec << n_a << endl;
         FoUT << "• Stat6: Number of Control instructions executed " << dec << n_c << endl;
-        FoUT << "• Stat7: Number of stalls/bubbles in the pipeline " << dec << stall_ds + stalls+stall_$ << endl;
+        FoUT << "• Stat7: Number of stalls/bubbles in the pipeline " << dec << stall_ds + stalls + stall_$ << endl;
         FoUT << "• Stat8: Number of data hazards " << dec << dh << endl;
         FoUT << "• Stat9: Number of control hazards " << dec << ch << endl;
         FoUT << "• Stat10: Number of branch mispredictions " << dec << bm << endl;
@@ -344,6 +343,11 @@ int main()
         FoUT << "• Stat12: Number of stalls due to control hazards " << dec << stalls << endl;
         FoUT.close();
     }
+    fut.close();
+    fUt.close();
+    ft.close();
+    fT.close();
+
     return 0;
 }
 
@@ -374,10 +378,10 @@ bitset<32> check_I_$(int next_pc)
     vector<bitset<32>> v = IT->second;
     return v[f_bo];
 }
-bitset<32> check_D_$(int mem_loc)
+long long int check_D_$(int mem_loc)
 {
     bitset<32> i_p;
-    bitset<32> find = next_pc;
+    bitset<32> find = mem_loc;
     int f_tag = bin_2_dec(find, (31 - tag_address + 1), 31);
     int set_no = bin_2_dec(find, block_offset, (31 - tag_address));
     int f_bo = bin_2_dec(find, 0, (block_offset - 1));
@@ -410,7 +414,7 @@ void replacement_I$(int set_no, bool hit, int f_tag)
     else
         cycle += 20;
     x = cycle - x;
-    stall_$+=x;
+    stall_$ += x;
     fOut << x << " cycles delay due to data cache ";
     if (rep_policy == "LRU" || rep_policy == "LFU")
     {
@@ -443,6 +447,17 @@ void replacement_I$(int set_no, bool hit, int f_tag)
         lru_rl_I$[set_no] = fif;
         mi[f_tag] = words_block[f_tag];
         mi$[set_no] = mi;
+        for (auto it : lru_rl_I$)
+        {
+            ft << "CYCLE"<<cycle<<endl<<"SET "<<it.first << "\n";
+            for (auto i : it.second)
+            {
+                ft << "   " << i.first << "  \n";
+                for (auto t : i.second.second)
+                    ft << "      " << t << "  \n";
+            }
+            ft<<endl<<endl;
+        }
     }
     else if (rep_policy == "FIFO")
     {
@@ -462,6 +477,17 @@ void replacement_I$(int set_no, bool hit, int f_tag)
             fifo_rl_I$[set_no] = fif;
             mi[f_tag] = words_block[f_tag];
             mi$[set_no] = mi;
+        }
+        for (auto it : fifo_rl_I$)
+        {
+            ft << "CYCLE"<<cycle<<endl<<"SET "<<it.first << "\n";
+            for (auto i : it.second)
+            {
+                ft << "   " << i.first << "  \n";
+                for (auto t : i.second)
+                    ft << "      " << t << "  \n";
+            }
+            ft<<endl<<endl;
         }
     }
 
@@ -484,6 +510,7 @@ void replacement_I$(int set_no, bool hit, int f_tag)
             mi.erase(it);
             mi$[set_no] = mi;
         }
+        
     }
     else if (assoc == "DM")
     {
@@ -504,7 +531,7 @@ void replacement_D$(int set_no, bool hit, int f_tag)
     else
         cycle += 20;
     x = cycle - x;
-     stall_$+=x;
+    stall_$ += x;
     fOut << x << " cycles delay due to data cache ";
     if (rep_policy == "LRU" || rep_policy == "LFU")
     {
@@ -537,6 +564,17 @@ void replacement_D$(int set_no, bool hit, int f_tag)
         lru_rl_D$[set_no] = fif;
         mi[f_tag] = memory_block[f_tag];
         md$[set_no] = mi;
+        for (auto it : fifo_rl_D$)
+        {
+            ft << "CYCLE"<<cycle<<endl<<"SET "<<it.first << "\n";
+            for (auto i : it.second)
+            {
+                ft << "   " << i.first << "  \n";
+                for (auto t : i.second)
+                    ft << "      " << t << "  \n";
+            }
+            ft<<endl<<endl;
+        }
     }
     else if (rep_policy == "FIFO")
     {
@@ -556,6 +594,17 @@ void replacement_D$(int set_no, bool hit, int f_tag)
             fifo_rl_D$[set_no] = fif;
             mi[f_tag] = memory_block[f_tag];
             md$[set_no] = mi;
+        }
+        for (auto it : fifo_rl_D$)
+        {
+            ft << "CYCLE"<<cycle<<endl<<"SET "<<it.first << "\n";
+            for (auto i : it.second)
+            {
+                ft << "   " << i.first << "  \n";
+                for (auto t : i.second)
+                    ft << "      " << t << "  \n";
+            }
+            ft<<endl<<endl;
         }
     }
 
@@ -657,6 +706,32 @@ void FETCH()
             next_pc = pc;
         }
         n_f++;
+    }
+    fut << "\n\ncycle " << cycle << ": \n";
+    for (int i = 0; i < no_of_sets; i++)
+    {
+        fut << "SET " << i << ":\n";
+        fUt << "SET " << i << ":\n";
+        map<int, vector<bitset<32>>> mi = mi$[i];
+        map<int, vector<long long int>> md = md$[i];
+        for (auto it : mi)
+        {
+            fut << "  TAG ADDRESS " << it.first << "   ";
+            for (auto x : it.second)
+            {
+                fut << x;
+            }
+            fut << endl;
+        }
+        for (auto it : md)
+        {
+            fUt << "  TAG ADDRESS " << it.first << "   ";
+            for (auto x : it.second)
+            {
+                fUt << x;
+            }
+            fUt << endl;
+        }
     }
 
     if (cycle)
@@ -2413,39 +2488,36 @@ void MEMORY_ACCESS()
             }
             else
             {
+                long long int it = check_D_$(r[rs1] + imm);
                 if (n > 24 && n < 28) // store
                 {
+                    bitset<32> find = r[rs1] + imm;
+                    int f_tag = bin_2_dec(find, (31 - tag_address + 1), 31);
+                    int set_no = bin_2_dec(find, block_offset, (31 - tag_address));
+                    int f_bo = bin_2_dec(find, 0, (block_offset - 1));
+
                     n_m++;
                     bitset<32> B = r[rs2];
                     if (n == 27) // sw
-                        memory[r[rs1] + imm] = r[rs2];
+                        md$[set_no][f_tag][f_bo] = r[rs2];
                     else if (n == 25) // sb
                     {
 
                         int y = bin_2_dec(B, 0, 7);
-                        memory[r[rs1] + imm] = y;
+                        md$[set_no][f_tag][f_bo] = r[rs2];
                     }
                     else // sh
                     {
                         int y = bin_2_dec(B, 0, 15);
-                        memory[r[rs1] + imm] = y;
+                        md$[set_no][f_tag][f_bo] = r[rs2];
                     }
                 }
                 else // load
                 {
-                    auto it = memory.find(r[rs1] + imm);
-                    if (it == memory.end())
                     {
-                        // cout << "The memory doesn't exist, can't perform load operation!\n";
-
-                        /// b_w.push_back(make_pair(x, 25));
-                        EXECUTE(); // 2 WRITE_BACK();
-                    }
-                    else
-                    {
-                        bitset<32> B = it->second;
+                        bitset<32> B = it;
                         if (n == 22)
-                            x = it->second;
+                            x = it;
                         else if (n == 20 || n == 23)
                         {
                             x = bin_2_dec(B, 0, 7);
